@@ -9,10 +9,31 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <script src="~/scripts/Chart.bundle.min.js"></script>
+    <script src="~/scripts/ChartTest.js"></script>
+    <style>
+        canvas {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+           </style>
 </head>
 <body>
-    <div> 
-        Hello World!
+    <div style="">
+        <div id="canvas-holder" style="width:40%; float:left">
+            <canvas id="chart-area" />
+        </div>
+        <div id="data-show" style="display: inline-block;">
+
+        </div>
+    </div>
+    <div style="display: inline-block">
+        <button id="randomizeData">Randomize Data</button>
+        <button id="addDataset">Add Dataset</button>
+        <button id="removeDataset">Remove Dataset</button>
+        <button id="addData">Add Data</button>
+        <button id="removeData">Remove Data</button>
     </div>
 </body>
 </html>
