@@ -118,13 +118,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="images\CommerceFDIC_RevTM.svg" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="scripts\Chart.bundle.min.js" />
     <Content Include="scripts\ChartTest.js" />
     <Content Include="scripts\CSS\bootstrap-theme.min.css" />
     <Content Include="scripts\CSS\bootstrap.min.css" />
+    <Content Include="scripts\CSS\BudgetTool.css" />
+    <Content Include="scripts\CSS\commerce-nav-bar-min.css" />
+    <Content Include="scripts\CSS\fullcalendar.min.css" />
+    <Content Include="scripts\CSS\fullcalendar.print.min.css" />
     <Content Include="scripts\JS\bootstrap.min.js" />
+    <Content Include="scripts\JS\fullcalendar.min.js" />
+    <Content Include="scripts\JS\gcal.min.js" />
+    <Content Include="scripts\JS\jquery-ui.min.js" />
+    <Content Include="scripts\JS\jquery.min.js" />
+    <Content Include="scripts\JS\locale-all.js" />
+    <Content Include="scripts\JS\moment.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +153,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Data\testData.json" />
+    <Content Include="Data\testDataForDonut.json" />
+    <Content Include="Data\testDataForCalendar.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -168,7 +182,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2754</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2754/</IISUrl>
+          <IISUrl>http://localhost:2755/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

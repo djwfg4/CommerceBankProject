@@ -1,0 +1,29 @@
+﻿body { padding-top: 140px; }
+html, body {
+    background: #f9f9f9;
+    margin: 0;
+    font-family: Open Sans,sans-serif;
+}
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.navBanner{
+    background-color:#006f51;
+    padding: 0;
+    margin: 0;
+    height: 99px;
+}
+.content-wrap {
+    margin: 0 auto;
+    max-width: 1200px;
+    clear: both;
+}
+.fc-today {
+    background-color:#cccccc!important;
+    border: 1px solid #000 !important;
+}
+
+/*This gets rid of the extra space in the calendar */
+.fc-basic-view .fc-body .fc-row  { min-height:1em!important;}
