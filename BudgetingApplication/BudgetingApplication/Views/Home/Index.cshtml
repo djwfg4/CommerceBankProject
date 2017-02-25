@@ -8,60 +8,97 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-    <script src="~/scripts/Chart.bundle.min.js"></script>
-    <script src="~/scripts/ChartTest.js"></script>
-    <style>
-        canvas {
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-    }
-           </style>
-    <script src="~/scripts/JS/bootstrap.min.js"></script>
+    <title>Prototype</title>
+
+    <link href="~/scripts/CSS/BudgetTool.css" rel="stylesheet" />
     <link href="~/scripts/CSS/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/scripts/CSS/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/scripts/CSS/commerce-nav-bar-min.css" rel="stylesheet" />
 </head>
 <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navBanner navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Project name</a>
+                <a href="#">
+                    <img id="banner-brand" src="~/images/CommerceFDIC_RevTM.svg" alt="" />
+                </a>
             </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
         </div>
-    </nav>
+        <div id="nav-placeholder">
+            <div id="nav-wrap" data-testid="navWrap">
+                <div class="content-wrap">
+                    <div id="nav-padding">
+                        <div class="nav-item-wrap right logout">
+                            <a class="nav-item link" href="#">
+                                Logout
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap right messages">
+                            <a class="nav-item link" href="#">
+                                <i class="material-icons nav-icon" style="display: inline;"></i>
+                                <span class="num-messages">
+                                    9
+                                </span>
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap right name">
+                            <a class="nav-item link" href="#" data-qaid="nav-name">
+                                USER NAME
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Overview
+                                <span class="active-indicator"></span>
+                            </span>                            
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Budget                                
+                            </span>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Goals
+                            </span>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Transactions
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</nav>
 
     <div class="container">
 
     
-        <div class="col-md-4">
-
+        <div class="col-md-3">
+            <div id='calendar'></div>
         </div>
-        <div class="col-md-4">
-            <canvas id="chart-area" />
-         </div>
-        <div class="col-md-4"></div>
+            <div class="col-md-6">
+                <canvas id="chart-area" />
+            </div>
+    <div class="col-md-2"></div>
 
-
-    </div><!-- /.container -->
+        </div><!-- /.container -->
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
+    <script src="~/scripts/JS/jquery.min.js"></script>
+    <script src="~/scripts/JS/moment.min.js"></script>
+    <script src="~/scripts/JS/jquery-ui.min.js"></script>
+    <script src="~/scripts/Chart.bundle.min.js"></script>
+    <script src="~/scripts/ChartTest.js"></script>
+    <script src="~/scripts/JS/bootstrap.min.js"></script>
+    <script src="~/scripts/JS/fullcalendar.min.js"></script>
+    <script src="~/scripts/JS/gcal.min.js"></script>
+    <script src="~/scripts/JS/locale-all.js"></script>
 
 </body>
 </html>
