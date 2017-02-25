@@ -29,11 +29,11 @@ $(document).ready(function () {
             options: {
                 responsive: true,
                 legend: {
-                    position: 'right',
+                    position: 'left',
                 },
                 title: {
                     display: true,
-                    text: 'Chart.js Doughnut Chart Example'
+                    text: 'Last Month\'s Budget'
                 },
                 animation: {
                     animateScale: true,
@@ -51,8 +51,38 @@ $(document).ready(function () {
                 }
             }
         };
-    ctx = document.getElementById("chart-area").getContext("2d");
+        barGraphConfig = {
+            type: 'horizontalBar',
+            data: json,
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Bar Chart'
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                hover: {
+                    onHover: function (event, array) {
+                        unHighlightDays();
+                        if (array.length != 0) {
+                            category = labelIndex[array[0]._index];
+                            dates = labels[category];
+                            highlightDays(dates, array[0]._view.backgroundColor);
+                        }
+                    }
+                }
+            }
+        };
+        ctx = $("#chart-area")[0];
+        ctx1 = $("#graph-chart")[0];
     window.myDoughnut = new Chart(ctx, config);
+    window.myBar = new Chart(ctx1, barGraphConfig);
     });
 });
 
