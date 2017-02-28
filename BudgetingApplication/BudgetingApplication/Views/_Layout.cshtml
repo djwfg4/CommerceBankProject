@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Prototype</title>
+    <link href="~/scripts/CSS/BudgetTool.css" rel="stylesheet" />
+    <link href="~/scripts/CSS/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/scripts/CSS/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/scripts/CSS/commerce-nav-bar-min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navBanner navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="#">
+                    <img id="banner-brand" src="~/images/CommerceFDIC_RevTM.svg" alt="" />
+                </a>
+            </div>
+        </div>
+        <div id="nav-placeholder">
+            <div id="nav-wrap" data-testid="navWrap">
+                <div class="content-wrap">
+                    <div id="nav-padding">
+                        <div class="nav-item-wrap right logout">
+                            <a class="nav-item link" href="#">
+                                Logout
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap right messages">
+                            <a class="nav-item link" href="#">
+                                <i class="material-icons nav-icon" style="display: inline;"></i>
+                                <span class="num-messages">
+                                    9
+                                </span>
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap right name">
+                            <a class="nav-item link" href="#" data-qaid="nav-name">
+                                USER NAME
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Overview
+                                <span class="active-indicator"></span>
+                            </span>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Budget
+                            </span>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Goals
+                            </span>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <span class="nav-item has-dropdown">
+                                Transactions
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+       @RenderBody() 
+    </div><!-- /.container -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="~/scripts/JS/jquery.min.js"></script>
+    <script src="~/scripts/JS/moment.min.js"></script>
+    <script src="~/scripts/JS/jquery-ui.min.js"></script>
+    <script src="~/scripts/Chart.bundle.min.js"></script>
+    <script src="~/scripts/ChartTest.js"></script>
+    <script src="~/scripts/JS/bootstrap.min.js"></script>
+    <script src="~/scripts/JS/fullcalendar.min.js"></script>
+    <script src="~/scripts/JS/gcal.min.js"></script>
+    <script src="~/scripts/JS/locale-all.js"></script>
+</body>
+</html>
+

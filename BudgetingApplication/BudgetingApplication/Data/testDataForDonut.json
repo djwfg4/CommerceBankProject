@@ -22,13 +22,13 @@
       "label": "Dataset 1"
     }
   ],
-        "labels": [
-          "Burger King",
-          "Chipotle",
-          "Doctor",
-          "Home Depot",
-          "HyVee",
-          "KCPL",
-          "StarBucks"
-        ]
-    }
+  "labels": [
+    "Burger King",
+    "Chipotle",
+    "Doctor",
+    "Home Depot",
+    "HyVee",
+    "KCPL",
+    "StarBucks"
+  ]
+}
