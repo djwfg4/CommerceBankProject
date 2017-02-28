@@ -1,0 +1,403 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="AccountNo" />
+          </Key>
+          <Property Name="AccountNo" Type="int" Nullable="false" />
+          <Property Name="AccountType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ClientID" Type="int" />
+          <Property Name="balance" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryType" Type="varchar" MaxLength="25" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ClientID" />
+          </Key>
+          <Property Name="ClientID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="25" />
+          <Property Name="Password" Type="varchar" MaxLength="25" />
+          <Property Name="TotalPoints" Type="int" />
+        </EntityType>
+        <EntityType Name="Goal">
+          <Key>
+            <PropertyRef Name="GoalID" />
+          </Key>
+          <Property Name="GoalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="PointValue" Type="int" />
+          <Property Name="GoalType" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="GoalAccountNo" Type="int" Nullable="false" />
+          <Property Name="RunningTotal" Type="int" Nullable="false" />
+          <Property Name="EndTotal" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GoalIncludeCategory">
+          <Key>
+            <PropertyRef Name="GoalID" />
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="GoalID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Transactions">
+          <Key>
+            <PropertyRef Name="TransactionNo" />
+          </Key>
+          <Property Name="TransactionNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TransactionType" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="TransactionDate" Type="date" />
+          <Property Name="TransactionAccountNo" Type="int" Nullable="false" />
+          <Property Name="TransactionAmount" Type="int" Nullable="false" />
+          <Property Name="TransactionCategory" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Transacti__Trans__5070F446">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TransactionCategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CategoryID_CategoryID">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="GoalIncludeCategory" Type="Self.GoalIncludeCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="GoalIncludeCategory">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientID_ClientID">
+          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+          <End Role="Account" Type="Self.Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoalAccountNo_AccountNo">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Goal" Type="Self.Goal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="AccountNo" />
+            </Principal>
+            <Dependent Role="Goal">
+              <PropertyRef Name="GoalAccountNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoalID_GoalID">
+          <End Role="Goal" Type="Self.Goal" Multiplicity="1" />
+          <End Role="GoalIncludeCategory" Type="Self.GoalIncludeCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Goal">
+              <PropertyRef Name="GoalID" />
+            </Principal>
+            <Dependent Role="GoalIncludeCategory">
+              <PropertyRef Name="GoalID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransactionAccountNO_AccountNo">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="AccountNo" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TransactionAccountNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DatabaseModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Goal" EntityType="Self.Goal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoalIncludeCategory" EntityType="Self.GoalIncludeCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Transacti__Trans__5070F446" Association="Self.FK__Transacti__Trans__5070F446">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CategoryID_CategoryID" Association="Self.FK_CategoryID_CategoryID">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="GoalIncludeCategory" EntitySet="GoalIncludeCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientID_ClientID" Association="Self.FK_ClientID_ClientID">
+            <End Role="Client" EntitySet="Client" />
+            <End Role="Account" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoalAccountNo_AccountNo" Association="Self.FK_GoalAccountNo_AccountNo">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Goal" EntitySet="Goal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoalID_GoalID" Association="Self.FK_GoalID_GoalID">
+            <End Role="Goal" EntitySet="Goal" />
+            <End Role="GoalIncludeCategory" EntitySet="GoalIncludeCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionAccountNO_AccountNo" Association="Self.FK_TransactionAccountNO_AccountNo">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="AccountNo" />
+          </Key>
+          <Property Name="AccountNo" Type="Int32" Nullable="false" />
+          <Property Name="AccountType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ClientID" Type="Int32" />
+          <Property Name="balance" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_ClientID_ClientID" FromRole="Account" ToRole="Client" />
+          <NavigationProperty Name="Goals" Relationship="Self.FK_GoalAccountNo_AccountNo" FromRole="Account" ToRole="Goal" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_TransactionAccountNO_AccountNo" FromRole="Account" ToRole="Transactions" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryType" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK__Transacti__Trans__5070F446" FromRole="Category" ToRole="Transactions" />
+          <NavigationProperty Name="Goals" Relationship="Self.GoalIncludeCategory" FromRole="Category" ToRole="Goal" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ClientID" />
+          </Key>
+          <Property Name="ClientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="TotalPoints" Type="Int32" />
+          <NavigationProperty Name="Accounts" Relationship="Self.FK_ClientID_ClientID" FromRole="Client" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="Goal">
+          <Key>
+            <PropertyRef Name="GoalID" />
+          </Key>
+          <Property Name="GoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PointValue" Type="Int32" />
+          <Property Name="GoalType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GoalAccountNo" Type="Int32" Nullable="false" />
+          <Property Name="RunningTotal" Type="Int32" Nullable="false" />
+          <Property Name="EndTotal" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_GoalAccountNo_AccountNo" FromRole="Goal" ToRole="Account" />
+          <NavigationProperty Name="Categories" Relationship="Self.GoalIncludeCategory" FromRole="Goal" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="TransactionNo" />
+          </Key>
+          <Property Name="TransactionNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TransactionType" Type="String" MaxLength="2" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TransactionDate" Type="DateTime" Precision="0" />
+          <Property Name="TransactionAccountNo" Type="Int32" Nullable="false" />
+          <Property Name="TransactionAmount" Type="Int32" Nullable="false" />
+          <Property Name="TransactionCategory" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_TransactionAccountNO_AccountNo" FromRole="Transactions" ToRole="Account" />
+          <NavigationProperty Name="Category" Relationship="Self.FK__Transacti__Trans__5070F446" FromRole="Transactions" ToRole="Category" />
+        </EntityType>
+        <Association Name="FK_ClientID_ClientID">
+          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+          <End Role="Account" Type="Self.Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoalAccountNo_AccountNo">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Goal" Type="Self.Goal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="AccountNo" />
+            </Principal>
+            <Dependent Role="Goal">
+              <PropertyRef Name="GoalAccountNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransactionAccountNO_AccountNo">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="AccountNo" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TransactionAccountNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Transacti__Trans__5070F446">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TransactionCategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GoalIncludeCategory">
+          <End Role="Category" Type="Self.Category" Multiplicity="*" />
+          <End Role="Goal" Type="Self.Goal" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="DatabaseContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Clients" EntityType="Self.Client" />
+          <EntitySet Name="Goals" EntityType="Self.Goal" />
+          <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+          <AssociationSet Name="FK_ClientID_ClientID" Association="Self.FK_ClientID_ClientID">
+            <End Role="Client" EntitySet="Clients" />
+            <End Role="Account" EntitySet="Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoalAccountNo_AccountNo" Association="Self.FK_GoalAccountNo_AccountNo">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Goal" EntitySet="Goals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionAccountNO_AccountNo" Association="Self.FK_TransactionAccountNO_AccountNo">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Transacti__Trans__5070F446" Association="Self.FK__Transacti__Trans__5070F446">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="GoalIncludeCategory" Association="Self.GoalIncludeCategory">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Goal" EntitySet="Goals" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DatabaseModelStoreContainer" CdmEntityContainer="DatabaseContext">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="DatabaseModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="AccountType" ColumnName="AccountType" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="balance" ColumnName="balance" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="DatabaseModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="DatabaseModel.Client">
+              <MappingFragment StoreEntitySet="Client">
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="TotalPoints" ColumnName="TotalPoints" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Goals">
+            <EntityTypeMapping TypeName="DatabaseModel.Goal">
+              <MappingFragment StoreEntitySet="Goal">
+                <ScalarProperty Name="GoalID" ColumnName="GoalID" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="PointValue" ColumnName="PointValue" />
+                <ScalarProperty Name="GoalType" ColumnName="GoalType" />
+                <ScalarProperty Name="GoalAccountNo" ColumnName="GoalAccountNo" />
+                <ScalarProperty Name="RunningTotal" ColumnName="RunningTotal" />
+                <ScalarProperty Name="EndTotal" ColumnName="EndTotal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="DatabaseModel.Transaction">
+              <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="TransactionNo" ColumnName="TransactionNo" />
+                <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="TransactionAccountNo" ColumnName="TransactionAccountNo" />
+                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
+                <ScalarProperty Name="TransactionCategory" ColumnName="TransactionCategory" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="GoalIncludeCategory" TypeName="DatabaseModel.GoalIncludeCategory" StoreEntitySet="GoalIncludeCategory">
+            <EndProperty Name="Category">
+              <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+            </EndProperty>
+            <EndProperty Name="Goal">
+              <ScalarProperty Name="GoalID" ColumnName="GoalID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

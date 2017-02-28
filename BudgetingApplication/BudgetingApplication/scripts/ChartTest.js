@@ -1,6 +1,8 @@
-﻿
-$(document).ready(function () {
-
+﻿$(document).ready(function () {
+    var GetDonutAndBarGraphDataURL
+        = '/Home/GetDonutAndBarGraphData';
+    var GetCalendarDataURL
+        = '/Home/GetCalendarData';
     // page is now ready, initialize the calendar...
 
     $('#calendar').fullCalendar({
@@ -10,79 +12,107 @@ $(document).ready(function () {
             right: 'prev,next'
         }
         // put your options and callbacks here
-    })
-    var data1, labels;
-    var labelIndex = ["Burger King",
-        "Chipotle",
-        "Doctor",
-        "Home Depot",
-        "HyVee",
-        "KCPL",
-        "StarBucks"];
-    $.getJSON("../../Data/testDataForCalendar.json", function(json){
-        labels = json;
     });
+
+    
+
+    var data1, labels;
+    //var labelIndex = ["Burger King",
+    //    "Chipotle",
+    //    "Doctor",
+    //    "Home Depot",
+    //    "HyVee",
+    //    "KCPL",
+    //    "StarBucks"];
+
+    // getting data for calendar
+   $.ajax({
+        url: GetCalendarDataURL,
+        dataType: "json",
+        success: function (data) {
+            labels = data;
+        },
+        error: function (response) {
+            alert("Transactions 1 data request failed");
+        }
+   });
+
+    // getting data for donut and bar graph
+   $.ajax({
+       url: GetDonutAndBarGraphDataURL,
+       dataType: "json",
+       success: function (json) {
+           config = {
+               type: 'doughnut',
+               data: json,
+               options: {
+                   responsive: true,
+                   legend: {
+                       position: 'left',
+                   },
+                   title: {
+                       display: true,
+                       text: 'Last Month\'s Budget'
+                   },
+                   animation: {
+                       animateScale: true,
+                       animateRotate: true
+                   },
+                   hover: {
+                       onHover: function (event, array) {
+                           unHighlightDays();
+                           if (array.length != 0) {
+                               category = array[0]._chart.config.data.labels[array[0]._index];
+                               dates = labels[category];
+                               highlightDays(dates, array[0]._view.backgroundColor);
+                           }
+                       }
+                   }
+               }
+           };
+           barGraphConfig = {
+               type: 'horizontalBar',
+               data: json,
+               options: {
+                   responsive: true,
+                   legend: {
+                       display: false
+                   },
+                   title: {
+                       display: true,
+                       text: 'Bar Chart'
+                   },
+                   animation: {
+                       animateScale: true,
+                       animateRotate: true
+                   },
+                   hover: {
+                       onHover: function (event, array) {
+                           unHighlightDays();
+                           if (array.length != 0) {
+                               category = array[0]._chart.config.data.labels[array[0]._index];
+                               dates = labels[category];
+                               highlightDays(dates, array[0]._view.backgroundColor);
+                           }
+                       }
+                   }
+               }
+           };
+           ctx = $("#chart-area")[0];
+           ctx1 = $("#graph-chart")[0];
+           window.myDoughnut = new Chart(ctx, config);
+           window.myBar = new Chart(ctx1, barGraphConfig);
+       },
+       error: function () {
+           alert("Transactions 2 data request failed");
+       }
+   });
+
+  /*  $.getJSON("../../Data/testDataForCalendar.json", function (json) {
+        labels = json;
+    });*/
     $.getJSON("../../Data/testDataForDonut.json", function (json) {
-        config = {
-            type: 'doughnut',
-            data: json,
-            options: {
-                responsive: true,
-                legend: {
-                    position: 'left',
-                },
-                title: {
-                    display: true,
-                    text: 'Last Month\'s Budget'
-                },
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                },
-                hover: {
-                    onHover: function (event, array) {
-                        unHighlightDays();
-                        if(array.length != 0){
-                            category = labelIndex[array[0]._index];
-                            dates = labels[category];
-                            highlightDays(dates, array[0]._view.backgroundColor);
-                        } 
-                    }
-                }
-            }
-        };
-        barGraphConfig = {
-            type: 'horizontalBar',
-            data: json,
-            options: {
-                responsive: true,
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: 'Bar Chart'
-                },
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                },
-                hover: {
-                    onHover: function (event, array) {
-                        unHighlightDays();
-                        if (array.length != 0) {
-                            category = labelIndex[array[0]._index];
-                            dates = labels[category];
-                            highlightDays(dates, array[0]._view.backgroundColor);
-                        }
-                    }
-                }
-            }
-        };
-        ctx = $("#chart-area")[0];
-        ctx1 = $("#graph-chart")[0];
-    window.myDoughnut = new Chart(ctx, config);
-    window.myBar = new Chart(ctx1, barGraphConfig);
+        
     });
 });
 
@@ -106,8 +136,8 @@ var randomScalingFactor = function () {
 
 function highlightDays(dateArray, color) {
     $.each(dateArray, function (index, item) {
-       // formattedDate = moment(item).format('YYYY-MM-DD');
-        $("td[data-date='"+item+"']").addClass("state-highlight");
+        // formattedDate = moment(item).format('YYYY-MM-DD');
+        $("td[data-date='" + item + "']").addClass("state-highlight");
     });
     $(".state-highlight").css("background-color", color);
 }
