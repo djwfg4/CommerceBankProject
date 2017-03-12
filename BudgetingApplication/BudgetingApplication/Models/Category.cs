@@ -17,16 +17,19 @@ namespace BudgetingApplication.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Category()
         {
+            this.Category1 = new HashSet<Category>();
             this.Transactions = new HashSet<Transaction>();
-            this.Goals = new HashSet<Goal>();
         }
     
         public int CategoryID { get; set; }
+        public Nullable<int> ParentCategoryID { get; set; }
         public string CategoryType { get; set; }
+        public System.DateTime DateAdded { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Category> Category1 { get; set; }
+        public virtual Category Category2 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Goal> Goals { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

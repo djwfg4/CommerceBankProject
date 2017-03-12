@@ -12,20 +12,19 @@ namespace BudgetingApplication.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Account
+    public partial class SavingsGoal
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Account()
-        {
-            this.Transactions = new HashSet<Transaction>();
-        }
-    
-        public int AccountNo { get; set; }
+        public int SavingGoalID { get; set; }
         public int ClientID { get; set; }
-        public string AccountType { get; set; }
+        public string GoalDescription { get; set; }
+        public System.DateTime StartDate { get; set; }
+        public System.DateTime EndDate { get; set; }
+        public int SavingsPointValue { get; set; }
+        public decimal SavingsGoalAmount { get; set; }
+        public decimal CurrentGoalAmount { get; set; }
+        public string Recurring { get; set; }
+        public string Status { get; set; }
     
         public virtual Client Client { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
