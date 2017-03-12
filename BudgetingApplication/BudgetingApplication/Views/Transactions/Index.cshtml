@@ -1,0 +1,60 @@
+﻿@model IEnumerable<BudgetingApplication.Models.Transaction>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<style>
+    table {
+        text-align: center;
+    }
+
+    th {
+        text-align: center;
+    }
+</style>
+<h2>Transactions</h2>
+
+
+<table class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th>
+                Date
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Account Type
+            </th>
+            <th>
+                Category
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        string dateAndTimeString = item.TransactionDate.ToString();
+        int firstSpaceIndex = dateAndTimeString.IndexOf(' ');
+        string dateString = dateAndTimeString.Remove(firstSpaceIndex, 12);
+
+        <tr>
+            <td>
+                @dateString
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Account.AccountType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.CategoryType)
+            </td>
+        </tr>
+    }
+
+</table>
+
