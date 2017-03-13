@@ -12,16 +12,13 @@ namespace BudgetingApplication.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Transaction
+    public partial class PointsRecord
     {
-        public int TransactionNo { get; set; }
-        public int TransactionAccountNo { get; set; }
-        public int CategoryID { get; set; }
-        public decimal TransactionAmount { get; set; }
-        public System.DateTime TransactionDate { get; set; }
-        public string Description { get; set; }
+        public int RecordID { get; set; }
+        public int ClientID { get; set; }
+        public int PointsAdded { get; set; }
+        public System.DateTime DateAdded { get; set; }
     
-        public virtual Account Account { get; set; }
-        public virtual Category Category { get; set; }
+        public virtual Client Client { get; set; }
     }
 }

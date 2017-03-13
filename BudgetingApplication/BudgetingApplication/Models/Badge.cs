@@ -12,16 +12,11 @@ namespace BudgetingApplication.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Transaction
+    public partial class Badge
     {
-        public int TransactionNo { get; set; }
-        public int TransactionAccountNo { get; set; }
-        public int CategoryID { get; set; }
-        public decimal TransactionAmount { get; set; }
-        public System.DateTime TransactionDate { get; set; }
+        public int BadgeID { get; set; }
+        public string BadgeName { get; set; }
         public string Description { get; set; }
-    
-        public virtual Account Account { get; set; }
-        public virtual Category Category { get; set; }
+        public string Status { get; set; }
     }
 }
