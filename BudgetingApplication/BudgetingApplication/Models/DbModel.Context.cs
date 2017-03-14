@@ -13,10 +13,10 @@ namespace BudgetingApplication.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class cs451_Database_Entities : DbContext
+    public partial class cs451Entities : DbContext
     {
-        public cs451_Database_Entities()
-            : base("name=cs451_Database_Entities")
+        public cs451Entities()
+            : base("name=cs451Entities")
         {
         }
     
@@ -30,10 +30,12 @@ namespace BudgetingApplication.Models
         public virtual DbSet<BudgetGoal> BudgetGoals { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
-        public virtual DbSet<ClientBadge> ClientBadges { get; set; }
         public virtual DbSet<PointsRecord> PointsRecords { get; set; }
         public virtual DbSet<SavingsGoal> SavingsGoals { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
+        public virtual DbSet<ClientBadge> ClientBadges { get; set; }
+        public virtual DbSet<Categories_VW> Categories_VW { get; set; }
+        public virtual DbSet<BudgetGoals_VW> BudgetGoals_VW { get; set; }
     }
 }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="cs451Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -28,11 +28,12 @@
           </Key>
           <Property Name="BudgetGoalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
-          <Property Name="GoalCategory" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="GoalCategory" Type="int" Nullable="false" />
           <Property Name="BudgetPointValue" Type="int" Nullable="false" />
           <Property Name="BudgetGoalAmount" Type="money" Nullable="false" />
           <Property Name="Month" Type="date" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="Description" Type="text" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -51,9 +52,14 @@
           <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ClientBadge">
           <Key>
             <PropertyRef Name="BadgeID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="Status" />
           </Key>
           <Property Name="BadgeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
@@ -78,7 +84,7 @@
           <Property Name="GoalDescription" Type="text" />
           <Property Name="StartDate" Type="date" Nullable="false" />
           <Property Name="EndDate" Type="date" Nullable="false" />
-          <Property Name="SavingsPointValue" Type="int" Nullable="false" />
+          <Property Name="SavingsPointValue" Type="int" />
           <Property Name="SavingsGoalAmount" Type="money" Nullable="false" />
           <Property Name="CurrentGoalAmount" Type="money" Nullable="false" />
           <Property Name="Recurring" Type="char" MaxLength="10" Nullable="false" />
@@ -94,7 +100,7 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
-        <EntityType Name="Transaction">
+        <EntityType Name="Transactions">
           <Key>
             <PropertyRef Name="TransactionNo" />
           </Key>
@@ -105,6 +111,39 @@
           <Property Name="TransactionDate" Type="date" Nullable="false" />
           <Property Name="Description" Type="text" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'cs451.dbo.BudgetGoals_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BudgetGoals_VW">
+          <Key>
+            <PropertyRef Name="BudgetGoalID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="GoalCategory" />
+            <PropertyRef Name="BudgetPointValue" />
+            <PropertyRef Name="BudgetGoalAmount" />
+            <PropertyRef Name="CategoryType" />
+          </Key>
+          <Property Name="BudgetGoalID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="GoalCategory" Type="int" Nullable="false" />
+          <Property Name="BudgetPointValue" Type="int" Nullable="false" />
+          <Property Name="BudgetGoalAmount" Type="money" Nullable="false" />
+          <Property Name="TransactionAmount" Type="money" />
+          <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
+          <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Categories_VW">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+            <PropertyRef Name="CategoryType" />
+            <PropertyRef Name="DateAdded" />
+          </Key>
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="DateAdded" Type="date" Nullable="false" />
+          <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
+        </EntityType>
         <Association Name="FK_Account_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="Account" Type="Self.Account" Multiplicity="*" />
@@ -114,6 +153,18 @@
             </Principal>
             <Dependent Role="Account">
               <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BudgetGoal_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="BudgetGoal" Type="Self.BudgetGoal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="BudgetGoal">
+              <PropertyRef Name="GoalCategory" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -141,6 +192,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ClientBadge_Badge">
+          <End Role="Badge" Type="Self.Badge" Multiplicity="1" />
+          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Badge">
+              <PropertyRef Name="BadgeID" />
+            </Principal>
+            <Dependent Role="ClientBadge">
+              <PropertyRef Name="BadgeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ClientBadge_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
@@ -165,7 +228,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SavingsGoal_Client">
+        <Association Name="FK_SavingsGoal_ClientID">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="SavingsGoal" Type="Self.SavingsGoal" Multiplicity="*" />
           <ReferentialConstraint>
@@ -179,42 +242,73 @@
         </Association>
         <Association Name="FK_Transaction_Account">
           <End Role="Account" Type="Self.Account" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Account">
               <PropertyRef Name="AccountNo" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="TransactionAccountNo" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Transaction_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Category">
               <PropertyRef Name="CategoryID" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DbModelStoreContainer">
+        <EntityContainer Name="cs451ModelStoreContainer">
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Badge" EntityType="Self.Badge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BudgetGoal" EntityType="Self.BudgetGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PointsRecord" EntityType="Self.PointsRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SavingsGoal" EntityType="Self.SavingsGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ClientBadge].[BadgeID] AS [BadgeID], 
+    [ClientBadge].[ClientID] AS [ClientID], 
+    [ClientBadge].[Timestamp] AS [Timestamp], 
+    [ClientBadge].[Status] AS [Status]
+    FROM [dbo].[ClientBadge] AS [ClientBadge]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="BudgetGoals_VW" EntityType="Self.BudgetGoals_VW" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BudgetGoals_VW].[BudgetGoalID] AS [BudgetGoalID], 
+    [BudgetGoals_VW].[ClientID] AS [ClientID], 
+    [BudgetGoals_VW].[GoalCategory] AS [GoalCategory], 
+    [BudgetGoals_VW].[BudgetPointValue] AS [BudgetPointValue], 
+    [BudgetGoals_VW].[BudgetGoalAmount] AS [BudgetGoalAmount], 
+    [BudgetGoals_VW].[TransactionAmount] AS [TransactionAmount], 
+    [BudgetGoals_VW].[ParentCategory] AS [ParentCategory], 
+    [BudgetGoals_VW].[CategoryType] AS [CategoryType]
+    FROM [dbo].[BudgetGoals_VW] AS [BudgetGoals_VW]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Categories_VW" EntityType="Self.Categories_VW" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Categories_VW].[CategoryID] AS [CategoryID], 
+    [Categories_VW].[CategoryType] AS [CategoryType], 
+    [Categories_VW].[DateAdded] AS [DateAdded], 
+    [Categories_VW].[ParentCategory] AS [ParentCategory]
+    FROM [dbo].[Categories_VW] AS [Categories_VW]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Account_Client" Association="Self.FK_Account_Client">
             <End Role="Client" EntitySet="Client" />
             <End Role="Account" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BudgetGoal_Category" Association="Self.FK_BudgetGoal_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="BudgetGoal" EntitySet="BudgetGoal" />
           </AssociationSet>
           <AssociationSet Name="FK_BudgetGoal_Client" Association="Self.FK_BudgetGoal_Client">
             <End Role="Client" EntitySet="Client" />
@@ -224,6 +318,10 @@
             <End Role="Category" EntitySet="Category" />
             <End Role="Category1" EntitySet="Category" />
           </AssociationSet>
+          <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
+            <End Role="Badge" EntitySet="Badge" />
+            <End Role="ClientBadge" EntitySet="ClientBadge" />
+          </AssociationSet>
           <AssociationSet Name="FK_ClientBadge_Client" Association="Self.FK_ClientBadge_Client">
             <End Role="Client" EntitySet="Client" />
             <End Role="ClientBadge" EntitySet="ClientBadge" />
@@ -232,24 +330,23 @@
             <End Role="Client" EntitySet="Client" />
             <End Role="PointsRecord" EntitySet="PointsRecord" />
           </AssociationSet>
-          <AssociationSet Name="FK_SavingsGoal_Client" Association="Self.FK_SavingsGoal_Client">
+          <AssociationSet Name="FK_SavingsGoal_ClientID" Association="Self.FK_SavingsGoal_ClientID">
             <End Role="Client" EntitySet="Client" />
             <End Role="SavingsGoal" EntitySet="SavingsGoal" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Account" Association="Self.FK_Transaction_Account">
             <End Role="Account" EntitySet="Account" />
-            <End Role="Transaction" EntitySet="Transaction" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Category" Association="Self.FK_Transaction_Category">
             <End Role="Category" EntitySet="Category" />
-            <End Role="Transaction" EntitySet="Transaction" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="DbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="cs451Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -258,7 +355,7 @@
           <Property Name="ClientID" Type="Int32" Nullable="false" />
           <Property Name="AccountType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Client" Relationship="Self.FK_Account_Client" FromRole="Account" ToRole="Client" />
-          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Account" FromRole="Account" ToRole="Transaction" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Account" FromRole="Account" ToRole="Transactions" />
         </EntityType>
         <EntityType Name="Badge">
           <Key>
@@ -268,6 +365,7 @@
           <Property Name="BadgeName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Badge" FromRole="Badge" ToRole="ClientBadge" />
         </EntityType>
         <EntityType Name="BudgetGoal">
           <Key>
@@ -275,11 +373,13 @@
           </Key>
           <Property Name="BudgetGoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="GoalCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
           <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
           <Property Name="BudgetGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Month" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_BudgetGoal_Category" FromRole="BudgetGoal" ToRole="Category" />
           <NavigationProperty Name="Client" Relationship="Self.FK_BudgetGoal_Client" FromRole="BudgetGoal" ToRole="Client" />
         </EntityType>
         <EntityType Name="Category">
@@ -290,9 +390,10 @@
           <Property Name="ParentCategoryID" Type="Int32" />
           <Property Name="CategoryType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="BudgetGoals" Relationship="Self.FK_BudgetGoal_Category" FromRole="Category" ToRole="BudgetGoal" />
           <NavigationProperty Name="Category1" Relationship="Self.FK_Category_Category" FromRole="Category" ToRole="Category1" />
           <NavigationProperty Name="Category2" Relationship="Self.FK_Category_Category" FromRole="Category1" ToRole="Category" />
-          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transaction" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transactions" />
         </EntityType>
         <EntityType Name="Client">
           <Key>
@@ -305,17 +406,7 @@
           <NavigationProperty Name="BudgetGoals" Relationship="Self.FK_BudgetGoal_Client" FromRole="Client" ToRole="BudgetGoal" />
           <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Client" FromRole="Client" ToRole="ClientBadge" />
           <NavigationProperty Name="PointsRecords" Relationship="Self.FK_PointsRecord_Client" FromRole="Client" ToRole="PointsRecord" />
-          <NavigationProperty Name="SavingsGoals" Relationship="Self.FK_SavingsGoal_Client" FromRole="Client" ToRole="SavingsGoal" />
-        </EntityType>
-        <EntityType Name="ClientBadge">
-          <Key>
-            <PropertyRef Name="BadgeID" />
-          </Key>
-          <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
+          <NavigationProperty Name="SavingsGoals" Relationship="Self.FK_SavingsGoal_ClientID" FromRole="Client" ToRole="SavingsGoal" />
         </EntityType>
         <EntityType Name="PointsRecord">
           <Key>
@@ -336,12 +427,12 @@
           <Property Name="GoalDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="SavingsPointValue" Type="Int32" Nullable="false" />
+          <Property Name="SavingsPointValue" Type="Int32" />
           <Property Name="SavingsGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="CurrentGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Recurring" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_SavingsGoal_Client" FromRole="SavingsGoal" ToRole="Client" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_SavingsGoal_ClientID" FromRole="SavingsGoal" ToRole="Client" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -363,8 +454,22 @@
           <Property Name="TransactionAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_Transaction_Account" FromRole="Transaction" ToRole="Account" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_Transaction_Category" FromRole="Transaction" ToRole="Category" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_Transaction_Account" FromRole="Transactions" ToRole="Account" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Transaction_Category" FromRole="Transactions" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="ClientBadge">
+          <Key>
+            <PropertyRef Name="BadgeID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="Status" />
+          </Key>
+          <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Badge" Relationship="Self.FK_ClientBadge_Badge" FromRole="ClientBadge" ToRole="Badge" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
         </EntityType>
         <Association Name="FK_Account_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
@@ -380,13 +485,37 @@
         </Association>
         <Association Name="FK_Transaction_Account">
           <End Role="Account" Type="Self.Account" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Account">
               <PropertyRef Name="AccountNo" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="TransactionAccountNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientBadge_Badge">
+          <End Role="Badge" Type="Self.Badge" Multiplicity="1" />
+          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Badge">
+              <PropertyRef Name="BadgeID" />
+            </Principal>
+            <Dependent Role="ClientBadge">
+              <PropertyRef Name="BadgeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BudgetGoal_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="BudgetGoal" Type="Self.BudgetGoal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="BudgetGoal">
+              <PropertyRef Name="GoalCategory" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -416,12 +545,12 @@
         </Association>
         <Association Name="FK_Transaction_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Category">
               <PropertyRef Name="CategoryID" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
@@ -450,7 +579,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SavingsGoal_Client">
+        <Association Name="FK_SavingsGoal_ClientID">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="SavingsGoal" Type="Self.SavingsGoal" Multiplicity="*" />
           <ReferentialConstraint>
@@ -462,24 +591,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="cs451_Database_Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="cs451Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Accounts" EntityType="Self.Account" />
           <EntitySet Name="Badges" EntityType="Self.Badge" />
           <EntitySet Name="BudgetGoals" EntityType="Self.BudgetGoal" />
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Clients" EntityType="Self.Client" />
-          <EntitySet Name="ClientBadges" EntityType="Self.ClientBadge" />
           <EntitySet Name="PointsRecords" EntityType="Self.PointsRecord" />
           <EntitySet Name="SavingsGoals" EntityType="Self.SavingsGoal" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+          <EntitySet Name="ClientBadges" EntityType="Self.ClientBadge" />
           <AssociationSet Name="FK_Account_Client" Association="Self.FK_Account_Client">
             <End Role="Client" EntitySet="Clients" />
             <End Role="Account" EntitySet="Accounts" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Account" Association="Self.FK_Transaction_Account">
             <End Role="Account" EntitySet="Accounts" />
-            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
+            <End Role="Badge" EntitySet="Badges" />
+            <End Role="ClientBadge" EntitySet="ClientBadges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BudgetGoal_Category" Association="Self.FK_BudgetGoal_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="BudgetGoal" EntitySet="BudgetGoals" />
           </AssociationSet>
           <AssociationSet Name="FK_BudgetGoal_Client" Association="Self.FK_BudgetGoal_Client">
             <End Role="Client" EntitySet="Clients" />
@@ -491,7 +628,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Category" Association="Self.FK_Transaction_Category">
             <End Role="Category" EntitySet="Categories" />
-            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_ClientBadge_Client" Association="Self.FK_ClientBadge_Client">
             <End Role="Client" EntitySet="Clients" />
@@ -501,19 +638,50 @@
             <End Role="Client" EntitySet="Clients" />
             <End Role="PointsRecord" EntitySet="PointsRecords" />
           </AssociationSet>
-          <AssociationSet Name="FK_SavingsGoal_Client" Association="Self.FK_SavingsGoal_Client">
+          <AssociationSet Name="FK_SavingsGoal_ClientID" Association="Self.FK_SavingsGoal_ClientID">
             <End Role="Client" EntitySet="Clients" />
             <End Role="SavingsGoal" EntitySet="SavingsGoals" />
           </AssociationSet>
+          <EntitySet Name="Categories_VW" EntityType="cs451Model.Categories_VW" />
+          <EntitySet Name="BudgetGoals_VW" EntityType="cs451Model.BudgetGoals_VW" />
         </EntityContainer>
+        <EntityType Name="Categories_VW">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+            <PropertyRef Name="CategoryType" />
+            <PropertyRef Name="DateAdded" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="BudgetGoals_VW">
+          <Key>
+            <PropertyRef Name="BudgetGoalID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="GoalCategory" />
+            <PropertyRef Name="BudgetPointValue" />
+            <PropertyRef Name="BudgetGoalAmount" />
+            <PropertyRef Name="CategoryType" />
+          </Key>
+          <Property Name="BudgetGoalID" Type="Int32" Nullable="false" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
+          <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
+          <Property Name="BudgetGoalAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="TransactionAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DbModelStoreContainer" CdmEntityContainer="cs451_Database_Entities">
+        <EntityContainerMapping StorageEntityContainer="cs451ModelStoreContainer" CdmEntityContainer="cs451Entities">
           <EntitySetMapping Name="Accounts">
-            <EntityTypeMapping TypeName="DbModel.Account">
+            <EntityTypeMapping TypeName="cs451Model.Account">
               <MappingFragment StoreEntitySet="Account">
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -522,7 +690,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Badges">
-            <EntityTypeMapping TypeName="DbModel.Badge">
+            <EntityTypeMapping TypeName="cs451Model.Badge">
               <MappingFragment StoreEntitySet="Badge">
                 <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
                 <ScalarProperty Name="BadgeName" ColumnName="BadgeName" />
@@ -532,7 +700,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BudgetGoals">
-            <EntityTypeMapping TypeName="DbModel.BudgetGoal">
+            <EntityTypeMapping TypeName="cs451Model.BudgetGoal">
               <MappingFragment StoreEntitySet="BudgetGoal">
                 <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -541,11 +709,12 @@
                 <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
                 <ScalarProperty Name="Month" ColumnName="Month" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="DbModel.Category">
+            <EntityTypeMapping TypeName="cs451Model.Category">
               <MappingFragment StoreEntitySet="Category">
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ParentCategoryID" ColumnName="ParentCategoryID" />
@@ -555,7 +724,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Clients">
-            <EntityTypeMapping TypeName="DbModel.Client">
+            <EntityTypeMapping TypeName="cs451Model.Client">
               <MappingFragment StoreEntitySet="Client">
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
@@ -563,18 +732,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ClientBadges">
-            <EntityTypeMapping TypeName="DbModel.ClientBadge">
-              <MappingFragment StoreEntitySet="ClientBadge">
-                <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PointsRecords">
-            <EntityTypeMapping TypeName="DbModel.PointsRecord">
+            <EntityTypeMapping TypeName="cs451Model.PointsRecord">
               <MappingFragment StoreEntitySet="PointsRecord">
                 <ScalarProperty Name="RecordID" ColumnName="RecordID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -584,7 +743,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SavingsGoals">
-            <EntityTypeMapping TypeName="DbModel.SavingsGoal">
+            <EntityTypeMapping TypeName="cs451Model.SavingsGoal">
               <MappingFragment StoreEntitySet="SavingsGoal">
                 <ScalarProperty Name="SavingGoalID" ColumnName="SavingGoalID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -600,7 +759,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="DbModel.sysdiagram">
+            <EntityTypeMapping TypeName="cs451Model.sysdiagram">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -611,14 +770,48 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Transactions">
-            <EntityTypeMapping TypeName="DbModel.Transaction">
-              <MappingFragment StoreEntitySet="Transaction">
+            <EntityTypeMapping TypeName="cs451Model.Transaction">
+              <MappingFragment StoreEntitySet="Transactions">
                 <ScalarProperty Name="TransactionNo" ColumnName="TransactionNo" />
                 <ScalarProperty Name="TransactionAccountNo" ColumnName="TransactionAccountNo" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
                 <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientBadges">
+            <EntityTypeMapping TypeName="cs451Model.ClientBadge">
+              <MappingFragment StoreEntitySet="ClientBadge">
+                <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories_VW">
+            <EntityTypeMapping TypeName="cs451Model.Categories_VW">
+              <MappingFragment StoreEntitySet="Categories_VW">
+                <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BudgetGoals_VW">
+            <EntityTypeMapping TypeName="cs451Model.BudgetGoals_VW">
+              <MappingFragment StoreEntitySet="BudgetGoals_VW">
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+                <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />
+                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
+                <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
+                <ScalarProperty Name="BudgetPointValue" ColumnName="BudgetPointValue" />
+                <ScalarProperty Name="GoalCategory" ColumnName="GoalCategory" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

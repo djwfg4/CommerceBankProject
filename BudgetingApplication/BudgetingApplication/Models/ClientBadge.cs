@@ -19,6 +19,7 @@ namespace BudgetingApplication.Models
         public byte[] Timestamp { get; set; }
         public string Status { get; set; }
     
+        public virtual Badge Badge { get; set; }
         public virtual Client Client { get; set; }
     }
 }
