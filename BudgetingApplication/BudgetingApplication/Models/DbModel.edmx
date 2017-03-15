@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -51,9 +51,14 @@
           <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ClientBadge">
           <Key>
             <PropertyRef Name="BadgeID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="Status" />
           </Key>
           <Property Name="BadgeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
@@ -94,7 +99,7 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
-        <EntityType Name="Transaction">
+        <EntityType Name="Transactions">
           <Key>
             <PropertyRef Name="TransactionNo" />
           </Key>
@@ -141,6 +146,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ClientBadge_Badge">
+          <End Role="Badge" Type="Self.Badge" Multiplicity="1" />
+          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Badge">
+              <PropertyRef Name="BadgeID" />
+            </Principal>
+            <Dependent Role="ClientBadge">
+              <PropertyRef Name="BadgeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ClientBadge_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
@@ -179,39 +196,77 @@
         </Association>
         <Association Name="FK_Transaction_Account">
           <End Role="Account" Type="Self.Account" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Account">
               <PropertyRef Name="AccountNo" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="TransactionAccountNo" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Transaction_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Category">
               <PropertyRef Name="CategoryID" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DbModelStoreContainer">
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="DataModelStoreContainer">
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Badge" EntityType="Self.Badge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BudgetGoal" EntityType="Self.BudgetGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PointsRecord" EntityType="Self.PointsRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SavingsGoal" EntityType="Self.SavingsGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ClientBadge].[BadgeID] AS [BadgeID], 
+    [ClientBadge].[ClientID] AS [ClientID], 
+    [ClientBadge].[Timestamp] AS [Timestamp], 
+    [ClientBadge].[Status] AS [Status]
+    FROM [dbo].[ClientBadge] AS [ClientBadge]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Account_Client" Association="Self.FK_Account_Client">
             <End Role="Client" EntitySet="Client" />
             <End Role="Account" EntitySet="Account" />
@@ -223,6 +278,10 @@
           <AssociationSet Name="FK_Category_Category" Association="Self.FK_Category_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="Category1" EntitySet="Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
+            <End Role="Badge" EntitySet="Badge" />
+            <End Role="ClientBadge" EntitySet="ClientBadge" />
           </AssociationSet>
           <AssociationSet Name="FK_ClientBadge_Client" Association="Self.FK_ClientBadge_Client">
             <End Role="Client" EntitySet="Client" />
@@ -238,18 +297,18 @@
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Account" Association="Self.FK_Transaction_Account">
             <End Role="Account" EntitySet="Account" />
-            <End Role="Transaction" EntitySet="Transaction" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Category" Association="Self.FK_Transaction_Category">
             <End Role="Category" EntitySet="Category" />
-            <End Role="Transaction" EntitySet="Transaction" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="DbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -258,7 +317,7 @@
           <Property Name="ClientID" Type="Int32" Nullable="false" />
           <Property Name="AccountType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Client" Relationship="Self.FK_Account_Client" FromRole="Account" ToRole="Client" />
-          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Account" FromRole="Account" ToRole="Transaction" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Account" FromRole="Account" ToRole="Transactions" />
         </EntityType>
         <EntityType Name="Badge">
           <Key>
@@ -268,6 +327,7 @@
           <Property Name="BadgeName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Badge" FromRole="Badge" ToRole="ClientBadge" />
         </EntityType>
         <EntityType Name="BudgetGoal">
           <Key>
@@ -292,7 +352,7 @@
           <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="Category1" Relationship="Self.FK_Category_Category" FromRole="Category" ToRole="Category1" />
           <NavigationProperty Name="Category2" Relationship="Self.FK_Category_Category" FromRole="Category1" ToRole="Category" />
-          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transaction" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transactions" />
         </EntityType>
         <EntityType Name="Client">
           <Key>
@@ -306,16 +366,6 @@
           <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Client" FromRole="Client" ToRole="ClientBadge" />
           <NavigationProperty Name="PointsRecords" Relationship="Self.FK_PointsRecord_Client" FromRole="Client" ToRole="PointsRecord" />
           <NavigationProperty Name="SavingsGoals" Relationship="Self.FK_SavingsGoal_Client" FromRole="Client" ToRole="SavingsGoal" />
-        </EntityType>
-        <EntityType Name="ClientBadge">
-          <Key>
-            <PropertyRef Name="BadgeID" />
-          </Key>
-          <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
         </EntityType>
         <EntityType Name="PointsRecord">
           <Key>
@@ -363,8 +413,22 @@
           <Property Name="TransactionAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_Transaction_Account" FromRole="Transaction" ToRole="Account" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_Transaction_Category" FromRole="Transaction" ToRole="Category" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_Transaction_Account" FromRole="Transactions" ToRole="Account" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Transaction_Category" FromRole="Transactions" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="ClientBadge">
+          <Key>
+            <PropertyRef Name="BadgeID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="Status" />
+          </Key>
+          <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Badge" Relationship="Self.FK_ClientBadge_Badge" FromRole="ClientBadge" ToRole="Badge" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
         </EntityType>
         <Association Name="FK_Account_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
@@ -380,13 +444,25 @@
         </Association>
         <Association Name="FK_Transaction_Account">
           <End Role="Account" Type="Self.Account" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Account">
               <PropertyRef Name="AccountNo" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="TransactionAccountNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientBadge_Badge">
+          <End Role="Badge" Type="Self.Badge" Multiplicity="1" />
+          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Badge">
+              <PropertyRef Name="BadgeID" />
+            </Principal>
+            <Dependent Role="ClientBadge">
+              <PropertyRef Name="BadgeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -416,12 +492,12 @@
         </Association>
         <Association Name="FK_Transaction_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Category">
               <PropertyRef Name="CategoryID" />
             </Principal>
-            <Dependent Role="Transaction">
+            <Dependent Role="Transactions">
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
@@ -462,24 +538,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="cs451_Database_Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="DataContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Accounts" EntityType="Self.Account" />
           <EntitySet Name="Badges" EntityType="Self.Badge" />
           <EntitySet Name="BudgetGoals" EntityType="Self.BudgetGoal" />
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Clients" EntityType="Self.Client" />
-          <EntitySet Name="ClientBadges" EntityType="Self.ClientBadge" />
           <EntitySet Name="PointsRecords" EntityType="Self.PointsRecord" />
           <EntitySet Name="SavingsGoals" EntityType="Self.SavingsGoal" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+          <EntitySet Name="ClientBadges" EntityType="Self.ClientBadge" />
           <AssociationSet Name="FK_Account_Client" Association="Self.FK_Account_Client">
             <End Role="Client" EntitySet="Clients" />
             <End Role="Account" EntitySet="Accounts" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Account" Association="Self.FK_Transaction_Account">
             <End Role="Account" EntitySet="Accounts" />
-            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
+            <End Role="Badge" EntitySet="Badges" />
+            <End Role="ClientBadge" EntitySet="ClientBadges" />
           </AssociationSet>
           <AssociationSet Name="FK_BudgetGoal_Client" Association="Self.FK_BudgetGoal_Client">
             <End Role="Client" EntitySet="Clients" />
@@ -491,7 +571,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Category" Association="Self.FK_Transaction_Category">
             <End Role="Category" EntitySet="Categories" />
-            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_ClientBadge_Client" Association="Self.FK_ClientBadge_Client">
             <End Role="Client" EntitySet="Clients" />
@@ -505,15 +585,56 @@
             <End Role="Client" EntitySet="Clients" />
             <End Role="SavingsGoal" EntitySet="SavingsGoals" />
           </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(DataModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(DataModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DbModelStoreContainer" CdmEntityContainer="cs451_Database_Entities">
+        <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="DataContext">
           <EntitySetMapping Name="Accounts">
-            <EntityTypeMapping TypeName="DbModel.Account">
+            <EntityTypeMapping TypeName="DataModel.Account">
               <MappingFragment StoreEntitySet="Account">
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -522,7 +643,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Badges">
-            <EntityTypeMapping TypeName="DbModel.Badge">
+            <EntityTypeMapping TypeName="DataModel.Badge">
               <MappingFragment StoreEntitySet="Badge">
                 <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
                 <ScalarProperty Name="BadgeName" ColumnName="BadgeName" />
@@ -532,7 +653,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BudgetGoals">
-            <EntityTypeMapping TypeName="DbModel.BudgetGoal">
+            <EntityTypeMapping TypeName="DataModel.BudgetGoal">
               <MappingFragment StoreEntitySet="BudgetGoal">
                 <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -545,7 +666,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="DbModel.Category">
+            <EntityTypeMapping TypeName="DataModel.Category">
               <MappingFragment StoreEntitySet="Category">
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ParentCategoryID" ColumnName="ParentCategoryID" />
@@ -555,7 +676,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Clients">
-            <EntityTypeMapping TypeName="DbModel.Client">
+            <EntityTypeMapping TypeName="DataModel.Client">
               <MappingFragment StoreEntitySet="Client">
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
@@ -563,18 +684,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ClientBadges">
-            <EntityTypeMapping TypeName="DbModel.ClientBadge">
-              <MappingFragment StoreEntitySet="ClientBadge">
-                <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PointsRecords">
-            <EntityTypeMapping TypeName="DbModel.PointsRecord">
+            <EntityTypeMapping TypeName="DataModel.PointsRecord">
               <MappingFragment StoreEntitySet="PointsRecord">
                 <ScalarProperty Name="RecordID" ColumnName="RecordID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -584,7 +695,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SavingsGoals">
-            <EntityTypeMapping TypeName="DbModel.SavingsGoal">
+            <EntityTypeMapping TypeName="DataModel.SavingsGoal">
               <MappingFragment StoreEntitySet="SavingsGoal">
                 <ScalarProperty Name="SavingGoalID" ColumnName="SavingGoalID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -600,7 +711,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="DbModel.sysdiagram">
+            <EntityTypeMapping TypeName="DataModel.sysdiagram">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -611,8 +722,8 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Transactions">
-            <EntityTypeMapping TypeName="DbModel.Transaction">
-              <MappingFragment StoreEntitySet="Transaction">
+            <EntityTypeMapping TypeName="DataModel.Transaction">
+              <MappingFragment StoreEntitySet="Transactions">
                 <ScalarProperty Name="TransactionNo" ColumnName="TransactionNo" />
                 <ScalarProperty Name="TransactionAccountNo" ColumnName="TransactionAccountNo" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
@@ -622,6 +733,40 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ClientBadges">
+            <EntityTypeMapping TypeName="DataModel.ClientBadge">
+              <MappingFragment StoreEntitySet="ClientBadge">
+                <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="DataModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="DataModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="DataModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="DataModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DataModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="DataModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DataModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="DataModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="DataModel.Store.sp_upgraddiagrams" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

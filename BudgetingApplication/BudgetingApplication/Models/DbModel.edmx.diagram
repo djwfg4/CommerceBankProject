@@ -4,25 +4,26 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="32f41bccdff444af8082006a29f93cbd" Name="Diagram1">
-        <EntityTypeShape EntityType="DbModel.Account" Width="1.5" PointX="3" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Badge" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.BudgetGoal" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Category" Width="1.5" PointX="3" PointY="17.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Client" Width="1.5" PointX="0.75" PointY="7.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.ClientBadge" Width="1.5" PointX="3" PointY="7.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.PointsRecord" Width="1.5" PointX="3" PointY="10.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.SavingsGoal" Width="1.5" PointX="3" PointY="13.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.sysdiagram" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Transaction" Width="1.5" PointX="5.25" PointY="1.625" IsExpanded="true" />
-        <AssociationConnector Association="DbModel.FK_Account_Client" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_Transaction_Account" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_BudgetGoal_Client" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_Category_Category" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_Transaction_Category" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_ClientBadge_Client" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_PointsRecord_Client" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_SavingsGoal_Client" ManuallyRouted="false" />
+      <Diagram DiagramId="fece47fd9dfd4e8d9a78d0b1752909b8" Name="Diagram1">
+        <EntityTypeShape EntityType="DataModel.Account" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.Badge" Width="1.5" PointX="3.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.BudgetGoal" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.Category" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.Client" Width="1.5" PointX="0.75" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.PointsRecord" Width="1.5" PointX="3" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.SavingsGoal" Width="1.5" PointX="3" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.sysdiagram" Width="1.5" PointX="7.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.Transaction" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DataModel.ClientBadge" Width="1.5" PointX="6" PointY="8.75" IsExpanded="true" />
+        <AssociationConnector Association="DataModel.FK_Account_Client" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_Transaction_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_ClientBadge_Badge" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_BudgetGoal_Client" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_Category_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_Transaction_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_ClientBadge_Client" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_PointsRecord_Client" ManuallyRouted="false" />
+        <AssociationConnector Association="DataModel.FK_SavingsGoal_Client" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

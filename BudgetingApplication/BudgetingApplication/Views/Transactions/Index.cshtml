@@ -11,16 +11,45 @@
 
     th {
         text-align: center;
+        color: white;
+        background-color: #4CAF50;
+    }
+    #search-container {
+        margin: 10px;
     }
 </style>
+
+<script>
+    var searchText = document.getElementById('search-box').value;
+</script>
+
 <h2>Transactions</h2>
 
+<div class="container" id="search-container">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                    <input id ="search-box" type="text" class="form-control input-lg" placeholder="Search description, account type, category" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-lg" type="button">
+                            Search
+                        </button>                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <table class="table table-bordered table-hover table-responsive">
     <thead>
         <tr>
             <th>
                 Date
+            </th>
+            <th>
+                Description
             </th>
             <th>
                 Amount
@@ -45,8 +74,20 @@
                 @dateString
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TransactionAmount)
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
+            @if (item.TransactionAmount > 0)
+            {
+                <td style="color:green">
+                    $@Html.DisplayFor(modelItem => item.TransactionAmount)
+                </td>
+            }
+            else
+            {
+                <td>
+                    $@Html.DisplayFor(modelItem => item.TransactionAmount)
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.Account.AccountType)
             </td>

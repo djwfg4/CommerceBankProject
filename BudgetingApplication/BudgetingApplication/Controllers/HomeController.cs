@@ -10,7 +10,7 @@ namespace BudgetingApplication.Controllers
 {
     public class HomeController : Controller
     {
-        DatabaseContext dbContext = new DatabaseContext();
+        DataContext dbContext = new DataContext();
 
         // GET: Home
         public ActionResult Index()
@@ -39,7 +39,7 @@ namespace BudgetingApplication.Controllers
                 trans => trans.TransactionAccountNo == 2 ||
                 trans.TransactionAccountNo == 3).ToArray();*/
             var query = from cat in dbContext.Categories
-                        join trans in dbContext.Transactions on cat.CategoryID equals trans.TransactionCategory
+                        join trans in dbContext.Transactions on cat.CategoryID equals trans.CategoryID
                         select new { CategoryType = cat.CategoryType, TransactionDate = trans.TransactionDate };
             bool found;
             foreach (var trans in query)
@@ -86,7 +86,7 @@ namespace BudgetingApplication.Controllers
 
 
             var query = from cat in dbContext.Categories
-                        join trans in dbContext.Transactions on cat.CategoryID equals trans.TransactionCategory
+                        join trans in dbContext.Transactions on cat.CategoryID equals trans.CategoryID
                         select new { CategoryType = cat.CategoryType, TransactionAmount = trans.TransactionAmount};
 
             List<object> labels = new List<object>();

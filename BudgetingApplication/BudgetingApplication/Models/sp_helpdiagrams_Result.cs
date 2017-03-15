@@ -10,16 +10,13 @@
 namespace BudgetingApplication.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ClientBadge
+    public partial class sp_helpdiagrams_Result
     {
-        public int BadgeID { get; set; }
-        public int ClientID { get; set; }
-        public byte[] Timestamp { get; set; }
-        public string Status { get; set; }
-    
-        public virtual Badge Badge { get; set; }
-        public virtual Client Client { get; set; }
+        public string Database { get; set; }
+        public string Name { get; set; }
+        public int ID { get; set; }
+        public string Owner { get; set; }
+        public int OwnerID { get; set; }
     }
 }
