@@ -5,6 +5,7 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="DataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -28,11 +29,12 @@
           </Key>
           <Property Name="BudgetGoalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
-          <Property Name="GoalCategory" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="GoalCategory" Type="int" Nullable="false" />
           <Property Name="BudgetPointValue" Type="int" Nullable="false" />
           <Property Name="BudgetGoalAmount" Type="money" Nullable="false" />
           <Property Name="Month" Type="date" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="Description" Type="text" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -83,7 +85,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           <Property Name="GoalDescription" Type="text" />
           <Property Name="StartDate" Type="date" Nullable="false" />
           <Property Name="EndDate" Type="date" Nullable="false" />
-          <Property Name="SavingsPointValue" Type="int" Nullable="false" />
+          <Property Name="SavingsPointValue" Type="int" />
           <Property Name="SavingsGoalAmount" Type="money" Nullable="false" />
           <Property Name="CurrentGoalAmount" Type="money" Nullable="false" />
           <Property Name="Recurring" Type="char" MaxLength="10" Nullable="false" />
@@ -110,6 +112,39 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           <Property Name="TransactionDate" Type="date" Nullable="false" />
           <Property Name="Description" Type="text" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'cs451.dbo.BudgetGoals_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BudgetGoals_VW">
+          <Key>
+            <PropertyRef Name="BudgetGoalID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="GoalCategory" />
+            <PropertyRef Name="BudgetPointValue" />
+            <PropertyRef Name="BudgetGoalAmount" />
+            <PropertyRef Name="CategoryType" />
+          </Key>
+          <Property Name="BudgetGoalID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="GoalCategory" Type="int" Nullable="false" />
+          <Property Name="BudgetPointValue" Type="int" Nullable="false" />
+          <Property Name="BudgetGoalAmount" Type="money" Nullable="false" />
+          <Property Name="TransactionAmount" Type="money" />
+          <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
+          <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Categories_VW">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+            <PropertyRef Name="CategoryType" />
+            <PropertyRef Name="DateAdded" />
+          </Key>
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="DateAdded" Type="date" Nullable="false" />
+          <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
+        </EntityType>
         <Association Name="FK_Account_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="Account" Type="Self.Account" Multiplicity="*" />
@@ -119,6 +154,18 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             </Principal>
             <Dependent Role="Account">
               <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BudgetGoal_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="BudgetGoal" Type="Self.BudgetGoal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="BudgetGoal">
+              <PropertyRef Name="GoalCategory" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -182,7 +229,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SavingsGoal_Client">
+        <Association Name="FK_SavingsGoal_ClientID">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="SavingsGoal" Type="Self.SavingsGoal" Multiplicity="*" />
           <ReferentialConstraint>
@@ -250,6 +297,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="DataModelStoreContainer">
+
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Badge" EntityType="Self.Badge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BudgetGoal" EntityType="Self.BudgetGoal" Schema="dbo" store:Type="Tables" />
@@ -271,6 +319,10 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             <End Role="Client" EntitySet="Client" />
             <End Role="Account" EntitySet="Account" />
           </AssociationSet>
+          <AssociationSet Name="FK_BudgetGoal_Category" Association="Self.FK_BudgetGoal_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="BudgetGoal" EntitySet="BudgetGoal" />
+          </AssociationSet>
           <AssociationSet Name="FK_BudgetGoal_Client" Association="Self.FK_BudgetGoal_Client">
             <End Role="Client" EntitySet="Client" />
             <End Role="BudgetGoal" EntitySet="BudgetGoal" />
@@ -291,7 +343,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             <End Role="Client" EntitySet="Client" />
             <End Role="PointsRecord" EntitySet="PointsRecord" />
           </AssociationSet>
-          <AssociationSet Name="FK_SavingsGoal_Client" Association="Self.FK_SavingsGoal_Client">
+          <AssociationSet Name="FK_SavingsGoal_ClientID" Association="Self.FK_SavingsGoal_ClientID">
             <End Role="Client" EntitySet="Client" />
             <End Role="SavingsGoal" EntitySet="SavingsGoal" />
           </AssociationSet>
@@ -304,11 +356,11 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -335,11 +387,13 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </Key>
           <Property Name="BudgetGoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="GoalCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
           <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
           <Property Name="BudgetGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Month" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_BudgetGoal_Category" FromRole="BudgetGoal" ToRole="Category" />
           <NavigationProperty Name="Client" Relationship="Self.FK_BudgetGoal_Client" FromRole="BudgetGoal" ToRole="Client" />
         </EntityType>
         <EntityType Name="Category">
@@ -350,6 +404,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           <Property Name="ParentCategoryID" Type="Int32" />
           <Property Name="CategoryType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="BudgetGoals" Relationship="Self.FK_BudgetGoal_Category" FromRole="Category" ToRole="BudgetGoal" />
           <NavigationProperty Name="Category1" Relationship="Self.FK_Category_Category" FromRole="Category" ToRole="Category1" />
           <NavigationProperty Name="Category2" Relationship="Self.FK_Category_Category" FromRole="Category1" ToRole="Category" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transactions" />
@@ -366,6 +421,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Client" FromRole="Client" ToRole="ClientBadge" />
           <NavigationProperty Name="PointsRecords" Relationship="Self.FK_PointsRecord_Client" FromRole="Client" ToRole="PointsRecord" />
           <NavigationProperty Name="SavingsGoals" Relationship="Self.FK_SavingsGoal_Client" FromRole="Client" ToRole="SavingsGoal" />
+
         </EntityType>
         <EntityType Name="PointsRecord">
           <Key>
@@ -386,12 +442,12 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           <Property Name="GoalDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="SavingsPointValue" Type="Int32" Nullable="false" />
+          <Property Name="SavingsPointValue" Type="Int32" />
           <Property Name="SavingsGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="CurrentGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Recurring" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_SavingsGoal_Client" FromRole="SavingsGoal" ToRole="Client" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_SavingsGoal_ClientID" FromRole="SavingsGoal" ToRole="Client" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -526,7 +582,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SavingsGoal_Client">
+        <Association Name="FK_SavingsGoal_ClientID">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="SavingsGoal" Type="Self.SavingsGoal" Multiplicity="*" />
           <ReferentialConstraint>
@@ -539,6 +595,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DataContext" annotation:LazyLoadingEnabled="true">
+
           <EntitySet Name="Accounts" EntityType="Self.Account" />
           <EntitySet Name="Badges" EntityType="Self.Badge" />
           <EntitySet Name="BudgetGoals" EntityType="Self.BudgetGoal" />
@@ -581,7 +638,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
             <End Role="Client" EntitySet="Clients" />
             <End Role="PointsRecord" EntitySet="PointsRecords" />
           </AssociationSet>
-          <AssociationSet Name="FK_SavingsGoal_Client" Association="Self.FK_SavingsGoal_Client">
+          <AssociationSet Name="FK_SavingsGoal_ClientID" Association="Self.FK_SavingsGoal_ClientID">
             <End Role="Client" EntitySet="Clients" />
             <End Role="SavingsGoal" EntitySet="SavingsGoals" />
           </AssociationSet>
@@ -627,6 +684,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -635,6 +693,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
         <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="DataContext">
           <EntitySetMapping Name="Accounts">
             <EntityTypeMapping TypeName="DataModel.Account">
+
               <MappingFragment StoreEntitySet="Account">
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -644,6 +703,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="Badges">
             <EntityTypeMapping TypeName="DataModel.Badge">
+
               <MappingFragment StoreEntitySet="Badge">
                 <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
                 <ScalarProperty Name="BadgeName" ColumnName="BadgeName" />
@@ -654,6 +714,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="BudgetGoals">
             <EntityTypeMapping TypeName="DataModel.BudgetGoal">
+
               <MappingFragment StoreEntitySet="BudgetGoal">
                 <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -662,11 +723,13 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
                 <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
                 <ScalarProperty Name="Month" ColumnName="Month" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="DataModel.Category">
+
               <MappingFragment StoreEntitySet="Category">
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ParentCategoryID" ColumnName="ParentCategoryID" />
@@ -677,6 +740,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="Clients">
             <EntityTypeMapping TypeName="DataModel.Client">
+
               <MappingFragment StoreEntitySet="Client">
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
@@ -686,6 +750,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="PointsRecords">
             <EntityTypeMapping TypeName="DataModel.PointsRecord">
+
               <MappingFragment StoreEntitySet="PointsRecord">
                 <ScalarProperty Name="RecordID" ColumnName="RecordID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -696,6 +761,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="SavingsGoals">
             <EntityTypeMapping TypeName="DataModel.SavingsGoal">
+
               <MappingFragment StoreEntitySet="SavingsGoal">
                 <ScalarProperty Name="SavingGoalID" ColumnName="SavingGoalID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -712,6 +778,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="DataModel.sysdiagram">
+
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -723,6 +790,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="DataModel.Transaction">
+
               <MappingFragment StoreEntitySet="Transactions">
                 <ScalarProperty Name="TransactionNo" ColumnName="TransactionNo" />
                 <ScalarProperty Name="TransactionAccountNo" ColumnName="TransactionAccountNo" />
@@ -735,6 +803,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </EntitySetMapping>
           <EntitySetMapping Name="ClientBadges">
             <EntityTypeMapping TypeName="DataModel.ClientBadge">
+
               <MappingFragment StoreEntitySet="ClientBadge">
                 <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
@@ -767,6 +836,7 @@ warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="DataModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="DataModel.Store.sp_upgraddiagrams" />
+
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

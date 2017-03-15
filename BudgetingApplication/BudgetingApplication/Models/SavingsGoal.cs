@@ -19,7 +19,7 @@ namespace BudgetingApplication.Models
         public string GoalDescription { get; set; }
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
-        public int SavingsPointValue { get; set; }
+        public Nullable<int> SavingsPointValue { get; set; }
         public decimal SavingsGoalAmount { get; set; }
         public decimal CurrentGoalAmount { get; set; }
         public string Recurring { get; set; }

@@ -24,6 +24,7 @@
         <AssociationConnector Association="DataModel.FK_ClientBadge_Client" ManuallyRouted="false" />
         <AssociationConnector Association="DataModel.FK_PointsRecord_Client" ManuallyRouted="false" />
         <AssociationConnector Association="DataModel.FK_SavingsGoal_Client" ManuallyRouted="false" />
+
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

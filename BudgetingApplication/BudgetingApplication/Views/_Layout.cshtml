@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Prototype</title>
     <link href="~/scripts/CSS/BudgetTool.css" rel="stylesheet" />
     <link href="~/scripts/CSS/bootstrap.min.css" rel="stylesheet" />
     <link href="~/scripts/CSS/fullcalendar.min.css" rel="stylesheet" />
@@ -72,9 +71,15 @@
             </div>
         </div>
     </nav>
-    <div class="container">
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar custom-sidebar">
+            @RenderSection("sidebar", false)
+</div>
+        <div class="col-md-9">
        @RenderBody() 
-    </div><!-- /.container -->
+        </div>
+    </div></div><!-- /.container -->
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

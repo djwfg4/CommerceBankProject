@@ -27,3 +27,43 @@ canvas {
 
 /*This gets rid of the extra space in the calendar */
 .fc-basic-view .fc-body .fc-row  { min-height:1em!important;}
+
+
+/*sidebar properties*/
+.custom-sidebar {
+    min-height:100vh!important;
+    margin-top:-10px;
+    padding-top:10px;
+    background-color: rgba(228, 228, 228, 1);
+    box-shadow: 10px 0px 5px -2px rgba(0, 0, 0, 0.2), 5px 0px 5px -2px rgba(0, 0, 0, 0.19);
+}
+
+
+/*budget goals */
+.bGoalContainer{
+    min-width: 500px;
+    max-width: 500px;
+}
+.bGoalUpper{
+    width: 100%;
+    display: inline-block;
+}
+.bGoalLabel{
+    float: left;
+}
+
+.bGoalAmount{
+    float: right;
+}
+.bGoalProgress{
+    display: block;
+}
+.bGoal-parent-label{
+
+}
+.bGoal-child-label{
+    font-weight: bold;
+}
+.bGoal-amount{
+    font-weight: bold;
+}

@@ -12,18 +12,15 @@ namespace BudgetingApplication.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class BudgetGoal
+    public partial class BudgetGoals_VW
     {
         public int BudgetGoalID { get; set; }
         public int ClientID { get; set; }
         public int GoalCategory { get; set; }
         public int BudgetPointValue { get; set; }
         public decimal BudgetGoalAmount { get; set; }
-        public System.DateTime Month { get; set; }
-        public string Status { get; set; }
-        public string Description { get; set; }
-    
-        public virtual Category Category { get; set; }
-        public virtual Client Client { get; set; }
+        public Nullable<decimal> TransactionAmount { get; set; }
+        public string ParentCategory { get; set; }
+        public string CategoryType { get; set; }
     }
 }

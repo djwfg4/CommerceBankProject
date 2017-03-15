@@ -37,12 +37,12 @@ namespace BudgetingApplication.Controllers
                 = new Dictionary<string, List<string>>();
             /*var transactions = dbContext.Transactions.Where(
                 trans => trans.TransactionAccountNo == 2 ||
-                trans.TransactionAccountNo == 3).ToArray();*/
+                trans.TransactionAccountNo == 3).ToArray();
             var query = from cat in dbContext.Categories
-                        join trans in dbContext.Transactions on cat.CategoryID equals trans.CategoryID
-                        select new { CategoryType = cat.CategoryType, TransactionDate = trans.TransactionDate };
+                        join trans in dbContext.Transactions on cat.CategoryID equals trans.TransactionCategory
+                        select new { CategoryType = cat.CategoryType, TransactionDate = trans.TransactionDate };*/
             bool found;
-            foreach (var trans in query)
+            /*foreach (var trans in query)
             {
                 found = false;
                 if (transactionDictionary.Count == 0)
@@ -70,7 +70,7 @@ namespace BudgetingApplication.Controllers
                         transactionDictionary[trans.CategoryType].Add(date1);
                     }
                 }
-            }
+            }*/
             Debug.WriteLine("Categories: " + transactionDictionary.Keys.ToString());
             Debug.WriteLine("Categories: " + transactionDictionary.Values.ToString());
             return new JsonResult { Data = transactionDictionary, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
@@ -84,11 +84,11 @@ namespace BudgetingApplication.Controllers
             Dictionary<string, List<object>> dict2 = new Dictionary<string, List<object>>();
 
 
-
+            /*
             var query = from cat in dbContext.Categories
                         join trans in dbContext.Transactions on cat.CategoryID equals trans.CategoryID
                         select new { CategoryType = cat.CategoryType, TransactionAmount = trans.TransactionAmount};
-
+                        */
             List<object> labels = new List<object>();
             List<object> nums = new List<object>();
             string[] colors = { "rgb(255, 99, 132)",
@@ -99,12 +99,13 @@ namespace BudgetingApplication.Controllers
         "rgb(153, 102, 255)",
         "rgb(231,233,237)" };
 
-            foreach (var trans in query)
+           /* foreach (var trans in query)
             {
                 labels.Add(trans.CategoryType);
                 nums.Add(trans.TransactionAmount);
             }
-            dict["datasets"] = new List<object>();
+            */
+           dict["datasets"] = new List<object>();
 
             dict2["backgroundColor"] = colors.ToList<object>();
             dict2["data"] = nums;

@@ -1,0 +1,50 @@
+﻿@model IEnumerable<BudgetingApplication.Models.BudgetGoals_VW>
+    @{
+    ViewBag.Title = "index";
+    Layout = "~/Views/_Layout.cshtml";
+    }
+
+    <h2>My Budget</h2>
+
+    @foreach (var item in Model)
+    {
+    double TransactionAmount = (double)item.TransactionAmount;
+    TransactionAmount = (TransactionAmount*-1);
+    double BudgetGoalAmount = (double)item.BudgetGoalAmount;
+    int percentage = (int) ((TransactionAmount / BudgetGoalAmount) * 100);
+    string parentLabel = item.ParentCategory == null ? "" : item.ParentCategory + ":";
+
+    string progressType = "progress-bar-success";
+    if(percentage > 70 && percentage < 90){
+        progressType = "progress-bar-warning";
+    } else if (percentage >= 90){
+        progressType = "progress-bar-danger";
+    } 
+
+    <div class="bGoalContainer">
+        <div class="bGoalUpper">
+            <div class="bGoalLabel">
+                <span class="bGoal-parent-label">@parentLabel</span>
+                <span class="bGoal-child-label">@Html.DisplayFor(modelItem => item.CategoryType)</span>
+            </div>
+            <div class="bGoalAmount">
+                <span class="bGoal-amount">$@TransactionAmount</span>
+                <span> <em> of </em> </span>
+                <span class="bGoal-amount"> $@BudgetGoalAmount</span>
+            </div>
+        </div>
+        <div class="bGoalProgress">
+            <div class="progress">
+                <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
+                    <span class="sr-only">@percentage% Complete </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    }
+
+    @if (Model == null)
+    {
+    <span>aefwefwefwefwef</span>
+    }
