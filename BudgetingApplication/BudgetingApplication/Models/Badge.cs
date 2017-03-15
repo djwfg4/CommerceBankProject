@@ -12,20 +12,20 @@ namespace BudgetingApplication.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Account
+    public partial class Badge
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Account()
+        public Badge()
         {
-            this.Transactions = new HashSet<Transaction>();
+            this.ClientBadges = new HashSet<ClientBadge>();
         }
     
-        public int AccountNo { get; set; }
-        public int ClientID { get; set; }
-        public string AccountType { get; set; }
+        public int BadgeID { get; set; }
+        public string BadgeName { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
     
-        public virtual Client Client { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<ClientBadge> ClientBadges { get; set; }
     }
 }

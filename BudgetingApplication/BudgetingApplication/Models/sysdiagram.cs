@@ -12,16 +12,12 @@ namespace BudgetingApplication.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Transaction
+    public partial class sysdiagram
     {
-        public int TransactionNo { get; set; }
-        public int TransactionAccountNo { get; set; }
-        public int CategoryID { get; set; }
-        public decimal TransactionAmount { get; set; }
-        public System.DateTime TransactionDate { get; set; }
-        public string Description { get; set; }
-    
-        public virtual Account Account { get; set; }
-        public virtual Category Category { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

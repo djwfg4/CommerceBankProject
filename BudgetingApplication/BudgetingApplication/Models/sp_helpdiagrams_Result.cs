@@ -10,18 +10,13 @@
 namespace BudgetingApplication.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Transaction
+    public partial class sp_helpdiagrams_Result
     {
-        public int TransactionNo { get; set; }
-        public int TransactionAccountNo { get; set; }
-        public int CategoryID { get; set; }
-        public decimal TransactionAmount { get; set; }
-        public System.DateTime TransactionDate { get; set; }
-        public string Description { get; set; }
-    
-        public virtual Account Account { get; set; }
-        public virtual Category Category { get; set; }
+        public string Database { get; set; }
+        public string Name { get; set; }
+        public int ID { get; set; }
+        public string Owner { get; set; }
+        public int OwnerID { get; set; }
     }
 }

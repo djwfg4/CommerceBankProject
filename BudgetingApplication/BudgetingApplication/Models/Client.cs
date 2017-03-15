@@ -18,14 +18,25 @@ namespace BudgetingApplication.Models
         public Client()
         {
             this.Accounts = new HashSet<Account>();
+            this.BudgetGoals = new HashSet<BudgetGoal>();
+            this.ClientBadges = new HashSet<ClientBadge>();
+            this.PointsRecords = new HashSet<PointsRecord>();
+            this.SavingsGoals = new HashSet<SavingsGoal>();
         }
     
         public int ClientID { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public Nullable<int> TotalPoints { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Account> Accounts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BudgetGoal> BudgetGoals { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ClientBadge> ClientBadges { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PointsRecord> PointsRecords { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SavingsGoal> SavingsGoals { get; set; }
     }
 }
