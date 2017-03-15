@@ -18,9 +18,9 @@ namespace BudgetingApplication.Models
         public Client()
         {
             this.Accounts = new HashSet<Account>();
+            this.PointsRecords = new HashSet<PointsRecord>();
             this.BudgetGoals = new HashSet<BudgetGoal>();
             this.ClientBadges = new HashSet<ClientBadge>();
-            this.PointsRecords = new HashSet<PointsRecord>();
             this.SavingsGoals = new HashSet<SavingsGoal>();
         }
     
@@ -31,11 +31,11 @@ namespace BudgetingApplication.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Account> Accounts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PointsRecord> PointsRecords { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BudgetGoal> BudgetGoals { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ClientBadge> ClientBadges { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PointsRecord> PointsRecords { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SavingsGoal> SavingsGoals { get; set; }
     }

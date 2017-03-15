@@ -5,7 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="DataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="AccountNo" />
@@ -53,14 +52,9 @@
           <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'cs451.dbo.ClientBadge' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ClientBadge">
           <Key>
             <PropertyRef Name="BadgeID" />
-            <PropertyRef Name="ClientID" />
-            <PropertyRef Name="Timestamp" />
-            <PropertyRef Name="Status" />
           </Key>
           <Property Name="BadgeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
@@ -195,7 +189,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
         </Association>
         <Association Name="FK_ClientBadge_Badge">
           <End Role="Badge" Type="Self.Badge" Multiplicity="1" />
-          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
+          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Badge">
               <PropertyRef Name="BadgeID" />
@@ -297,23 +291,35 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="DataModelStoreContainer">
-
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Badge" EntityType="Self.Badge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BudgetGoal" EntityType="Self.BudgetGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PointsRecord" EntityType="Self.PointsRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SavingsGoal" EntityType="Self.SavingsGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" store:Type="Tables" store:Schema="dbo">
+          <EntitySet Name="BudgetGoals_VW" EntityType="Self.BudgetGoals_VW" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ClientBadge].[BadgeID] AS [BadgeID], 
-    [ClientBadge].[ClientID] AS [ClientID], 
-    [ClientBadge].[Timestamp] AS [Timestamp], 
-    [ClientBadge].[Status] AS [Status]
-    FROM [dbo].[ClientBadge] AS [ClientBadge]</DefiningQuery>
+    [BudgetGoals_VW].[BudgetGoalID] AS [BudgetGoalID], 
+    [BudgetGoals_VW].[ClientID] AS [ClientID], 
+    [BudgetGoals_VW].[GoalCategory] AS [GoalCategory], 
+    [BudgetGoals_VW].[BudgetPointValue] AS [BudgetPointValue], 
+    [BudgetGoals_VW].[BudgetGoalAmount] AS [BudgetGoalAmount], 
+    [BudgetGoals_VW].[TransactionAmount] AS [TransactionAmount], 
+    [BudgetGoals_VW].[ParentCategory] AS [ParentCategory], 
+    [BudgetGoals_VW].[CategoryType] AS [CategoryType]
+    FROM [dbo].[BudgetGoals_VW] AS [BudgetGoals_VW]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Categories_VW" EntityType="Self.Categories_VW" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Categories_VW].[CategoryID] AS [CategoryID], 
+    [Categories_VW].[CategoryType] AS [CategoryType], 
+    [Categories_VW].[DateAdded] AS [DateAdded], 
+    [Categories_VW].[ParentCategory] AS [ParentCategory]
+    FROM [dbo].[Categories_VW] AS [Categories_VW]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_Account_Client" Association="Self.FK_Account_Client">
             <End Role="Client" EntitySet="Client" />
@@ -379,35 +385,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="BadgeName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Badge" FromRole="Badge" ToRole="ClientBadge" />
-        </EntityType>
-        <EntityType Name="BudgetGoal">
-          <Key>
-            <PropertyRef Name="BudgetGoalID" />
-          </Key>
-          <Property Name="BudgetGoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
-          <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
-          <Property Name="BudgetGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="Month" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_BudgetGoal_Category" FromRole="BudgetGoal" ToRole="Category" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_BudgetGoal_Client" FromRole="BudgetGoal" ToRole="Client" />
-        </EntityType>
-        <EntityType Name="Category">
-          <Key>
-            <PropertyRef Name="CategoryID" />
-          </Key>
-          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ParentCategoryID" Type="Int32" />
-          <Property Name="CategoryType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="BudgetGoals" Relationship="Self.FK_BudgetGoal_Category" FromRole="Category" ToRole="BudgetGoal" />
-          <NavigationProperty Name="Category1" Relationship="Self.FK_Category_Category" FromRole="Category" ToRole="Category1" />
-          <NavigationProperty Name="Category2" Relationship="Self.FK_Category_Category" FromRole="Category1" ToRole="Category" />
-          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transactions" />
+          <NavigationProperty Name="ClientBadge" Relationship="DataModel.FK_ClientBadge_Badge" FromRole="Badge" ToRole="ClientBadge" />
         </EntityType>
         <EntityType Name="Client">
           <Key>
@@ -417,10 +395,10 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Accounts" Relationship="Self.FK_Account_Client" FromRole="Client" ToRole="Account" />
-          <NavigationProperty Name="BudgetGoals" Relationship="Self.FK_BudgetGoal_Client" FromRole="Client" ToRole="BudgetGoal" />
-          <NavigationProperty Name="ClientBadges" Relationship="Self.FK_ClientBadge_Client" FromRole="Client" ToRole="ClientBadge" />
           <NavigationProperty Name="PointsRecords" Relationship="Self.FK_PointsRecord_Client" FromRole="Client" ToRole="PointsRecord" />
-          <NavigationProperty Name="SavingsGoals" Relationship="Self.FK_SavingsGoal_Client" FromRole="Client" ToRole="SavingsGoal" />
+          <NavigationProperty Name="BudgetGoals" Relationship="DataModel.FK_BudgetGoal_Client" FromRole="Client" ToRole="BudgetGoal" />
+          <NavigationProperty Name="ClientBadges" Relationship="DataModel.FK_ClientBadge_Client" FromRole="Client" ToRole="ClientBadge" />
+          <NavigationProperty Name="SavingsGoals" Relationship="DataModel.FK_SavingsGoal_ClientID" FromRole="Client" ToRole="SavingsGoal" />
 
         </EntityType>
         <EntityType Name="PointsRecord">
@@ -432,22 +410,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="PointsAdded" Type="Int32" Nullable="false" />
           <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="Client" Relationship="Self.FK_PointsRecord_Client" FromRole="PointsRecord" ToRole="Client" />
-        </EntityType>
-        <EntityType Name="SavingsGoal">
-          <Key>
-            <PropertyRef Name="SavingGoalID" />
-          </Key>
-          <Property Name="SavingGoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="GoalDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="SavingsPointValue" Type="Int32" />
-          <Property Name="SavingsGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="CurrentGoalAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="Recurring" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_SavingsGoal_ClientID" FromRole="SavingsGoal" ToRole="Client" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -470,21 +432,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Account" Relationship="Self.FK_Transaction_Account" FromRole="Transactions" ToRole="Account" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_Transaction_Category" FromRole="Transactions" ToRole="Category" />
-        </EntityType>
-        <EntityType Name="ClientBadge">
-          <Key>
-            <PropertyRef Name="BadgeID" />
-            <PropertyRef Name="ClientID" />
-            <PropertyRef Name="Timestamp" />
-            <PropertyRef Name="Status" />
-          </Key>
-          <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Badge" Relationship="Self.FK_ClientBadge_Badge" FromRole="ClientBadge" ToRole="Badge" />
-          <NavigationProperty Name="Client" Relationship="Self.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
+          <NavigationProperty Name="Category" Relationship="DataModel.FK_Transaction_Category" FromRole="Transaction" ToRole="Category" />
         </EntityType>
         <Association Name="FK_Account_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
@@ -510,66 +458,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ClientBadge_Badge">
-          <End Role="Badge" Type="Self.Badge" Multiplicity="1" />
-          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Badge">
-              <PropertyRef Name="BadgeID" />
-            </Principal>
-            <Dependent Role="ClientBadge">
-              <PropertyRef Name="BadgeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BudgetGoal_Client">
-          <End Role="Client" Type="Self.Client" Multiplicity="1" />
-          <End Role="BudgetGoal" Type="Self.BudgetGoal" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Client">
-              <PropertyRef Name="ClientID" />
-            </Principal>
-            <Dependent Role="BudgetGoal">
-              <PropertyRef Name="ClientID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Category_Category">
-          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
-          <End Role="Category1" Type="Self.Category" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="CategoryID" />
-            </Principal>
-            <Dependent Role="Category1">
-              <PropertyRef Name="ParentCategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Transaction_Category">
-          <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="CategoryID" />
-            </Principal>
-            <Dependent Role="Transactions">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ClientBadge_Client">
-          <End Role="Client" Type="Self.Client" Multiplicity="1" />
-          <End Role="ClientBadge" Type="Self.ClientBadge" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Client">
-              <PropertyRef Name="ClientID" />
-            </Principal>
-            <Dependent Role="ClientBadge">
-              <PropertyRef Name="ClientID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PointsRecord_Client">
           <End Role="Client" Type="Self.Client" Multiplicity="1" />
           <End Role="PointsRecord" Type="Self.PointsRecord" Multiplicity="*" />
@@ -582,30 +470,14 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SavingsGoal_ClientID">
-          <End Role="Client" Type="Self.Client" Multiplicity="1" />
-          <End Role="SavingsGoal" Type="Self.SavingsGoal" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Client">
-              <PropertyRef Name="ClientID" />
-            </Principal>
-            <Dependent Role="SavingsGoal">
-              <PropertyRef Name="ClientID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="DataContext" annotation:LazyLoadingEnabled="true">
 
           <EntitySet Name="Accounts" EntityType="Self.Account" />
           <EntitySet Name="Badges" EntityType="Self.Badge" />
-          <EntitySet Name="BudgetGoals" EntityType="Self.BudgetGoal" />
-          <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Clients" EntityType="Self.Client" />
           <EntitySet Name="PointsRecords" EntityType="Self.PointsRecord" />
-          <EntitySet Name="SavingsGoals" EntityType="Self.SavingsGoal" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Transactions" EntityType="Self.Transaction" />
-          <EntitySet Name="ClientBadges" EntityType="Self.ClientBadge" />
           <AssociationSet Name="FK_Account_Client" Association="Self.FK_Account_Client">
             <End Role="Client" EntitySet="Clients" />
             <End Role="Account" EntitySet="Accounts" />
@@ -614,33 +486,9 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             <End Role="Account" EntitySet="Accounts" />
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
-          <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
-            <End Role="Badge" EntitySet="Badges" />
-            <End Role="ClientBadge" EntitySet="ClientBadges" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BudgetGoal_Client" Association="Self.FK_BudgetGoal_Client">
-            <End Role="Client" EntitySet="Clients" />
-            <End Role="BudgetGoal" EntitySet="BudgetGoals" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Category_Category" Association="Self.FK_Category_Category">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="Category1" EntitySet="Categories" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Transaction_Category" Association="Self.FK_Transaction_Category">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="Transactions" EntitySet="Transactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ClientBadge_Client" Association="Self.FK_ClientBadge_Client">
-            <End Role="Client" EntitySet="Clients" />
-            <End Role="ClientBadge" EntitySet="ClientBadges" />
-          </AssociationSet>
           <AssociationSet Name="FK_PointsRecord_Client" Association="Self.FK_PointsRecord_Client">
             <End Role="Client" EntitySet="Clients" />
             <End Role="PointsRecord" EntitySet="PointsRecords" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SavingsGoal_ClientID" Association="Self.FK_SavingsGoal_ClientID">
-            <End Role="Client" EntitySet="Clients" />
-            <End Role="SavingsGoal" EntitySet="SavingsGoals" />
           </AssociationSet>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -672,6 +520,40 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="BudgetGoals" EntityType="DataModel.BudgetGoal" />
+          <EntitySet Name="Categories" EntityType="DataModel.Category" />
+          <EntitySet Name="BudgetGoals_VW" EntityType="DataModel.BudgetGoals_VW" />
+          <EntitySet Name="Categories_VW" EntityType="DataModel.Categories_VW" />
+          <AssociationSet Name="FK_BudgetGoal_Category" Association="DataModel.FK_BudgetGoal_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="BudgetGoal" EntitySet="BudgetGoals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BudgetGoal_Client" Association="DataModel.FK_BudgetGoal_Client">
+            <End Role="Client" EntitySet="Clients" />
+            <End Role="BudgetGoal" EntitySet="BudgetGoals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Category_Category" Association="DataModel.FK_Category_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Category1" EntitySet="Categories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Category" Association="DataModel.FK_Transaction_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <EntitySet Name="ClientBadges" EntityType="DataModel.ClientBadge" />
+          <AssociationSet Name="FK_ClientBadge_Badge" Association="DataModel.FK_ClientBadge_Badge">
+            <End Role="Badge" EntitySet="Badges" />
+            <End Role="ClientBadge" EntitySet="ClientBadges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientBadge_Client" Association="DataModel.FK_ClientBadge_Client">
+            <End Role="Client" EntitySet="Clients" />
+            <End Role="ClientBadge" EntitySet="ClientBadges" />
+          </AssociationSet>
+          <EntitySet Name="SavingsGoals" EntityType="DataModel.SavingsGoal" />
+          <AssociationSet Name="FK_SavingsGoal_ClientID" Association="DataModel.FK_SavingsGoal_ClientID">
+            <End Role="Client" EntitySet="Clients" />
+            <End Role="SavingsGoal" EntitySet="SavingsGoals" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -684,6 +566,174 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+        <EntityType Name="BudgetGoal">
+          <Key>
+            <PropertyRef Name="BudgetGoalID" />
+          </Key>
+          <Property Name="BudgetGoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
+          <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
+          <Property Name="BudgetGoalAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Month" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Category" Relationship="DataModel.FK_BudgetGoal_Category" FromRole="BudgetGoal" ToRole="Category" />
+          <NavigationProperty Name="Client" Relationship="DataModel.FK_BudgetGoal_Client" FromRole="BudgetGoal" ToRole="Client" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParentCategoryID" Type="Int32" />
+          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="BudgetGoals" Relationship="DataModel.FK_BudgetGoal_Category" FromRole="Category" ToRole="BudgetGoal" />
+          <NavigationProperty Name="Category1" Relationship="DataModel.FK_Category_Category" FromRole="Category" ToRole="Category1" />
+          <NavigationProperty Name="Category2" Relationship="DataModel.FK_Category_Category" FromRole="Category1" ToRole="Category" />
+          <NavigationProperty Name="Transactions" Relationship="DataModel.FK_Transaction_Category" FromRole="Category" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="BudgetGoals_VW">
+          <Key>
+            <PropertyRef Name="BudgetGoalID" />
+            <PropertyRef Name="ClientID" />
+            <PropertyRef Name="GoalCategory" />
+            <PropertyRef Name="BudgetPointValue" />
+            <PropertyRef Name="BudgetGoalAmount" />
+            <PropertyRef Name="CategoryType" />
+          </Key>
+          <Property Name="BudgetGoalID" Type="Int32" Nullable="false" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
+          <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
+          <Property Name="BudgetGoalAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="TransactionAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Categories_VW">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+            <PropertyRef Name="CategoryType" />
+            <PropertyRef Name="DateAdded" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_BudgetGoal_Category">
+          <End Type="DataModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="DataModel.BudgetGoal" Role="BudgetGoal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="BudgetGoal">
+              <PropertyRef Name="GoalCategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BudgetGoal_Client">
+          <End Type="DataModel.Client" Role="Client" Multiplicity="1" />
+          <End Type="DataModel.BudgetGoal" Role="BudgetGoal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="BudgetGoal">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Category_Category">
+          <End Type="DataModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="DataModel.Category" Role="Category1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Category1">
+              <PropertyRef Name="ParentCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Category">
+          <End Type="DataModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="DataModel.Transaction" Role="Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ClientBadge">
+          <Key>
+            <PropertyRef Name="BadgeID" />
+          </Key>
+          <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Badge" Relationship="DataModel.FK_ClientBadge_Badge" FromRole="ClientBadge" ToRole="Badge" />
+          <NavigationProperty Name="Client" Relationship="DataModel.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
+        </EntityType>
+        <Association Name="FK_ClientBadge_Badge">
+          <End Type="DataModel.Badge" Role="Badge" Multiplicity="1" />
+          <End Type="DataModel.ClientBadge" Role="ClientBadge" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Badge">
+              <PropertyRef Name="BadgeID" />
+            </Principal>
+            <Dependent Role="ClientBadge">
+              <PropertyRef Name="BadgeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientBadge_Client">
+          <End Type="DataModel.Client" Role="Client" Multiplicity="1" />
+          <End Type="DataModel.ClientBadge" Role="ClientBadge" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="ClientBadge">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SavingsGoal">
+          <Key>
+            <PropertyRef Name="SavingGoalID" />
+          </Key>
+          <Property Name="SavingGoalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="GoalDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="SavingsPointValue" Type="Int32" />
+          <Property Name="SavingsGoalAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="CurrentGoalAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Recurring" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Client" Relationship="DataModel.FK_SavingsGoal_ClientID" FromRole="SavingsGoal" ToRole="Client" />
+        </EntityType>
+        <Association Name="FK_SavingsGoal_ClientID">
+          <End Type="DataModel.Client" Role="Client" Multiplicity="1" />
+          <End Type="DataModel.SavingsGoal" Role="SavingsGoal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="SavingsGoal">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
 
       </Schema>
     </edmx:ConceptualModels>
@@ -712,32 +762,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BudgetGoals">
-            <EntityTypeMapping TypeName="DataModel.BudgetGoal">
-
-              <MappingFragment StoreEntitySet="BudgetGoal">
-                <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
-                <ScalarProperty Name="GoalCategory" ColumnName="GoalCategory" />
-                <ScalarProperty Name="BudgetPointValue" ColumnName="BudgetPointValue" />
-                <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
-                <ScalarProperty Name="Month" ColumnName="Month" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="DataModel.Category">
-
-              <MappingFragment StoreEntitySet="Category">
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="ParentCategoryID" ColumnName="ParentCategoryID" />
-                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
-                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Clients">
             <EntityTypeMapping TypeName="DataModel.Client">
 
@@ -756,23 +780,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="PointsAdded" ColumnName="PointsAdded" />
                 <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SavingsGoals">
-            <EntityTypeMapping TypeName="DataModel.SavingsGoal">
-
-              <MappingFragment StoreEntitySet="SavingsGoal">
-                <ScalarProperty Name="SavingGoalID" ColumnName="SavingGoalID" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
-                <ScalarProperty Name="GoalDescription" ColumnName="GoalDescription" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="SavingsPointValue" ColumnName="SavingsPointValue" />
-                <ScalarProperty Name="SavingsGoalAmount" ColumnName="SavingsGoalAmount" />
-                <ScalarProperty Name="CurrentGoalAmount" ColumnName="CurrentGoalAmount" />
-                <ScalarProperty Name="Recurring" ColumnName="Recurring" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -801,17 +808,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ClientBadges">
-            <EntityTypeMapping TypeName="DataModel.ClientBadge">
-
-              <MappingFragment StoreEntitySet="ClientBadge">
-                <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="DataModel.Store.sp_alterdiagram" />
           <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="DataModel.Store.sp_creatediagram" />
           <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="DataModel.Store.sp_dropdiagram" />
@@ -836,6 +832,80 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="DataModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="DataModel.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="BudgetGoals">
+            <EntityTypeMapping TypeName="DataModel.BudgetGoal">
+              <MappingFragment StoreEntitySet="BudgetGoal">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+                <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
+                <ScalarProperty Name="BudgetPointValue" ColumnName="BudgetPointValue" />
+                <ScalarProperty Name="GoalCategory" ColumnName="GoalCategory" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="DataModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+                <ScalarProperty Name="ParentCategoryID" ColumnName="ParentCategoryID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BudgetGoals_VW">
+            <EntityTypeMapping TypeName="DataModel.BudgetGoals_VW">
+              <MappingFragment StoreEntitySet="BudgetGoals_VW">
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+                <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />
+                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
+                <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
+                <ScalarProperty Name="BudgetPointValue" ColumnName="BudgetPointValue" />
+                <ScalarProperty Name="GoalCategory" ColumnName="GoalCategory" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories_VW">
+            <EntityTypeMapping TypeName="DataModel.Categories_VW">
+              <MappingFragment StoreEntitySet="Categories_VW">
+                <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientBadges">
+            <EntityTypeMapping TypeName="DataModel.ClientBadge">
+              <MappingFragment StoreEntitySet="ClientBadge">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="BadgeID" ColumnName="BadgeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SavingsGoals">
+            <EntityTypeMapping TypeName="DataModel.SavingsGoal">
+              <MappingFragment StoreEntitySet="SavingsGoal">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Recurring" ColumnName="Recurring" />
+                <ScalarProperty Name="CurrentGoalAmount" ColumnName="CurrentGoalAmount" />
+                <ScalarProperty Name="SavingsGoalAmount" ColumnName="SavingsGoalAmount" />
+                <ScalarProperty Name="SavingsPointValue" ColumnName="SavingsPointValue" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="GoalDescription" ColumnName="GoalDescription" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="SavingGoalID" ColumnName="SavingGoalID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
 
         </EntityContainerMapping>
       </Mapping>

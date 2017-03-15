@@ -9,7 +9,7 @@ namespace BudgetingApplication.Controllers
 {
     public class BudgetGoalsController : Controller
     {
-        private cs451Entities dbContext = new cs451Entities();
+        private DataContext dbContext = new DataContext();
         // GET: BudgetGoals
         public ActionResult Index()
         {

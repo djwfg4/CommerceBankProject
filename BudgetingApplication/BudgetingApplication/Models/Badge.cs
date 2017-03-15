@@ -14,18 +14,11 @@ namespace BudgetingApplication.Models
     
     public partial class Badge
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Badge()
-        {
-            this.ClientBadges = new HashSet<ClientBadge>();
-        }
-    
         public int BadgeID { get; set; }
         public string BadgeName { get; set; }
         public string Description { get; set; }
         public string Status { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ClientBadge> ClientBadges { get; set; }
+        public virtual ClientBadge ClientBadge { get; set; }
     }
 }

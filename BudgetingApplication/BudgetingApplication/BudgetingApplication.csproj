@@ -202,7 +202,6 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BudgetGoalsController.cs" />
-    <Compile Include="Controllers\DBClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\DBTransactionsController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
