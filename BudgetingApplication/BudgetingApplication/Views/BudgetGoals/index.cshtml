@@ -6,45 +6,90 @@
 
     <h2>My Budget</h2>
 
-    @foreach (var item in Model)
-    {
-    double TransactionAmount = (double)item.TransactionAmount;
-    TransactionAmount = (TransactionAmount*-1);
-    double BudgetGoalAmount = (double)item.BudgetGoalAmount;
-    int percentage = (int) ((TransactionAmount / BudgetGoalAmount) * 100);
-    string parentLabel = item.ParentCategory == null ? "" : item.ParentCategory + ":";
 
-    string progressType = "progress-bar-success";
-    if(percentage > 70 && percentage < 90){
-        progressType = "progress-bar-warning";
-    } else if (percentage >= 90){
-        progressType = "progress-bar-danger";
-    } 
-
-    <div class="bGoalContainer">
-        <div class="bGoalUpper">
-            <div class="bGoalLabel">
-                <span class="bGoal-parent-label">@parentLabel</span>
-                <span class="bGoal-child-label">@Html.DisplayFor(modelItem => item.CategoryType)</span>
+    <div id="budgetGoalContainter">
+    @{
+        double totalBudgeted = Model.Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
+        double totalSpent = Model.Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
+        int percentage = (int)((totalSpent / totalBudgeted) * 100);
+        string progressType = "progress-bar-success";
+        if (percentage > 70 && percentage < 90)
+        {
+            progressType = "progress-bar-warning";
+        }
+        else if (percentage >= 90)
+        {
+            progressType = "progress-bar-danger";
+        }
+        <div class="bGoalContainer">
+            <div class="bGoalUpper">
+                <div class="bGoalLabel">
+                    <span class="bGoal-parent-label"></span>
+                    <span class="bGoal-child-label">Total Income</span>
+                </div>
+                <div class="bGoalAmount">
+                    <span class="bGoal-amount">$@totalSpent</span>
+                    <span> <em> of </em> </span>
+                    <span class="bGoal-amount"> $@totalBudgeted</span>
+                </div>
             </div>
-            <div class="bGoalAmount">
-                <span class="bGoal-amount">$@TransactionAmount</span>
-                <span> <em> of </em> </span>
-                <span class="bGoal-amount"> $@BudgetGoalAmount</span>
-            </div>
-        </div>
-        <div class="bGoalProgress">
-            <div class="progress">
-                <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
-                    <span class="sr-only">@percentage% Complete </span>
+            <div class="bGoalProgress">
+                <div class="progress">
+                    <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
+                        <span class="sr-only">@percentage% Complete </span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+        <hr />
     }
-
-    @if (Model == null)
+    @foreach (var item in Model)
     {
-    <span>aefwefwefwefwef</span>
+        if(item.Status.Trim() != "A")
+        {
+            continue;
+        }
+        double TransactionAmount = (double)item.TransactionAmount;
+        TransactionAmount = (TransactionAmount * -1);
+        double BudgetGoalAmount = (double)item.BudgetGoalAmount;
+        percentage = (int)((TransactionAmount / BudgetGoalAmount) * 100);
+        string parentLabel = item.ParentCategory == null ? "" : item.ParentCategory + ":";
+
+        progressType = "progress-bar-success";
+        if (percentage > 70 && percentage < 90)
+        {
+            progressType = "progress-bar-warning";
+        }
+        else if (percentage >= 90)
+        {
+            progressType = "progress-bar-danger";
+        }
+
+        <div class="bGoalContainer">
+            <div class="bGoalUpper">
+                <div class="bGoalLabel">
+                    <span class="bGoal-parent-label">@parentLabel</span>
+                    <span class="bGoal-child-label">@Html.DisplayFor(modelItem => item.CategoryType)</span>
+                </div>
+                <div class="bGoalAmount">
+                    <span class="bGoal-amount">$@TransactionAmount</span>
+                    <span> <em> of </em> </span>
+                    <span class="bGoal-amount"> $@BudgetGoalAmount</span>
+                </div>
+            </div>
+            <div class="bGoalProgress">
+                <div class="progress">
+                    <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
+                        <span class="sr-only">@percentage% Complete </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     }
+        <div class="bGoalContainer">
+                <a type="button" class="btn btn-success" style="float:right;"
+                    href="~/BudgetGoals/InsertBudgetGoal">+ Add New Category </a>
+           
+        </div>
+</div>

@@ -17,7 +17,6 @@
         <AssociationConnector Association="DataModel.FK_SavingsGoal_Client" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DataModel.BudgetGoal" Width="1.5" PointX="3" PointY="6.875" />
         <EntityTypeShape EntityType="DataModel.Category" Width="1.5" PointX="7.375" PointY="5.125" />
-        <EntityTypeShape EntityType="DataModel.BudgetGoals_VW" Width="2" PointX="5.375" PointY="0.875" />
         <EntityTypeShape EntityType="DataModel.Categories_VW" Width="1.5" PointX="0.5" PointY="0.875" />
         <AssociationConnector Association="DataModel.FK_BudgetGoal_Category" />
         <AssociationConnector Association="DataModel.FK_BudgetGoal_Client" />
@@ -28,6 +27,7 @@
         <AssociationConnector Association="DataModel.FK_ClientBadge_Client" />
         <EntityTypeShape EntityType="DataModel.SavingsGoal" Width="1.5" PointX="3" PointY="0.75" />
         <AssociationConnector Association="DataModel.FK_SavingsGoal_ClientID" />
+        <EntityTypeShape EntityType="DataModel.BudgetGoals_VW" Width="1.5" PointX="5.375" PointY="8.75" />
 
       </Diagram>
     </edmx:Diagrams>

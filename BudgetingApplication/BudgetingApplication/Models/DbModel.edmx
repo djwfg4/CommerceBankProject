@@ -110,21 +110,18 @@
 warning 6002: The table/view 'cs451.dbo.BudgetGoals_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BudgetGoals_VW">
           <Key>
-            <PropertyRef Name="BudgetGoalID" />
-            <PropertyRef Name="ClientID" />
-            <PropertyRef Name="GoalCategory" />
-            <PropertyRef Name="BudgetPointValue" />
-            <PropertyRef Name="BudgetGoalAmount" />
+            <PropertyRef Name="TransactionAmount" />
             <PropertyRef Name="CategoryType" />
           </Key>
-          <Property Name="BudgetGoalID" Type="int" Nullable="false" />
-          <Property Name="ClientID" Type="int" Nullable="false" />
-          <Property Name="GoalCategory" Type="int" Nullable="false" />
-          <Property Name="BudgetPointValue" Type="int" Nullable="false" />
-          <Property Name="BudgetGoalAmount" Type="money" Nullable="false" />
-          <Property Name="TransactionAmount" Type="money" />
+          <Property Name="BudgetGoalID" Type="int" />
+          <Property Name="ClientID" Type="int" />
+          <Property Name="GoalCategory" Type="int" />
+          <Property Name="BudgetPointValue" Type="int" />
+          <Property Name="BudgetGoalAmount" Type="money" />
+          <Property Name="TransactionAmount" Type="money" Nullable="false" />
           <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
           <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="10" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -310,7 +307,8 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
     [BudgetGoals_VW].[BudgetGoalAmount] AS [BudgetGoalAmount], 
     [BudgetGoals_VW].[TransactionAmount] AS [TransactionAmount], 
     [BudgetGoals_VW].[ParentCategory] AS [ParentCategory], 
-    [BudgetGoals_VW].[CategoryType] AS [CategoryType]
+    [BudgetGoals_VW].[CategoryType] AS [CategoryType], 
+    [BudgetGoals_VW].[Status] AS [Status]
     FROM [dbo].[BudgetGoals_VW] AS [BudgetGoals_VW]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Categories_VW" EntityType="Self.Categories_VW" store:Type="Views" store:Schema="dbo">
@@ -522,7 +520,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <FunctionImport Name="sp_upgraddiagrams" />
           <EntitySet Name="BudgetGoals" EntityType="DataModel.BudgetGoal" />
           <EntitySet Name="Categories" EntityType="DataModel.Category" />
-          <EntitySet Name="BudgetGoals_VW" EntityType="DataModel.BudgetGoals_VW" />
           <EntitySet Name="Categories_VW" EntityType="DataModel.Categories_VW" />
           <AssociationSet Name="FK_BudgetGoal_Category" Association="DataModel.FK_BudgetGoal_Category">
             <End Role="Category" EntitySet="Categories" />
@@ -554,6 +551,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             <End Role="Client" EntitySet="Clients" />
             <End Role="SavingsGoal" EntitySet="SavingsGoals" />
           </AssociationSet>
+          <EntitySet Name="BudgetGoals_VW" EntityType="DataModel.BudgetGoals_VW" />
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -593,24 +591,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <NavigationProperty Name="Category1" Relationship="DataModel.FK_Category_Category" FromRole="Category" ToRole="Category1" />
           <NavigationProperty Name="Category2" Relationship="DataModel.FK_Category_Category" FromRole="Category1" ToRole="Category" />
           <NavigationProperty Name="Transactions" Relationship="DataModel.FK_Transaction_Category" FromRole="Category" ToRole="Transaction" />
-        </EntityType>
-        <EntityType Name="BudgetGoals_VW">
-          <Key>
-            <PropertyRef Name="BudgetGoalID" />
-            <PropertyRef Name="ClientID" />
-            <PropertyRef Name="GoalCategory" />
-            <PropertyRef Name="BudgetPointValue" />
-            <PropertyRef Name="BudgetGoalAmount" />
-            <PropertyRef Name="CategoryType" />
-          </Key>
-          <Property Name="BudgetGoalID" Type="Int32" Nullable="false" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
-          <Property Name="GoalCategory" Type="Int32" Nullable="false" />
-          <Property Name="BudgetPointValue" Type="Int32" Nullable="false" />
-          <Property Name="BudgetGoalAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="TransactionAmount" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Categories_VW">
           <Key>
@@ -734,6 +714,21 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="BudgetGoals_VW">
+          <Key>
+            <PropertyRef Name="TransactionAmount" />
+            <PropertyRef Name="CategoryType" />
+          </Key>
+          <Property Name="BudgetGoalID" Type="Int32" />
+          <Property Name="ClientID" Type="Int32" />
+          <Property Name="GoalCategory" Type="Int32" />
+          <Property Name="BudgetPointValue" Type="Int32" />
+          <Property Name="BudgetGoalAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="TransactionAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+        </EntityType>
 
       </Schema>
     </edmx:ConceptualModels>
@@ -856,20 +851,6 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BudgetGoals_VW">
-            <EntityTypeMapping TypeName="DataModel.BudgetGoals_VW">
-              <MappingFragment StoreEntitySet="BudgetGoals_VW">
-                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
-                <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />
-                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
-                <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
-                <ScalarProperty Name="BudgetPointValue" ColumnName="BudgetPointValue" />
-                <ScalarProperty Name="GoalCategory" ColumnName="GoalCategory" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
-                <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Categories_VW">
             <EntityTypeMapping TypeName="DataModel.Categories_VW">
               <MappingFragment StoreEntitySet="Categories_VW">
@@ -903,6 +884,21 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
                 <ScalarProperty Name="GoalDescription" ColumnName="GoalDescription" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="SavingGoalID" ColumnName="SavingGoalID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BudgetGoals_VW">
+            <EntityTypeMapping TypeName="DataModel.BudgetGoals_VW">
+              <MappingFragment StoreEntitySet="BudgetGoals_VW">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
+                <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />
+                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
+                <ScalarProperty Name="BudgetGoalAmount" ColumnName="BudgetGoalAmount" />
+                <ScalarProperty Name="BudgetPointValue" ColumnName="BudgetPointValue" />
+                <ScalarProperty Name="GoalCategory" ColumnName="GoalCategory" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="BudgetGoalID" ColumnName="BudgetGoalID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

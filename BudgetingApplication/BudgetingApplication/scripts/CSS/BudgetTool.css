@@ -40,7 +40,9 @@ canvas {
 
 
 /*budget goals */
+#budgetGoalContainer,
 .bGoalContainer{
+    margin: 0 auto;
     min-width: 500px;
     max-width: 500px;
 }
