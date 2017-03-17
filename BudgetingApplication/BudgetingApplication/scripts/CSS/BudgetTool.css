@@ -69,3 +69,15 @@ canvas {
 .bGoal-amount{
     font-weight: bold;
 }
+.bGoalIncome-sidebar{
+    margin-top:50px;
+    text-align:center;
+    border:1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom:20px;
+}
+.bGoalIncome-sidebar-amount{
+}
+.bGoalIncome-sidebar-amount span{
+    font-weight:bold;
+    color:green;
+}

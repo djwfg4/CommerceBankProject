@@ -4,13 +4,13 @@
     Layout = "~/Views/_Layout.cshtml";
     }
 
-    <h2>My Budget</h2>
 
-
+<center><h2>My Budget</h2></center>
     <div id="budgetGoalContainter">
+        
     @{
-        double totalBudgeted = Model.Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
-        double totalSpent = Model.Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
+        double totalBudgeted = Model.Select(x=>x).Where(x=>x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
+        double totalSpent = Model.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
         int percentage = (int)((totalSpent / totalBudgeted) * 100);
         string progressType = "progress-bar-success";
         if (percentage > 70 && percentage < 90)
@@ -25,7 +25,7 @@
             <div class="bGoalUpper">
                 <div class="bGoalLabel">
                     <span class="bGoal-parent-label"></span>
-                    <span class="bGoal-child-label">Total Income</span>
+                    <span class="bGoal-child-label">Total Budget</span>
                 </div>
                 <div class="bGoalAmount">
                     <span class="bGoal-amount">$@totalSpent</span>
@@ -45,10 +45,15 @@
     }
     @foreach (var item in Model)
     {
-        if(item.Status.Trim() != "A")
-        {
+        double incomeGoal, incomeAmount;
+        if(item.GoalCategory == 1)
+        { //skip displaying the deposit goal
+            incomeAmount = Convert.ToDouble(item.TransactionAmount);
+            incomeGoal = Convert.ToDouble(item.BudgetGoalAmount);
+            ViewData.Add("Parent", this);
             continue;
         }
+
         double TransactionAmount = (double)item.TransactionAmount;
         TransactionAmount = (TransactionAmount * -1);
         double BudgetGoalAmount = (double)item.BudgetGoalAmount;
@@ -93,3 +98,22 @@
            
         </div>
 </div>
+
+
+@section sidebar{ 
+    
+
+@foreach (var item in Model)
+{
+    if (item.GoalCategory == 1)
+    {
+        <div class="bGoalIncome-sidebar">
+            <h3>Income</h3>
+            <div class="bGoalIncome-sidebar-amount">
+                <span>$@string.Format("{0:n2}", item.TransactionAmount)</span> of
+                <span>$@string.Format("{0:n2}", item.BudgetGoalAmount)</span>
+            </div>
+        </div>
+    }
+}
+}
