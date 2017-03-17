@@ -35,11 +35,15 @@ namespace BudgetingApplication.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult InsertBudgetGoal(BudgetGoal id)
+        public ActionResult InsertBudgetGoal(BudgetGoal newBudgetGoal)
         {
-            //BudgetGoal Add_Brand = new BudgetGoal();
-            //dbContext.BudgetGoals.Add(Add_Brand);
-            //dbContext.SaveChanges();
+            //insert for next month
+            newBudgetGoal.Month = new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1);
+            newBudgetGoal.Status = "A";
+            newBudgetGoal.BudgetPointValue = 25;
+            newBudgetGoal.ClientID = CLIENT_ID;
+            dbContext.BudgetGoals.Add(newBudgetGoal);
+            dbContext.SaveChanges();
             return RedirectToAction("index");
         }
     }

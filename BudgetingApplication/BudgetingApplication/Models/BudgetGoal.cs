@@ -11,13 +11,18 @@ namespace BudgetingApplication.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class BudgetGoal
     {
         public int BudgetGoalID { get; set; }
         public int ClientID { get; set; }
+
+        [DisplayName("Category Type")]
         public int GoalCategory { get; set; }
         public int BudgetPointValue { get; set; }
+
+        [DisplayName("Target Goal Amount")]
         public decimal BudgetGoalAmount { get; set; }
         public System.DateTime Month { get; set; }
         public string Status { get; set; }
