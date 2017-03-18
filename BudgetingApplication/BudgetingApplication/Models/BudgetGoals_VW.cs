@@ -23,5 +23,6 @@ namespace BudgetingApplication.Models
         public string ParentCategory { get; set; }
         public string CategoryType { get; set; }
         public string Status { get; set; }
+        public string Description { get; set; }
     }
 }

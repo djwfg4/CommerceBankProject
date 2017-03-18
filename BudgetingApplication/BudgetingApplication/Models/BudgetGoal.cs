@@ -21,7 +21,6 @@ namespace BudgetingApplication.Models
         [DisplayName("Category Type")]
         public int GoalCategory { get; set; }
         public int BudgetPointValue { get; set; }
-
         [DisplayName("Target Goal Amount")]
         public decimal BudgetGoalAmount { get; set; }
         public System.DateTime Month { get; set; }

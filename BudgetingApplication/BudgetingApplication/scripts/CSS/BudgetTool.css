@@ -45,13 +45,23 @@ canvas {
     margin: 0 auto;
     min-width: 500px;
     max-width: 500px;
+    border-top:1px solid #e0dcdc;
+    border-bottom:1px solid #e0dcdc;
+    margin-bottom:10px;
+    padding:5px;
+}
+.bGoalContainer:hover{
+    background-color:#dff0d8;
 }
 .bGoalUpper{
     width: 100%;
     display: inline-block;
+    padding-bottom:5px;
+}
+.bGoalLower{
+    margin-top: -10px;
 }
 .bGoalLabel{
-    float: left;
 }
 
 .bGoalAmount{

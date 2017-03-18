@@ -122,6 +122,7 @@ warning 6002: The table/view 'cs451.dbo.BudgetGoals_VW' does not have a primary 
           <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
           <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="10" />
+          <Property Name="Description" Type="text" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -308,7 +309,8 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
     [BudgetGoals_VW].[TransactionAmount] AS [TransactionAmount], 
     [BudgetGoals_VW].[ParentCategory] AS [ParentCategory], 
     [BudgetGoals_VW].[CategoryType] AS [CategoryType], 
-    [BudgetGoals_VW].[Status] AS [Status]
+    [BudgetGoals_VW].[Status] AS [Status], 
+    [BudgetGoals_VW].[Description] AS [Description]
     FROM [dbo].[BudgetGoals_VW] AS [BudgetGoals_VW]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Categories_VW" EntityType="Self.Categories_VW" store:Type="Views" store:Schema="dbo">
@@ -728,6 +730,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="ParentCategory" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
 
       </Schema>
@@ -890,6 +893,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <EntitySetMapping Name="BudgetGoals_VW">
             <EntityTypeMapping TypeName="DataModel.BudgetGoals_VW">
               <MappingFragment StoreEntitySet="BudgetGoals_VW">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />
                 <ScalarProperty Name="ParentCategory" ColumnName="ParentCategory" />

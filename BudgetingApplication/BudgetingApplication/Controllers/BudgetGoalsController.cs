@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BudgetingApplication.Models;
+using System.Data.Entity;
 
 namespace BudgetingApplication.Controllers
 {
@@ -20,31 +21,84 @@ namespace BudgetingApplication.Controllers
 
 
             BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
-           
-            return View(BudgetGoalList.ToList());
+
+            BudgetGoalModelView budgetGoal = new BudgetGoalModelView();
+            budgetGoal.budgetView = BudgetGoalList;
+            budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
+            budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
+            return View(budgetGoal);
         }
 
-        public ActionResult InsertBudgetGoal()
+        public ActionResult InsertBudgetGoal(int? id)
         {
-            ViewBag.GoalCategory = dbContext.Categories.Select(x => new SelectListItem()
-            {
-                Text = x.CategoryType,
-                Value = x.CategoryID.ToString()
-            }).OrderBy(v => v.Text);
+           
+            BudgetGoalModelView budget = new BudgetGoalModelView();
+            budget.category = GetSelectListItems(GetAllCategories());
 
-            return View();
+            if(id == null)
+            {
+                return View(budget);
+            }
+            budget.budgetGoal = dbContext.BudgetGoals.Find(id);
+            return View(budget);
         }
         [HttpPost]
-        public ActionResult InsertBudgetGoal(BudgetGoal newBudgetGoal)
+        [ValidateAntiForgeryToken]
+        public ActionResult InsertBudgetGoal(BudgetGoalModelView model)
         {
+            //repopulate the dropdownlist
+            model.category = GetSelectListItems(GetAllCategories());
+            BudgetGoal newBudgetGoal = new BudgetGoal();
+            newBudgetGoal = model.budgetGoal;
             //insert for next month
-            newBudgetGoal.Month = new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1);
-            newBudgetGoal.Status = "A";
-            newBudgetGoal.BudgetPointValue = 25;
-            newBudgetGoal.ClientID = CLIENT_ID;
-            dbContext.BudgetGoals.Add(newBudgetGoal);
-            dbContext.SaveChanges();
-            return RedirectToAction("index");
+                newBudgetGoal.ClientID = CLIENT_ID;
+                newBudgetGoal.BudgetPointValue = 25;
+            if (newBudgetGoal.BudgetGoalID == 0) //create new category
+            {
+                newBudgetGoal.Month = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                newBudgetGoal.Status = "A";
+                dbContext.BudgetGoals.Add(newBudgetGoal);
+            }
+            else
+            {
+                dbContext.Entry(newBudgetGoal).State = EntityState.Modified;
+            }
+            //ignore validation errors on Month and BudgetGoalId ---temporary fix?
+            ModelState.Remove("budgetGoal.Month");
+            ModelState.Remove("budgetGoal.BudgetGoalId");
+            if (ModelState.IsValid)
+            {
+                dbContext.SaveChanges();
+                return RedirectToAction("index");
+
+            }
+            return View(model);
         }
+
+        // Just return a list of categories
+        private IEnumerable<Category> GetAllCategories()
+        {
+            return dbContext.Categories.ToList();
+        }
+
+        // This returns categories as a selectlist item set
+        private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<Category> elements)
+        {
+            // Create an empty list to hold result of the operation
+            var selectList = new List<SelectListItem>();
+            // This will result in MVC rendering each item as:
+            //     <option value="CategoryID">Category Type</option>
+            foreach (var element in elements)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = element.CategoryID.ToString(),
+                    Text = element.CategoryType
+                });
+            }
+            selectList.OrderBy(x => x.Text);
+            return selectList;
+        }
+
     }
 }

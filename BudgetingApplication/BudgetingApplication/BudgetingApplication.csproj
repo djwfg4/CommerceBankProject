@@ -213,6 +213,7 @@
     <Compile Include="Models\BudgetGoal.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BudgetGoalModelView.cs" />
     <Compile Include="Models\BudgetGoals_VW.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
