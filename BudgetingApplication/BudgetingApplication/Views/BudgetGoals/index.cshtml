@@ -9,7 +9,7 @@
 
     $(".bGoalContainer").hover(
   function() {
-      $( this).find('.bGoal-edit').show();
+      $(this).find('.bGoal-edit').show();
   }, function() {
       $(this).find('.bGoal-edit').hide();
   }
@@ -56,57 +56,7 @@
     }
     @foreach (var item in ViewData.Model.budgetView)
     {
-        double incomeGoal, incomeAmount;
-        if (item.GoalCategory == 1)
-        { //skip displaying the deposit goal
-            incomeAmount = Convert.ToDouble(item.TransactionAmount);
-            incomeGoal = Convert.ToDouble(item.BudgetGoalAmount);
-            ViewData.Add("Parent", this);
-            continue;
-        }
-
-        double TransactionAmount = (double)item.TransactionAmount;
-        TransactionAmount = (TransactionAmount * -1);
-        double BudgetGoalAmount = (double)item.BudgetGoalAmount;
-        percentage = (int)((TransactionAmount / BudgetGoalAmount) * 100);
-
-        remaining = BudgetGoalAmount - TransactionAmount;
-        string parentLabel = item.ParentCategory == null ? "" : item.ParentCategory + ":";
-
-        progressType = "progress-bar-success";
-        if (percentage > 70 && percentage < 90)
-        {
-            progressType = "progress-bar-warning";
-        }
-        else if (percentage >= 90)
-        {
-            progressType = "progress-bar-danger";
-        }
-
-        <div id="budgetGoal_@item.BudgetGoalID"class="bGoalContainer">
-            <div class="bGoalUpper">
-                <div class="bGoalLabel">
-                    <span class="bGoal-parent-label">@parentLabel</span>
-                    <span class="bGoal-child-label">@Html.DisplayFor(modelItem => item.CategoryType)</span>
-                    <div class="bGoal-edit" style="float:right;display:none;">
-                        @Html.ActionLink("Edit", "InsertBudgetGoal", new { id = item.BudgetGoalID })
-                    </div>
-                </div>
-                <span style="font-style:italic; font-size:x-small">@Html.DisplayFor(modelItem => item.Description)</span>
-            </div>
-            <div class="bGoalProgress">
-                <div class="progress">
-                    <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
-                        
-                    </div>
-                </div>
-                <div class="bGoalLower">
-                    <div style="float:left;">Total Spent: <span class="bGoal-amount">$@TransactionAmount</span> </div>
-                    <div style="float:right;">Remaining: <span class="bGoal-amount">$@remaining</span></div>
-                    <center><div>Total Budgeted: <span class="bGoal-amount"> $@BudgetGoalAmount</span></div></center>
-                </div>
-            </div>
-        </div>
+        @Html.Partial("~/Views/BudgetGoals/_ListGoals.cshtml", item)
 
     }
     <div class="bGoalContainer" style="border:0px solid!important;">

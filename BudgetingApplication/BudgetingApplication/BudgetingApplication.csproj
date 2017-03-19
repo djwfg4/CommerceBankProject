@@ -143,6 +143,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="images\CommerceFDIC_RevTM.svg" />
@@ -244,6 +245,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\indexModelView.cs" />
     <Compile Include="Models\PointsRecord.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -283,6 +285,8 @@
     <Content Include="Views\BudgetGoals\index.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\BudgetGoals\InsertBudgetGoal.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\BudgetGoals\_ListGoals.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -292,8 +296,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\" />
-    <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="~/scripts/CSS/BudgetTool.css" rel="stylesheet" />
     <link href="~/scripts/CSS/bootstrap.min.css" rel="stylesheet" />
     <link href="~/scripts/CSS/fullcalendar.min.css" rel="stylesheet" />
@@ -40,10 +40,10 @@
                             </a>
                         </div>
                         <div class="nav-item-wrap">
-                           <!-- <span class="nav-item has-dropdown" href="/Home">
-                                Overview
-                                <span class="active-indicator"></span>
-                            </span> -->
+                            <!-- <span class="nav-item has-dropdown" href="/Home">
+                                 Overview
+                                 <span class="active-indicator"></span>
+                             </span> -->
                             <a class="nav-item link" href="/Home">
                                 Overview
                                 <span class="active-indicator"></span>
@@ -51,10 +51,10 @@
                         </div>
                         <div class="nav-item-wrap">
                             @*<span class="nav-item has-dropdown">
-                                Budget
-                            </span>*@
+                                    Budget
+                                </span>*@
                             <a class="nav-item link" href="/BudgetGoals">
-                            Budget
+                                Budget
                             </a>
                         </div>
                         <div class="nav-item-wrap">
@@ -63,9 +63,9 @@
                             </span>
                         </div>
                         <div class="nav-item-wrap">
-                           <!-- <span class="nav-item has-dropdown" href="/Transactions">
-                                Transactions
-                            </span> -->
+                            <!-- <span class="nav-item has-dropdown" href="/Transactions">
+                                 Transactions
+                             </span> -->
                             <a class="nav-item link" href="/Transactions">
                                 Transactions
                             </a>
@@ -76,21 +76,22 @@
         </div>
     </nav>
     <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar custom-sidebar">
+        <div class="col-md-2 col-sm-3 sidebar custom-sidebar .visible-md-block">
             @RenderSection("sidebar", false)
-</div>
-        <div class="col-md-9">
-       @RenderBody() 
         </div>
-    </div></div><!-- /.container -->
+        <div class="row">
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
+        </div>
+    </div><!-- /.container -->
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="~/scripts/JS/moment.min.js"></script>
     <script src="~/scripts/JS/jquery-ui.min.js"></script>
     <script src="~/scripts/Chart.bundle.min.js"></script>
-    <!--<script src="~/scripts/ChartTest.js"></script>-->
+    <script src="~/scripts/ChartTest.js"></script>
     <script src="~/scripts/JS/bootstrap.min.js"></script>
     <script src="~/scripts/JS/fullcalendar.min.js"></script>
     <script src="~/scripts/JS/gcal.min.js"></script>
