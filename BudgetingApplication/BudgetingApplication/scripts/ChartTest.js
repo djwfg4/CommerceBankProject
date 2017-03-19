@@ -17,6 +17,9 @@
     
 
     var data1, labels;
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+    ];
     //var labelIndex = ["Burger King",
     //    "Chipotle",
     //    "Doctor",
@@ -42,31 +45,33 @@
        url: GetDonutAndBarGraphDataURL,
        dataType: "json",
        success: function (json) {
+           var d = new Date();
+           var month = d.getMonth();
            config = {
                type: 'doughnut',
                data: json,
                options: {
                    responsive: true,
                    legend: {
-                       position: 'left',
+                       position: 'right',
                    },
                    title: {
                        display: true,
-                       text: 'Last Month\'s Budget'
+                       text: monthNames[month] + '\'s Spending'
                    },
                    animation: {
                        animateScale: true,
                        animateRotate: true
                    },
                    hover: {
-                       onHover: function (event, array) {
-                           unHighlightDays();
-                           if (array.length != 0) {
-                               category = array[0]._chart.config.data.labels[array[0]._index];
-                               dates = labels[category];
-                               highlightDays(dates, array[0]._view.backgroundColor);
-                           }
-                       }
+                       //onHover: function (event, array) {
+                       //    unHighlightDays();
+                       //    if (array.length != 0) {
+                       //        category = array[0]._chart.config.data.labels[array[0]._index];
+                       //        dates = labels[category];
+                       //        //highlightDays(dates, array[0]._view.backgroundColor);
+                       //    }
+                       //}
                    }
                }
            };
@@ -80,21 +85,21 @@
                    },
                    title: {
                        display: true,
-                       text: 'Bar Chart'
+                       text: monthNames[month] + '\'s Spending'
                    },
                    animation: {
                        animateScale: true,
                        animateRotate: true
                    },
                    hover: {
-                       onHover: function (event, array) {
-                           unHighlightDays();
-                           if (array.length != 0) {
-                               category = array[0]._chart.config.data.labels[array[0]._index];
-                               dates = labels[category];
-                               highlightDays(dates, array[0]._view.backgroundColor);
-                           }
-                       }
+                       //onHover: function (event, array) {
+                       //    unHighlightDays();
+                       //    if (array.length != 0) {
+                       //        category = array[0]._chart.config.data.labels[array[0]._index];
+                       //        dates = labels[category];
+                       //        //highlightDays(dates, array[0]._view.backgroundColor);
+                       //    }
+                       //}
                    }
                }
            };

@@ -11,14 +11,18 @@ namespace BudgetingApplication.Controllers
     public class HomeController : Controller
     {
         DataContext dbContext = new DataContext();
+        public static int CLIENT_ID = 1;
 
         // GET: Home
         public ActionResult Index()
         {
-            
-            
+            indexModelView mv = new indexModelView();
 
-            return View();
+            mv.budgetGoals = getBudgetInfo();
+            mv.transactions = getTransactionInfo();
+
+
+            return View(mv);
         }
 
         public ActionResult TechnicalPrototype()
@@ -29,7 +33,44 @@ namespace BudgetingApplication.Controllers
             return View();
         }
 
+        private IEnumerable<Transaction> getTransactionInfo()
+        {
+            List<Transaction> transactions = new List<Transaction>();
 
+            var query = from trans in dbContext.Transactions
+                        from account in dbContext.Accounts
+                        where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
+                        group new { trans, account } by trans.TransactionAccountNo into f
+                        select new
+                        {
+                            accountDescr = f.Select(x => x.account.AccountType),
+                            accountNo = f.Select(x=>x.account.AccountNo),
+                            totalMoney = f.Sum(x => x.trans.TransactionAmount)
+                        };
+
+            foreach(var item in query)
+            {
+                Transaction trans = new Transaction();
+                trans.Description = item.accountDescr.First();
+                trans.TransactionAccountNo = item.accountNo.First();
+                trans.TransactionAmount = item.totalMoney;
+                transactions.Add(trans);
+            }
+            return transactions;
+        }
+        private BudgetGoalModelView getBudgetInfo()
+        {
+            List<BudgetGoals_VW> BudgetGoalList = new List<BudgetGoals_VW>();
+
+
+            BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
+
+            BudgetGoalModelView budgetGoal = new BudgetGoalModelView();
+            budgetGoal.budgetView = BudgetGoalList;
+            budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
+            budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
+            return budgetGoal;
+        }
 
         public JsonResult GetCalendarData()
         {
@@ -83,29 +124,41 @@ namespace BudgetingApplication.Controllers
             Dictionary<string, List<object>> dict = new Dictionary<string, List<object>>();
             Dictionary<string, List<object>> dict2 = new Dictionary<string, List<object>>();
 
+            var monthlyTransacations = from trans in dbContext.Transactions
+                                       from account in dbContext.Accounts
+                                       where trans.TransactionDate.Month == DateTime.Now.Month && trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
+                                       select new { trans, account };
 
-            /*
-            var query = from cat in dbContext.Categories
-                        join trans in dbContext.Transactions on cat.CategoryID equals trans.CategoryID
-                        select new { CategoryType = cat.CategoryType, TransactionAmount = trans.TransactionAmount};
-                        */
+            var sumQuery = from querys in monthlyTransacations
+                           group querys by new { querys.account.ClientID, querys.trans.CategoryID } into f
+                           select new
+                           {
+                               ClientID = f.Key.ClientID,
+                               TransactionAmount = f.Sum(x => x.trans.TransactionAmount),
+                               CategoryID = f.Max(x => x.trans.CategoryID),
+                               CategoryType = f.Select(x => x.trans.Category.CategoryType)
+
+                           };
             List<object> labels = new List<object>();
             List<object> nums = new List<object>();
             string[] colors = { "rgb(255, 99, 132)",
-        "rgb(255, 159, 64)",
-        "rgb(255, 205, 86)",
-        "rgb(75, 192, 192)",
-        "rgb(54, 162, 235)",
-        "rgb(153, 102, 255)",
-        "rgb(231,233,237)" };
+                "rgb(255, 159, 64)",
+                "rgb(255, 205, 86)",
+                "rgb(75, 192, 192)",
+                "rgb(54, 162, 235)",
+                "rgb(153, 102, 255)",
+                "rgb(231,233,237)" };
 
-           /* foreach (var trans in query)
+            foreach (var trans in sumQuery)
             {
-                labels.Add(trans.CategoryType);
-                nums.Add(trans.TransactionAmount);
+                if (trans.CategoryID != 1)
+                {
+                    labels.Add(trans.CategoryType.First());
+                    nums.Add(Math.Abs(trans.TransactionAmount));
+                }
             }
-            */
-           dict["datasets"] = new List<object>();
+
+            dict["datasets"] = new List<object>();
 
             dict2["backgroundColor"] = colors.ToList<object>();
             dict2["data"] = nums;

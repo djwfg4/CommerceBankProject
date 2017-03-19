@@ -35,10 +35,10 @@ namespace BudgetingApplication.Models
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<BudgetGoal> BudgetGoals { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<BudgetGoals_VW> BudgetGoals_VW { get; set; }
         public virtual DbSet<Categories_VW> Categories_VW { get; set; }
         public virtual DbSet<ClientBadge> ClientBadges { get; set; }
         public virtual DbSet<SavingsGoal> SavingsGoals { get; set; }
+        public virtual DbSet<BudgetGoals_VW> BudgetGoals_VW { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {

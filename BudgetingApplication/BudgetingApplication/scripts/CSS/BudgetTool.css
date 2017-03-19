@@ -31,25 +31,40 @@ canvas {
 
 /*sidebar properties*/
 .custom-sidebar {
-    min-height:100vh!important;
-    margin-top:-10px;
-    padding-top:10px;
+    min-height: 150px!important;
+    min-width: 150px;
+    max-width: 150px;
+    padding: 0 10px;
+    border-radius: 25px;
+    float: left;
     background-color: rgba(228, 228, 228, 1);
     box-shadow: 10px 0px 5px -2px rgba(0, 0, 0, 0.2), 5px 0px 5px -2px rgba(0, 0, 0, 0.19);
 }
 
 
 /*budget goals */
+#budgetGoalContainer,
 .bGoalContainer{
+    margin: 0 auto;
     min-width: 500px;
     max-width: 500px;
+    border-top:1px solid #e0dcdc;
+    border-bottom:1px solid #e0dcdc;
+    margin-bottom:10px;
+    padding:5px;
+}
+.bGoalContainer:hover{
+    background-color:#dff0d8;
 }
 .bGoalUpper{
     width: 100%;
     display: inline-block;
+    padding-bottom:5px;
+}
+.bGoalLower{
+    margin-top: -10px;
 }
 .bGoalLabel{
-    float: left;
 }
 
 .bGoalAmount{
@@ -66,4 +81,13 @@ canvas {
 }
 .bGoal-amount{
     font-weight: bold;
+}
+.bGoalIncome-sidebar{
+    text-align:center;
+}
+.bGoalIncome-sidebar-amount{
+}
+.bGoalIncome-sidebar-amount span{
+    font-weight:bold;
+    color:green;
 }

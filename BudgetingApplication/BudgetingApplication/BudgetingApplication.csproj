@@ -143,6 +143,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Site.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="images\CommerceFDIC_RevTM.svg" />
     <Content Include="Models\DbModel.Context.tt">
@@ -157,6 +159,8 @@
     </Content>
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="scripts\bootstrap.js" />
+    <Content Include="scripts\bootstrap.min.js" />
     <Content Include="scripts\Chart.bundle.min.js" />
     <Content Include="scripts\ChartTest.js" />
     <Content Include="scripts\CSS\bootstrap-theme.min.css" />
@@ -172,6 +176,9 @@
     <Content Include="Models\DbModel.edmx.diagram">
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="scripts\jquery-1.10.2.js" />
     <Content Include="scripts\jquery-1.10.2.min.js" />
@@ -187,6 +194,7 @@
     <Content Include="scripts\JS\jquery.min.js" />
     <Content Include="scripts\JS\locale-all.js" />
     <Content Include="scripts\JS\moment.min.js" />
+    <Content Include="scripts\modernizr-2.6.2.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +214,7 @@
     <Compile Include="Models\BudgetGoal.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BudgetGoalModelView.cs" />
     <Compile Include="Models\BudgetGoals_VW.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -236,6 +245,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\indexModelView.cs" />
     <Compile Include="Models\PointsRecord.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -258,7 +268,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -271,6 +283,10 @@
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\BudgetGoals\index.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\BudgetGoals\InsertBudgetGoal.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\BudgetGoals\_ListGoals.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

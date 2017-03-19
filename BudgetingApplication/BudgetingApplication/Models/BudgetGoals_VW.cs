@@ -14,13 +14,15 @@ namespace BudgetingApplication.Models
     
     public partial class BudgetGoals_VW
     {
-        public int BudgetGoalID { get; set; }
-        public int ClientID { get; set; }
-        public int GoalCategory { get; set; }
-        public int BudgetPointValue { get; set; }
-        public decimal BudgetGoalAmount { get; set; }
-        public Nullable<decimal> TransactionAmount { get; set; }
+        public Nullable<int> BudgetGoalID { get; set; }
+        public Nullable<int> ClientID { get; set; }
+        public Nullable<int> GoalCategory { get; set; }
+        public Nullable<int> BudgetPointValue { get; set; }
+        public Nullable<decimal> BudgetGoalAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
         public string ParentCategory { get; set; }
         public string CategoryType { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
     }
 }
