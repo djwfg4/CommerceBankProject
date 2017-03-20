@@ -1,6 +1,7 @@
 ﻿@model BudgetingApplication.Models.indexModelView
 @{
     Layout = "~/Views/_Layout.cshtml";
+    ViewBag.PageName = "Index";
 }
 <script>
     $(document).ready(function () {
@@ -29,13 +30,14 @@
 <div id="barChart" class="col-md-offset-3 col-md-6" style="display:none;">
     <canvas id="graph-chart" />
 </div>
-<div class="col-md-3" style="border: 1px solid #ccc;
+<div class="col-md-2 col-md-offset-1" style="border: 1px solid #ccc;
     margin-top: 55px;
     padding-top: 10px;
     border-radius: 25px;
-    background-color: #efefef;">    
-    <p>Month's Income: $@Model.budgetGoals.budgetView.Where(x => x.GoalCategory == 1).Sum(x => x.TransactionAmount)</p>
-    <p>Month's Spending: $@Model.budgetGoals.budgetView.Where(x => x.GoalCategory != 1).Sum(x => x.TransactionAmount)</p>
+    background-color: #efefef; 
+    text-align:center;">    
+    <p>Month's Income: <b>$@string.Format("{0:n2}", Model.budgetGoals.budgetView.Where(x => x.GoalCategory == 1).Sum(x => x.TransactionAmount))</b></p>
+    <p>Month's Spending: <b>$@string.Format("{0:n2}", Model.budgetGoals.budgetView.Where(x => x.GoalCategory != 1).Sum(x => x.TransactionAmount))</b></p>
 </div>
 <div class="col-md-12">
     <hr />
@@ -64,7 +66,7 @@
            <h2>Accounts</h2>
        </div>
        <div>
-           Total: @Model.transactions.Sum(x=>x.TransactionAmount)
+           Total: <b>$@string.Format("{0:n2}", Model.transactions.Sum(x=>x.TransactionAmount))</b>
        </div>
        <div>
            @{ 
@@ -81,7 +83,7 @@
                             cssClass = "text-danger";
                        }
                    }
-                    <p class="@cssClass">$@item.TransactionAmount</p>
+                    <p class="@cssClass">$@string.Format("{0:n2}", item.TransactionAmount)</p>
                 </div>
                }
         }

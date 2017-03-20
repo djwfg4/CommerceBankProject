@@ -63,6 +63,25 @@
                        animateScale: true,
                        animateRotate: true
                    },
+                   tooltips: {
+                       callbacks: {
+                           title: function (tooltipItem, data) {
+                               return data.labels[tooltipItem[0].index];
+                           },
+                           //footer: function (tooltipItem, data) {
+                           //    return "footer";
+                           //},
+                           label: function(tooltipItem, data) {
+                               //get the concerned dataset
+                               var dataset = data.datasets[tooltipItem.datasetIndex];
+                               //calculate the total of this data set
+                               var total = dataset.data[tooltipItem.index];
+
+
+                               return " " + currencyFormat(total, '$');
+                           }
+                       }
+                   } ,
                    hover: {
                        //onHover: function (event, array) {
                        //    unHighlightDays();
@@ -90,6 +109,24 @@
                    animation: {
                        animateScale: true,
                        animateRotate: true
+                   }, tooltips: {
+                       callbacks: {
+                           title: function (tooltipItem, data) {
+                               return data.labels[tooltipItem[0].index];
+                           },
+                           //footer: function (tooltipItem, data) {
+                           //    return "footer";
+                           //},
+                           label: function (tooltipItem, data) {
+                               //get the concerned dataset
+                               var dataset = data.datasets[tooltipItem.datasetIndex];
+                               //calculate the total of this data set
+                               var total = dataset.data[tooltipItem.index];
+
+
+                               return " " + currencyFormat(total, '$');
+                           }
+                       }
                    },
                    hover: {
                        //onHover: function (event, array) {
@@ -120,7 +157,9 @@
         
     });
 });
-
+function currencyFormat(n, currency) {
+    return currency + n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+}
 window.chartColors = {
     red: 'rgb(255, 99, 132)',
     orange: 'rgb(255, 159, 64)',

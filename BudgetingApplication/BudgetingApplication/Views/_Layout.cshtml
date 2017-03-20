@@ -28,7 +28,7 @@
                         </div>
                         <div class="nav-item-wrap right messages">
                             <a class="nav-item link" href="#">
-                                <i class="material-icons nav-icon" style="display: inline;"></i>
+                                <i class="material-icons nav-icon" style="display: inline;"></i>
                                 <span class="num-messages">
                                     9
                                 </span>
@@ -46,7 +46,7 @@
                              </span> -->
                             <a class="nav-item link" href="/Home">
                                 Overview
-                                <span class="active-indicator"></span>
+                                <span class="@((ViewBag.PageName == "Index") ? "active-indicator" : "")"></span>
                             </a>
                         </div>
                         <div class="nav-item-wrap">
@@ -55,6 +55,7 @@
                                 </span>*@
                             <a class="nav-item link" href="/BudgetGoals">
                                 Budget
+                                <span class="@((ViewBag.PageName == "Budget") ? "active-indicator" : "")"></span>
                             </a>
                         </div>
                         <div class="nav-item-wrap">

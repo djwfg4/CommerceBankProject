@@ -32,7 +32,7 @@ canvas {
 /*sidebar properties*/
 .custom-sidebar {
     min-height: 150px!important;
-    min-width: 150px;
+    min-width: 200px;
     max-width: 150px;
     padding: 0 10px;
     border-radius: 25px;
