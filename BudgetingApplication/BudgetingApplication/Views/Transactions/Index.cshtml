@@ -1,101 +1,150 @@
-﻿@model IEnumerable<BudgetingApplication.Models.Transaction>
+﻿@model BudgetingApplication.ViewModels.TransactionsViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/_Layout.cshtml";
 }
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 <style>
     table {
         text-align: center;
     }
 
-    th {
+    tr:nth-child(2n) {
+        background-color: lightgray;
+    }
+
+    th{
         text-align: center;
+        vertical-align: middle;
+    }
+
+    th.trans-table-head {
         color: white;
         background-color: #4CAF50;
     }
     #search-container {
         margin: 10px;
     }
-</style>
-
-<script>
-    var searchText = document.getElementById('search-box').value;
-</script>
-
-<h2>Transactions</h2>
-
-<div class="container" id="search-container">
-    <div class="row">
-        <div class="col-md-6">
-            <div id="custom-search-input">
-                <div class="input-group col-md-12">
-                    <input id ="search-box" type="text" class="form-control input-lg" placeholder="Search description, account type, category" />
-                    <span class="input-group-btn">
-                        <button class="btn btn-lg" type="button">
-                            Search
-                        </button>                        
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<table class="table table-bordered table-hover table-responsive">
-    <thead>
-        <tr>
-            <th>
-                Date
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Amount
-            </th>
-            <th>
-                Account Type
-            </th>
-            <th>
-                Category
-            </th>
-        </tr>
-    </thead>
-
-    @foreach (var item in Model)
-    {
-        string dateAndTimeString = item.TransactionDate.ToString();
-        int firstSpaceIndex = dateAndTimeString.IndexOf(' ');
-        string dateString = dateAndTimeString.Remove(firstSpaceIndex, 12);
-
-        <tr>
-            <td>
-                @dateString
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            @if (item.TransactionAmount > 0)
-            {
-                <td style="color:green">
-                    $@Html.DisplayFor(modelItem => item.TransactionAmount)
-                </td>
-            }
-            else
-            {
-                <td>
-                    $@Html.DisplayFor(modelItem => item.TransactionAmount)
-                </td>
-            }
-            <td>
-                @Html.DisplayFor(modelItem => item.Account.AccountType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryType)
-            </td>
-        </tr>
+    a.th-sort-link {
+        color: white;     
     }
 
-</table>
+    a.th-sort-link:active {
+        color: purple;
+    }
 
+    .button {
+        background-color: lightgray;
+    }
+
+    .button:hover {
+        background-color: darkgray;
+    }
+
+    .month-header {
+        border:none !important;
+        vertical-align:bottom;
+    }
+
+    #update-button {
+        margin-top: 5px;
+        color:white;
+        background-color:darkgreen;
+    }
+</style>
+
+<!-- MONTH HEADER SECTION -->
+<table class="table table-responsive month-header">
+    <tr class="month-header">
+        <td style="text-align:right" class="month-header">
+            @Html.ActionLink(" ", "Index", new { month = ViewBag.Month - 1, year = ViewBag.Year }, new { @class = "fa fa-angle-left month-header", @style="font-size:50px;color:black;vertical-align:bottom" })
+        </td>
+        <td class="month-header">
+            <h2>@ViewBag.MonthAndYear.ToString("MMMM") @ViewBag.Year</h2>
+        </td>
+        <td style="text-align:left" class="month-header">
+            @Html.ActionLink(" ", "Index", new { month = ViewBag.Month + 1, year = ViewBag.Year }, new { @class="fa fa-angle-right month-header", @style = "font-size:50px;color:black;vertical-align:bottom" })
+        </td>
+    </tr>
+</table> 
+
+<!-- FILTERING (FORM) SECTION -->
+@using (Html.BeginForm("Index", "Transactions"))
+{
+    <div style="width:95%">
+        <div style="float:left; margin-left:20px; margin-right:20px" class="form-group">
+            @Html.Label("Select Account")
+            @Html.DropDownList("Accounts", new SelectList(Model.Accounts, "AccountNo", "AccountNo"), "All", new { @class = "form-control" })
+        </div>
+        <div style="float:left; margin-left:20px; margin-right:20px" class="form-group">
+            @Html.Label("Select Category")
+            @Html.DropDownList("Categories", new SelectList(Model.Categories, "CategoryType", "CategoryType"), "All", new { @class = "form-control" })
+        </div>
+        <div style="float:left; margin-left:20px; margin-right:20px" class="form-group">
+            @Html.Label("Search Description")
+            @Html.TextBox("SearchString", null, new { @class = "form-control", @placeholder="Description"})
+        </div>
+        <div style="float:left; margin-left:20px; margin-right:20px" class="form-group">
+            @Html.Label(" ")
+            <button id="update-button" style="clear:right" class="btn btn-default form-control button" type="submit"><b>Update</b></button>
+        </div>
+    </div>
+}
+
+<!-- TRANSACTIONS TABLE SECTION -->
+@if (!Model.Transactions.Any())
+{
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    <h3 style="text-align:center">No transactions to display for this month.</h3>
+}
+else
+{
+    <table id="transactions-table" class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr>
+                <th class="trans-table-head">
+                    @Html.ActionLink("Date", "Index", new { sortBy = ViewBag.DateSort, month = ViewBag.Month, year = ViewBag.Year }, new { @class = "th-sort-link" })
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th class="trans-table-head">
+                    @Html.ActionLink("Description", "Index", new { sortBy = ViewBag.DescriptionSort, month = ViewBag.Month, year = ViewBag.Year }, new { @class = "th-sort-link" })
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th class="trans-table-head">
+                    @Html.ActionLink("Amount", "Index", new { sortBy = ViewBag.AmountSort, month = ViewBag.Month, year = ViewBag.Year }, new { @class = "th-sort-link" })
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+            </tr>
+        </thead>
+    
+    
+        @foreach (var item in Model.Transactions)
+        {
+            string dateAndTimeString = item.TransactionDate.ToString();
+            int firstSpaceIndex = dateAndTimeString.IndexOf(' ');
+            string dateString = dateAndTimeString.Remove(firstSpaceIndex, 12);
+
+            <tr>
+                <td>
+                    @dateString
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @if (item.TransactionAmount > 0)
+                {
+                    <td style="color:green">
+                        $@Html.DisplayFor(modelItem => item.TransactionAmount)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.TransactionAmount)
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+}
