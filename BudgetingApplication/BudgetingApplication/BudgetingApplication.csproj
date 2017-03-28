@@ -157,18 +157,11 @@
       <DependentUpon>DbModel.edmx</DependentUpon>
       <LastGenOutput>DbModel.cs</LastGenOutput>
     </Content>
-    <Content Include="scripts\ai.0.22.9-build00167.js" />
-    <Content Include="scripts\ai.0.22.9-build00167.min.js" />
-    <Content Include="scripts\bootstrap.js" />
-    <Content Include="scripts\bootstrap.min.js" />
-    <Content Include="scripts\Chart.bundle.min.js" />
-    <Content Include="scripts\ChartTest.js" />
+    <Content Include="scripts\JS\Chart.bundle.min.js" />
     <Content Include="scripts\CSS\bootstrap-theme.min.css" />
     <Content Include="scripts\CSS\bootstrap.min.css" />
     <Content Include="scripts\CSS\BudgetTool.css" />
     <Content Include="scripts\CSS\commerce-nav-bar-min.css" />
-    <Content Include="scripts\CSS\fullcalendar.min.css" />
-    <Content Include="scripts\CSS\fullcalendar.print.min.css" />
     <EntityDeploy Include="Models\DbModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbModel.Designer.cs</LastGenOutput>
@@ -179,29 +172,20 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <None Include="scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="scripts\jquery-1.10.2.js" />
-    <Content Include="scripts\jquery-1.10.2.min.js" />
-    <None Include="scripts\jquery.validate-vsdoc.js" />
-    <Content Include="scripts\jquery.validate.js" />
-    <Content Include="scripts\jquery.validate.min.js" />
-    <Content Include="scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="scripts\JS\bootstrap.min.js" />
-    <Content Include="scripts\JS\fullcalendar.min.js" />
-    <Content Include="scripts\JS\gcal.min.js" />
+    <Content Include="scripts\JS\budgetingApplication.js" />
     <Content Include="scripts\JS\jquery-ui.min.js" />
     <Content Include="scripts\JS\jquery.min.js" />
-    <Content Include="scripts\JS\locale-all.js" />
-    <Content Include="scripts\JS\moment.min.js" />
-    <Content Include="scripts\modernizr-2.6.2.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BadgesController.cs" />
     <Compile Include="Controllers\BudgetGoalsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SavingsGoalController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
+    <Compile Include="Controllers\TrendsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -214,7 +198,8 @@
     <Compile Include="Models\BudgetGoal.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\BudgetGoalModelView.cs" />
+    <Compile Include="ViewModels\BadgesModelView.cs" />
+    <Compile Include="ViewModels\BudgetGoalModelView.cs" />
     <Compile Include="Models\BudgetGoals_VW.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -245,7 +230,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\indexModelView.cs" />
+    <Compile Include="ViewModels\indexModelView.cs" />
     <Compile Include="Models\PointsRecord.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -265,7 +250,9 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\SavingsGoalsViewModel.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
+    <Compile Include="ViewModels\TrendsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -282,12 +269,14 @@
     <Content Include="Views\_Layout.cshtml" />
     <Content Include="Views\Home\TechnicalPrototype.cshtml" />
     <Content Include="Views\Transactions\Index.cshtml" />
-    <Content Include="scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\BudgetGoals\index.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\BudgetGoals\InsertBudgetGoal.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\BudgetGoals\_ListGoals.cshtml" />
+    <Content Include="Views\SavingsGoal\Index.cshtml" />
+    <Content Include="Views\Badges\Index.cshtml" />
+    <Content Include="Views\Trends\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
