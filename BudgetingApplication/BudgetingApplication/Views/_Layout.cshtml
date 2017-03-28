@@ -58,9 +58,10 @@
                             </a>
                         </div>
                         <div class="nav-item-wrap">
-                            <span class="nav-item link">
+                            <a class="nav-item link" href="/SavingsGoal">
                                 Goals
-                            </span>
+                                <span class="@((ViewBag.PageName == "Savings") ? "active-indicator" : "")"></span>
+                            </a>
                         </div>
                         <div class="nav-item-wrap">
                             <!-- <span class="nav-item has-dropdown" href="/Transactions">
@@ -68,17 +69,20 @@
                              </span> -->
                             <a class="nav-item link" href="/Transactions">
                                 Transactions
+                                <span class="@((ViewBag.PageName == "Transaction") ? "active-indicator" : "")"></span>
                             </a>
                         </div>
 
                         <div class="nav-item-wrap">
-                            <a class="nav-item link" href="/Transactions">
+                            <a class="nav-item link" href="/Trends">
                                 Trends
+                                <span class="@((ViewBag.PageName == "Trends") ? "active-indicator" : "")"></span>
                             </a>
                         </div>
                         <div class="nav-item-wrap">
-                            <a class="nav-item link" href="/Transactions">
+                            <a class="nav-item link" href="/Badges">
                                 My Badges
+                                <span class="@((ViewBag.PageName == "Badges") ? "active-indicator" : "")"></span>
                             </a>
                         </div>
                     </div>

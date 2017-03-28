@@ -180,9 +180,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BadgesController.cs" />
     <Compile Include="Controllers\BudgetGoalsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SavingsGoalController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
+    <Compile Include="Controllers\TrendsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -195,7 +198,8 @@
     <Compile Include="Models\BudgetGoal.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\BudgetGoalModelView.cs" />
+    <Compile Include="ViewModels\BadgesModelView.cs" />
+    <Compile Include="ViewModels\BudgetGoalModelView.cs" />
     <Compile Include="Models\BudgetGoals_VW.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -226,7 +230,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\indexModelView.cs" />
+    <Compile Include="ViewModels\indexModelView.cs" />
     <Compile Include="Models\PointsRecord.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -246,7 +250,9 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\SavingsGoalsViewModel.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
+    <Compile Include="ViewModels\TrendsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -268,6 +274,9 @@
     <Content Include="Views\BudgetGoals\InsertBudgetGoal.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\BudgetGoals\_ListGoals.cshtml" />
+    <Content Include="Views\SavingsGoal\Index.cshtml" />
+    <Content Include="Views\Badges\Index.cshtml" />
+    <Content Include="Views\Trends\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
