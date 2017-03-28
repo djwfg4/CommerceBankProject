@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="~/scripts/CSS/BudgetTool.css" rel="stylesheet" />
     <link href="~/scripts/CSS/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/scripts/CSS/fullcalendar.min.css" rel="stylesheet" />
     <link href="~/scripts/CSS/commerce-nav-bar-min.css" rel="stylesheet" />
     <script src="~/scripts/JS/jquery.min.js"></script>
 </head>
@@ -59,7 +58,7 @@
                             </a>
                         </div>
                         <div class="nav-item-wrap">
-                            <span class="nav-item has-dropdown">
+                            <span class="nav-item link">
                                 Goals
                             </span>
                         </div>
@@ -71,15 +70,27 @@
                                 Transactions
                             </a>
                         </div>
+
+                        <div class="nav-item-wrap">
+                            <a class="nav-item link" href="/Transactions">
+                                Trends
+                            </a>
+                        </div>
+                        <div class="nav-item-wrap">
+                            <a class="nav-item link" href="/Transactions">
+                                My Badges
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+    <div class="custom-sidebar visible-md-block visible-lg-block">
+    @RenderSection("sidebar", false)
+</div>
     <div class="container-fluid">
-        <div class="col-md-2 col-sm-3 sidebar custom-sidebar .visible-md-block">
-            @RenderSection("sidebar", false)
-        </div>
+        
         <div class="row">
             <div class="col-md-9">
                 @RenderBody()
@@ -89,14 +100,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="~/scripts/JS/moment.min.js"></script>
     <script src="~/scripts/JS/jquery-ui.min.js"></script>
-    <script src="~/scripts/Chart.bundle.min.js"></script>
-    <script src="~/scripts/ChartTest.js"></script>
+    <script src="~/scripts/JS/Chart.bundle.min.js"></script>
+    <script src="~/scripts/JS/budgetingApplication.js"></script>
     <script src="~/scripts/JS/bootstrap.min.js"></script>
-    <script src="~/scripts/JS/fullcalendar.min.js"></script>
-    <script src="~/scripts/JS/gcal.min.js"></script>
-    <script src="~/scripts/JS/locale-all.js"></script>
 </body>
 </html>
 
