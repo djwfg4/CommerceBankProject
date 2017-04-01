@@ -10,9 +10,15 @@ namespace BudgetingApplication.ViewModels
 {
     public class TransactionsViewModel
     {
-        public List<Transaction> Transactions { get; set; }
-        public List<Account> Accounts { get; set; }
-        public Client Client { get; set; }
-        public List<Category> Categories { get; set; }
+        public int AccountNo { get; set; } //selected account via filtering
+        public List<Account> Accounts { get; set; } //for displaying account filtering options
+        public List<BudgetGoal> BudgetGoals { get; set; }
+        public List<Category> Categories { get; set; } //for displaying category filtering options
+        public string Category { get; set; } //selected category via filtering
+        public Client Client { get; set; } //
+        public DateTime DateTime { get; set; } //for displaying month as text on top of page
+        public int Month { get; set; } //for switching between months
+        public List<Transaction> Transactions { get; set; } //client's transactions after filtering and searching
+        public int Year { get; set; } //for switching between years
     }
 }

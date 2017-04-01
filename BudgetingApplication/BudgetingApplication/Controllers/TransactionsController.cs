@@ -12,200 +12,231 @@ namespace BudgetingApplication.Controllers
 {
     public class TransactionsController : Controller
     {
-        private TransactionsViewModel transactionsViewModel = new TransactionsViewModel();
         private DataContext dbContext = new DataContext();
-        private int CLIENT_ID = 1;
+        private int CLIENT_ID = 2;
 
-        // GET: Transactions
-        public ActionResult Index(string sortBy, string searchString, int? month, int? year)
+        /// <summary>
+        /// Called on initial page load.
+        /// Creates new TransactionsViewModel with Transactions from current month and year.
+        /// Returns the new TransactionsViewModel to the Index View.
+        /// </summary>
+        /// <returns> Returns the new TransactionsViewModel to the Index View. </returns>
+        public ActionResult Index()
         {
-            this.SetSorting(sortBy);
+            DateTime dateTime = System.DateTime.Now;
+            TransactionsViewModel model = this.CreateModel(dateTime.Month, dateTime.Year);
+            return View(model);
+        }
 
-            ViewBag.Filter = searchString;
-            DateTime date = this.GetCurrentDate();
- 
-            List<Transaction> transactions = new List<Transaction>();
+        /// <summary>
+        /// Triggered by clicking on the Update button in the Index View.
+        /// Creates a new TransactionsViewModel based on the month and year parameters.
+        /// Filters the TransactionsViewModel by account number and category type.
+        /// Also filters via searching by description.
+        /// Returns the new TransactionsViewModel back to the Index View.
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <param name="sortBy"></param>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <param name="account"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public ActionResult Filter(string searchString, int? month, int? year, int? account, string category)
+        {
+            TransactionsViewModel model = this.CreateModel(month.Value, year.Value);
 
-            if (month == null)
+            if(account != null)
             {
-                ViewBag.Month = date.Month;
-                ViewBag.Year = date.Year;
-                ViewBag.MonthAndYear = date;
-
-                transactions = this.GetTransactions(date.Month, date.Year);
+                model.Transactions = this.FilterTransactionsByAccount(model.Transactions, account.Value);
             }
-            else
+            if (!String.IsNullOrEmpty(category))
             {
-                Tuple<int?, int?> monthAndYear = this.ChangeMonth(month, year);
-                transactions = this.GetTransactions(monthAndYear.Item1, monthAndYear.Item2);
-                ViewBag.MonthAndYear = new DateTime(monthAndYear.Item2.Value, monthAndYear.Item1.Value, 1);
+                model.Transactions = this.FilterTransactionsByCategory(model.Transactions, category);
+                model.BudgetGoals = this.GetBudgetGoals(month.Value, year.Value);
+                model.Category = category;
+            }
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                model.Transactions = this.SearchTransactions(model.Transactions, searchString);
             }
             
-            List<Account> accounts = this.GetAccounts();
-
-            Client client = this.GetClient();
-
-            List<Category> categories = this.GetCategories();
-
-            if (!String.IsNullOrEmpty(searchString))
-            {                
-                transactions = this.SearchTransactionDescriptions(transactions, searchString);
-            }
-
-            if(sortBy == "description" || sortBy == "description_desc")
-            {
-                transactions = this.SortTransactionsByDescription(transactions, sortBy);
-            }
-            else
-            {
-                transactions = this.SortTransactions(transactions, sortBy);
-            }
-
-            TransactionsViewModel viewModel = new TransactionsViewModel
-            {
-                Transactions = transactions,
-                Accounts = accounts,
-                Client = client,
-                Categories = categories
-            };
-
-            Debug.WriteLine("Categories: ");
-
-            return View(viewModel);
+            return View("Index", model);
         }
 
         /// <summary>
-        /// Sets the sortBy string passed into the Index ActionResult.
+        /// Triggered by a user clicking on the Reset button in the Index View.
+        /// Creates a new TransactionsViewModel with every Transaction from the Index View's month and year.
+        /// Returns the new TransactionsViewModel back to the Index View.
         /// </summary>
-        /// <param name="sortBy"></param>
-        private void SetSorting(string sortBy)
+        /// <param name="month">Month</param>
+        /// <param name="year">Year</param>
+        /// <returns> Returns the new TransactionsViewModel to the Index View. </returns>
+        public ActionResult Reset(int? month, int? year)
         {
-            ViewBag.AmountSort = sortBy == "amount" ? "amount_desc" : "amount";
-            ViewBag.DateSort = sortBy == "date" ? "date_desc" : "date";
-            ViewBag.DescriptionSort = sortBy == "description" ? "description_desc" : "description";
+            TransactionsViewModel model = this.CreateModel(month.Value, year.Value);
+            return View("Index", model);
         }
 
         /// <summary>
-        /// 
+        /// Triggered by a user clicking on one of the two arrows at the top of the Index View.
+        /// Logic for updating month and year is in the Index View.
+        /// Creates a new TransactionsViewModel with the updated month and year.
+        /// Returns the new TransactionsViewModel back to the Index View.
         /// </summary>
         /// <param name="month"></param>
-        private Tuple<int?, int?> ChangeMonth(int? month, int? year)
+        /// <param name="year"></param>
+        /// <returns> Returns the new TransactionsViewModel to the Index View. </returns>
+        public ViewResult SwitchMonth(int? month, int? year)
         {
-            switch (month)
-            {
-                case 0:
-                    month = 12;
-                    ViewBag.Month = month;
-                    year--;                   
-                    ViewBag.Year = year;                   
-                    break;
-                case 13:
-                    month = 1;
-                    ViewBag.Month = month;
-                    year++;                   
-                    ViewBag.Year = year;
-                    break;
-                default:
-                    ViewBag.Month = month;
-                    ViewBag.Year = year;                   
-                    break;
-            }
-            return new Tuple<int?, int?>(month, year);
+            TransactionsViewModel model = this.CreateModel(month.Value, year.Value);
+            return View("Index", model);
         }
 
         /// <summary>
-        /// 
+        /// Creates a new TransactionsViewModel.
+        /// Initializes its DateTime, Month, Year, Accounts, Categories, Client, and Transactions.
+        /// Transactions are queried with the month and year parameters.
+        /// Returns the new TransactionsViewModel.
         /// </summary>
-        /// <param name="transactions"></param>
-        /// <param name="sortBy"></param>
-        /// <returns></returns>
-        private List<Transaction> SortTransactionsByDescription(List<Transaction> transactions, string sortBy)
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <returns> Returns the new TransactionsViewModel. </returns>
+        private TransactionsViewModel CreateModel(int month, int year)
         {
-            switch (sortBy)
-            {
-                case "description":
-                    transactions = transactions.OrderBy(trans => trans.Description).ToList();
-                    break;
-                case "description_desc":
-                    transactions = transactions.OrderByDescending(trans => trans.Description).ToList();
-                    break;
-            }
-            return transactions;
+            TransactionsViewModel model = new TransactionsViewModel();
+            model.DateTime = new DateTime(year, month, 1);
+            model.Month = month;
+            model.Year = year;
+            model.Accounts = this.GetAccounts();            
+            model.Categories = this.GetCategories();
+            model.Client = this.GetClient();
+            model.Transactions = this.GetTransactions(month, year);
+            return model;
         }
 
         /// <summary>
-        /// 
+        /// Gets Budget Goals for the specified Client from 
+        /// the database based on the month and year parameters.
+        /// Returns the Budget Goals as a List.
         /// </summary>
-        /// <param name="transactions"></param>
-        /// <param name="sortBy"></param>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
         /// <returns></returns>
-        private List<Transaction> SortTransactions(List<Transaction> transactions, string sortBy)
+        private List<BudgetGoal> GetBudgetGoals(int month, int year)
         {
-            switch (sortBy)
-            {
-                case "amount":
-                    transactions = transactions.OrderBy(trans => trans.TransactionAmount).ToList();
-                    break;
-                case "amount_desc":
-                    transactions = transactions.OrderByDescending(trans => trans.TransactionAmount).ToList();
-                    break;
-                case "date_desc":
-                    transactions = transactions.OrderByDescending(trans => trans.TransactionDate).ToList();
-                    break;
-                default:
-                    transactions = transactions.OrderBy(trans => trans.TransactionDate).ToList();
-                    break;
-            }
-            return transactions.ToList();
+            var budgetGoals = from goal in dbContext.BudgetGoals
+                              where goal.ClientID == CLIENT_ID &&
+                                    goal.Month.Month == month &&
+                                    goal.Month.Year == year
+                              select goal;
+
+            return budgetGoals.ToList();
         }
 
         /// <summary>
-        /// 
+        /// Gets the Client information from the database based on the current user.
+        /// Returns the Client entity.
         /// </summary>
         /// <returns></returns>
         private Client GetClient()
         {
             var client = dbContext.Clients.Single(cl => cl.ClientID == CLIENT_ID);
-
             return client;
         }
 
         /// <summary>
-        /// 
+        /// Gets Transactions from the database which fall in the month and year.
+        /// Returns a list of Transactions.
         /// </summary>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
         /// <returns></returns>
-        private List<Transaction> GetTransactions(int? month, int? year)
+        private List<Transaction> GetTransactions(int month, int year)
         {
+
             var transactions = from transaction in dbContext.Transactions
-                                    join account in dbContext.Accounts
-                                    on transaction.TransactionAccountNo equals account.AccountNo
-                                    where account.ClientID == CLIENT_ID 
-                                            && transaction.TransactionDate.Month == month
-                                            && transaction.TransactionDate.Year == year
-                                    orderby transaction.TransactionDate
-                                    select transaction;
+                               join account in dbContext.Accounts
+                               on transaction.TransactionAccountNo equals account.AccountNo
+                               where account.ClientID == CLIENT_ID
+                                       && transaction.TransactionDate.Month == month
+                                       && transaction.TransactionDate.Year == year
+                               orderby transaction.TransactionDate
+                               select transaction;
 
             return transactions.ToList();
         }
 
         /// <summary>
-        /// 
+        /// Gets a list of Accounts from database for a specific Client ID.
+        /// Returns the list of Accounts.
         /// </summary>
-        /// <returns></returns>
+        /// <returns> Returns the list of Accounts. </returns>
         private List<Account> GetAccounts()
         {
             var accounts = from account in dbContext.Accounts
-                                orderby account.AccountNo
-                                where account.ClientID == CLIENT_ID
-                                select account;
+                           orderby account.AccountNo
+                           where account.ClientID == CLIENT_ID
+                           select account;
 
             return accounts.ToList();
         }
 
         /// <summary>
-        /// 
+        /// Filters the transactionList based on a account number.
+        /// Returns a new list of Transactions matching the account number.
         /// </summary>
+        /// <param name="transactionList"></param>
+        /// <param name="account"></param>
         /// <returns></returns>
+        private List<Transaction> FilterTransactionsByAccount(List<Transaction> transactionList, int account)
+        {
+            var transactions = from trans in transactionList
+                               where trans.Account.AccountNo == account
+                               select trans;
+
+            return transactions.ToList();
+        }
+
+        /// <summary>
+        /// Filters the transactionList based on a category type.
+        /// Returns a new list of Transactions matching the category type.
+        /// </summary>
+        /// <param name="transactionList"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        private List<Transaction> FilterTransactionsByCategory(List<Transaction> transactionList, string category)
+        {
+            var transactions = from trans in transactionList
+                               where trans.Category.CategoryType.Equals(category)
+                               select trans;
+
+            return transactions.ToList();
+        }
+
+        /// <summary>
+        /// Searches each Transaction description in the transactionList.
+        /// Case of searchString doesn't matter.
+        /// Returns a new list comprised of Transactions for which the 
+        /// description contains the searchString.
+        /// </summary>
+        /// <param name="transactionList"></param>
+        /// <param name="searchString"></param>
+        /// <returns></returns>
+        private List<Transaction> SearchTransactions(List<Transaction> transactionList, string searchString)
+        {
+            var transactions = from trans in transactionList
+                               where trans.Description.ToLower().Contains(searchString.ToLower())
+                               select trans;
+
+            return transactions.ToList();
+        }
+
+        /// <summary>
+        /// Gets all Transaction Categories from database.
+        /// Used for populating the Category DropDownList in the Index View.
+        /// </summary>
+        /// <returns> List of all Transaction Categories from database. </returns>
         private List<Category> GetCategories()
         {
             var categories = from category in dbContext.Categories
@@ -214,30 +245,6 @@ namespace BudgetingApplication.Controllers
                              select category;
 
             return categories.ToList();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private DateTime GetCurrentDate()
-        {
-            return System.DateTime.Now;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="transactions"></param>
-        /// <param name="searchString"></param>
-        /// <returns></returns>
-        private List<Transaction> SearchTransactionDescriptions(List<Transaction> transactions, string searchString)
-        {
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                transactions = transactions.Where(trans => trans.Description.Contains(searchString)).ToList();
-            }
-            return transactions;
         }
     }
 }
