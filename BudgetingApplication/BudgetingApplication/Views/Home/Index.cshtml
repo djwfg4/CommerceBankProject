@@ -33,8 +33,7 @@
 <div class="col-md-2 col-md-offset-1" style="border: 1px solid #ccc;
     margin-top: 55px;
     padding-top: 10px;
-    border-radius: 25px;
-    background-color: #efefef; 
+    background-color: rgba(242, 242, 242, 1);
     text-align:center;">    
     <p>Month's Income: <b>$@string.Format("{0:n2}", Model.budgetGoals.budgetView.Where(x => x.GoalCategory == 1).Sum(x => x.TransactionAmount))</b></p>
     <p>Month's Spending: <b>$@string.Format("{0:n2}", Model.budgetGoals.budgetView.Where(x => x.GoalCategory != 1).Sum(x => x.TransactionAmount))</b></p>

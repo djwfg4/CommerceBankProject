@@ -99,10 +99,12 @@
 
 @section sidebar{
     <!-- SIDEBAR SECTION -->
-    <h3><b>Account Numbers</b></h3>
+    <div style="border-bottom:1px solid">
+        <h3>Accounts</h3>
+    </div>
     @{ 
         var checking = Model.Accounts.Where(account => account.AccountType.Equals("Checking"));
-        var creditCard = Model.Accounts.Where(account => account.AccountType.Equals("CC"));
+        var creditCard = Model.Accounts.Where(account => account.AccountType.Equals("Credit Card"));
         var savings = Model.Accounts.Where(account => account.AccountType.Equals("Savings"));
     }
     @if (checking.Any())
@@ -180,12 +182,12 @@
     <div style="width:95%">
         <!-- ACCOUNT DROPDOWN LIST -->
         <div class="form-group form-div">
-            @Html.Label("Select Account")
+            @Html.Label("Account")
             @Html.DropDownList("Account", new SelectList(Model.Accounts, "AccountNo", "AccountNo"), "All", new { @class = "form-control" })
         </div>
         <!-- CATEGORY DROPDOWN LIST -->
         <div class="form-group form-div">
-            @Html.Label("Select Category")
+            @Html.Label("Category")
             @Html.DropDownList("Category", new SelectList(Model.Categories, "CategoryType", "CategoryType"), "All", new { @class = "form-control" })
         </div>
         <!-- SEARCH BOX -->
@@ -216,7 +218,7 @@
     string legendPlaceHolder = "       "; //used for creating legend color item
     <div style="clear:left">
         <span id="over-budget-legend-color" class="label">@legendPlaceHolder</span>       
-        <h5 id="over-budget-legend-label"><b>=  Went over budget</b></h5>
+        <h5 id="over-budget-legend-label"><b>=  Over Budget</b></h5>
     </div>   
 }
 
