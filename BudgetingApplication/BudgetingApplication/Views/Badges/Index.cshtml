@@ -4,6 +4,18 @@
     ViewBag.PageName = "Badges";
     Layout = "~/Views/_Layout.cshtml";
 }
-
 <h2>My Badges</h2>
 
+<table>
+    <tr>
+        <td colspan="@Model.numColumns"></td>
+    </tr>
+    
+    <tr>
+        @foreach (var item in Model.badgeNames)
+        {
+          <td><img src="@Url.Content("~/images/" + item)" /></td>
+        }
+    </tr>
+    
+</table>
