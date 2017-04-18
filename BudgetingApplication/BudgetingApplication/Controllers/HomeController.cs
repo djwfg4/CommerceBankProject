@@ -11,6 +11,7 @@ namespace BudgetingApplication.Controllers
     public class HomeController : Controller
     {
         DataContext dbContext = new DataContext();
+        
         public static int CLIENT_ID = 1;
 
         // GET: Home
@@ -20,8 +21,11 @@ namespace BudgetingApplication.Controllers
 
             mv.budgetGoals = getBudgetInfo();
             mv.transactions = getTransactionInfo();
-
-
+            mv.badges = getAllBadges();
+            mv.clientBadges = getClientBadges();
+            decimal[] totals = getTotalIncomeAndSpent();
+            mv.totalIncome = totals[0];
+            mv.totalSpent = totals[1];
             return View(mv);
         }
 
@@ -32,23 +36,60 @@ namespace BudgetingApplication.Controllers
 
             return View();
         }
-
-        private IEnumerable<Transaction> getTransactionInfo()
+        private decimal[] getTotalIncomeAndSpent()
         {
-            List<Transaction> transactions = new List<Transaction>();
-
+            decimal spent = 0, income = 0;
             var query = from trans in dbContext.Transactions
                         from account in dbContext.Accounts
                         where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
+                        && trans.TransactionDate.Month == System.DateTime.Now.Month && trans.TransactionDate.Year == System.DateTime.Now.Year
                         group new { trans, account } by trans.TransactionAccountNo into f
                         select new
                         {
                             accountDescr = f.Select(x => x.account.AccountType),
-                            accountNo = f.Select(x=>x.account.AccountNo),
-                            totalMoney = f.Sum(x => x.trans.TransactionAmount)
+                            accountNo = f.Select(x => x.account.AccountNo),
+                            totalMoney = f.Sum(x => x.trans.TransactionAmount),
+                            categoryID = f.Select(x => x.trans.CategoryID)
                         };
+            foreach (var item in query)
+            {
+                if (item.categoryID.First() == 1)
+                {
+                    income += item.totalMoney;
+                }
+                else
+                {
+                    spent += item.totalMoney;
+                }
+            }
+            return new decimal[] { income, spent };
+        }
+        private IEnumerable<Badge> getAllBadges()
+        {
+            return dbContext.Badges.Where(x => x.Status == "active");
+        }
 
-            foreach(var item in query)
+        private IEnumerable<ClientBadge> getClientBadges()
+        {
+            return dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID);
+        }
+        private IEnumerable<Transaction> getTransactionInfo()
+        {
+            List<Transaction> transactions = new List<Transaction>();
+
+            var query2 = from trans in dbContext.Transactions
+                    from account in dbContext.Accounts
+                    where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
+                    group new { trans, account } by trans.TransactionAccountNo into f
+                    select new
+                    {
+                        accountDescr = f.Select(x => x.account.AccountType),
+                        accountNo = f.Select(x => x.account.AccountNo),
+                        totalMoney = f.Sum(x => x.trans.TransactionAmount)
+                    };
+
+
+            foreach (var item in query2)
             {
                 Transaction trans = new Transaction();
                 trans.Description = item.accountDescr.First();
