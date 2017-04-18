@@ -3,46 +3,45 @@
     Layout = "~/Views/_Layout.cshtml";
     ViewBag.PageName = "Index";
 }
-<script>
-    $(document).ready(function () {
-        $('#showDonut').on('click', function () {
-            $('#donutChart').show();
-            $('#barChart').hide();
-            $('#showDonut').hide();
-            $('#showBar').show();
-        })
-        $('#showBar').on('click', function () {
-            $('#barChart').show();
-            $('#donutChart').hide();
-            $('#showBar').hide();
-            $('#showDonut').show();
-        })
-    });
-</script>
-
-<div class="col-md-offset-8 col-md-2">
-    <p id="showDonut" class="btn btn-info" style="display:none;">Show Donut</p>
-    <p id="showBar" class="btn btn-info" >Show Bar</p>
-</div>
-<div id="donutChart" class="col-md-offset-3 col-md-6">
-    <canvas id="chart-area" height="250"/>
-</div>
-<div id="barChart" class="col-md-offset-3 col-md-6" style="display:none;">
-    <canvas id="graph-chart" />
-</div>
-<div class="col-md-2 col-md-offset-1" style="border: 1px solid #ccc;
-    margin-top: 55px;
-    padding-top: 10px;
-    background-color: rgba(242, 242, 242, 1);
-    text-align:center;">    
-    <p>Month's Income: <b>$@string.Format("{0:n2}", Model.budgetGoals.budgetView.Where(x => x.GoalCategory == 1).Sum(x => x.TransactionAmount))</b></p>
-    <p>Month's Spending: <b>$@string.Format("{0:n2}", Model.budgetGoals.budgetView.Where(x => x.GoalCategory != 1).Sum(x => x.TransactionAmount))</b></p>
-</div>
-<div class="col-md-12">
-    <hr />
+<div id="graphContainer" class="col-md-10">
+    <div id="showCharts" class="col-md-10">
+        <div class="dropdown pull-right">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                <span id="currentType">Donut Chart</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <span id="showDonut" data-show="doughnut" style="display:none;">Donut Chart</span>
+                </li>
+                <li>
+                    <span id="showBar-horizontal" data-show="horizontalBar">Horizontal Bar Chart</span>
+                </li>
+                <li>
+                    <span id="showBar" data-show="bar">Bar Chart</span>
+                </li>
+                <li>
+                    <span id="showPolar" data-show="polarArea">Polar Area Chart</span>
+                </li>
+                <li>
+                    <span id="showLine" data-show="line">Line Chart</span>
+                </li>
+            </ul>
+        </div>
     </div>
-<div class="col-md-12"><center><h2>My Budget</h2></center></div>
-    <div class="col-md-12">
+    <center>
+        <div id="MyChart">
+            <canvas id="chartArea" height="350" />
+        </div>
+    </center>
+</div>
+<div class="col-md-2 incomeBox">  
+   <p>Month's Income: <b>$@string.Format("{0:n2}", Model.totalIncome)</b></p>
+    <p>Month's Spending: <b>$@string.Format("{0:n2}", Model.totalSpent)</b></p>
+</div>
+
+<div class="col-md-10"><center><h2>My Budget</h2></center></div>
+    <div class="col-md-10">
         @{
             foreach (var item in Model.budgetGoals.budgetView)
             {
@@ -51,23 +50,30 @@
         }
     </div>
 
-
-
-    @*<div class="col-md-3">
-            <div id='calendar'></div>
+<!-- this is only visible when the screen gets too small-->
+<div class="col-sm-12 visible-sm-block visible-xs-block" style="border-bottom:1px solid; margin-bottom:10px;">
+    <h4 class="badgeHeader">Badges Earned</h4>
+</div>
+@{
+    foreach (var item in Model.clientBadges)
+    {
+        var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
+        <div class="col-sm-2 visible-sm-block visible-xs-block">
+            <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="bottom" width="50" height="50" />
         </div>
-
-    *@
+    }
+}
+<!--end of small screen visibility-->
 
 @section sidebar {
    <div>
-       <div style="border-bottom:1px solid">
-           <h2>Accounts</h2>
+       <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
+           <h4>Accounts</h4>
        </div>
-       <div>
+       <div class="col-sm-12">
            Total: <b>$@string.Format("{0:n2}", Model.transactions.Sum(x=>x.TransactionAmount))</b>
        </div>
-       <div>
+       <div class="col-sm-12">
            @{ 
                string cssClass = "text-success";
                foreach(var item in Model.transactions)
@@ -80,7 +86,10 @@
                         if (item.TransactionAmount < 0)
                         {
                             cssClass = "text-danger";
-                       }
+                        } else
+                        {
+                            cssClass = "text-success";
+                        }
                    }
                     <p class="@cssClass">$@string.Format("{0:n2}", item.TransactionAmount)</p>
                 </div>
@@ -88,40 +97,18 @@
         }
        </div>
        <hr />
-       <table>
-           <tr>
-               <td>
-                   <img />
-               </td>
-               <td>
-                   <img />
-               </td>
-               <td>
-                   <img />
-               </td>
-           </tr>
-           <tr>
-               <td>
-                   <img />
-               </td>
-               <td>
-                   <img />
-               </td>
-               <td>
-                   <img />
-               </td>
-           </tr>
-           <tr>
-               <td>
-                   <img />
-               </td>
-               <td>
-                   <img />
-               </td>
-               <td>
-                   <img />
-               </td>
-           </tr>
-       </table>
+       <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
+           <h4 class="badgeHeader">Badges Earned</h4>
+       </div>
+       @{
+           foreach (var item in Model.clientBadges)
+           {
+               var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
+               <div class="col-sm-4">
+                   <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="bottom" width="50" height="50" />
+               </div>
+           }
+       }
+
     </div>
      }

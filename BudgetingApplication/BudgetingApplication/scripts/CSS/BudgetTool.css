@@ -1,93 +1,208 @@
-﻿body { padding-top: 140px; }
+﻿body {
+    padding-top: 105px;
+}
+
 html, body {
     background: #f9f9f9;
     margin: 0;
     font-family: Open Sans,sans-serif;
 }
+
 canvas {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
 }
-.navBanner{
-    background-color:#006f51;
+
+/*Nav Bar*/
+.navBanner {
+    background-color: #006f51;
     padding: 0;
     margin: 0;
-    height: 99px;
+    height: 50px;
 }
+
+.navBanner button {
+    border-color: rgb(2, 58, 43);
+}
+
+.navBanner button:hover, .navBanner button:active {
+    background-color: rgb(2, 58, 43);
+}
+.navBanner button:focus {
+    background-color: #006f51!important;
+}
+
+.navBanner .icon-bar {
+    background-color: rgb(255, 255, 255);
+}
+
+.navLinks {
+    background: #6ab244;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+}
+
+.navLinks a {
+    color: white !important;
+    padding: 15px;
+    text-decoration: none;
+}
+
+.navLinks a:hover {
+    background-color: #b3d78b !important;
+    padding: 15px;
+    text-decoration: none;
+}
+
+.active-indicator {
+    height: 4px;
+    width: 100%;
+    background: #b3d78b;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#banner-brand {
+    width: 225px;
+    height: 50px;
+    background-color: #006f51;
+    /*margin-left: 0px;
+    padding-left: 35px;
+    margin-right: 0px;
+    padding-right: 35px;*/
+}
+
+
+
 .content-wrap {
     margin: 0 auto;
     max-width: 1200px;
     clear: both;
 }
+
 .fc-today {
-    background-color:#cccccc!important;
+    background-color: #cccccc !important;
     border: 1px solid #000 !important;
 }
 
 /*This gets rid of the extra space in the calendar */
-.fc-basic-view .fc-body .fc-row  { min-height:1em!important;}
+.fc-basic-view .fc-body .fc-row {
+    min-height: 1em !important;
+}
 
 
 /*sidebar properties*/
 .custom-sidebar {
-    min-height: 150px!important;
+    min-height: 150px !important;
     min-width: 200px;
     max-width: 150px;
     padding: 0 10px;
-    margin-left: 20px;
-    margin-top: 20px;
+    position: relative;
+    left: 5%;
+    top: 5%;
     float: left;
     background-color: rgba(242, 242, 242, 1);
 }
 
+.tooltip-inner {
+    min-width: 150px;
+}
+
+.dropdown-menu > li span{
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+.dropdown-menu > li span:hover{
+    cursor: pointer;
+    background-color:#e2e2e2;
+}
+.badgeImage{
+    margin-bottom:5px;
+    margin-top:5px;
+}
+
+.incomeBox{
+    border: 1px solid #ccc;
+    margin-top: 55px;
+    padding-top: 10px;
+    background-color: rgba(242, 242, 242, 1);
+    text-align:center;
+}
+
+
 
 /*budget goals */
 #budgetGoalContainer,
-.bGoalContainer{
+.bGoalContainer {
     margin: 0 auto;
     min-width: 500px;
     max-width: 500px;
-    border-top:1px solid #e0dcdc;
-    border-bottom:1px solid #e0dcdc;
-    margin-bottom:10px;
-    padding:5px;
+    border-top: 1px solid #e0dcdc;
+    border-bottom: 1px solid #e0dcdc;
+    margin-bottom: 10px;
+    padding: 5px;
 }
-.bGoalContainer:hover{
-    background-color:#dff0d8;
-}
-.bGoalUpper{
+
+    .bGoalContainer:hover {
+        background-color: #dff0d8;
+    }
+
+.bGoalUpper {
     width: 100%;
     display: inline-block;
-    padding-bottom:5px;
+    padding-bottom: 5px;
 }
-.bGoalLower{
+
+.bGoalLower {
     margin-top: -10px;
 }
-.bGoalLabel{
+
+.bGoalLabel {
 }
 
-.bGoalAmount{
+.bGoalAmount {
     float: right;
 }
-.bGoalProgress{
+
+.bGoalProgress {
     display: block;
 }
-.bGoal-parent-label{
 
+.bGoal-parent-label {
 }
-.bGoal-child-label{
+
+.bGoal-child-label {
     font-weight: bold;
 }
-.bGoal-amount{
+
+.bGoal-amount {
     font-weight: bold;
 }
-.bGoalIncome-sidebar{
-    text-align:center;
+
+.bGoalIncome-sidebar {
+    text-align: center;
 }
-.bGoalIncome-sidebar-amount{
+
+.bGoalIncome-sidebar-amount {
 }
-.bGoalIncome-sidebar-amount span{
-    font-weight:bold;
-    color:green;
+
+.bGoalIncome-sidebar-amount span {
+    font-weight: bold;
+    color: green;
+}
+
+/* custom CSS for small screens */
+@media (max-width: 767px) {
+    body {
+        padding-top:55px;
+    }
+    #banner-brand {
+        margin-left:20px;
+    }
 }
