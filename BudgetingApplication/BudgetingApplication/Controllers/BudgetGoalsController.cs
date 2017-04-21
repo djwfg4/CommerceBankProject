@@ -39,7 +39,12 @@ namespace BudgetingApplication.Controllers
             {
                 return View(budget);
             }
+
             budget.budgetGoal = dbContext.BudgetGoals.Find(id);
+            if(budget.budgetGoal == null || budget.budgetGoal.ClientID != CLIENT_ID)
+            {
+                return RedirectToAction("Index"); 
+            }
             return View(budget);
         }
         [HttpPost]
