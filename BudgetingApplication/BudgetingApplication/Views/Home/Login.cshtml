@@ -1,0 +1,51 @@
+﻿@model BudgetingApplication.Models.Client
+
+@{
+    Layout = "~/Views/_Layout.cshtml";
+    ViewBag.PageName = "Login";
+}
+
+@using (Html.BeginForm("Login", "Home", FormMethod.Post))
+{
+    <fieldset>
+        <legend>Please enter your username and password.</legend>
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @if (@ViewBag.Message != null)
+        {
+            <div style="border: 1px solid red">
+                @ViewBag.Message
+            </div>
+        }
+        <table>
+            <tr>
+                <td>@Html.LabelFor(a => a.Username)</td>
+                <td>@Html.TextBoxFor(a => a.Username)</td>
+                <td>@Html.ValidationMessageFor(a => a.Username)</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(a => a.Password)
+                </td>
+                <td>
+                    @Html.PasswordFor(a => a.Password)
+                </td>
+                <td>
+                    @Html.ValidationMessageFor(a => a.Password)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Login" />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </fieldset>
+}  
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

@@ -161,6 +161,7 @@
     <Content Include="scripts\CSS\bootstrap-theme.min.css" />
     <Content Include="scripts\CSS\bootstrap.min.css" />
     <Content Include="scripts\CSS\BudgetTool.css" />
+    <Content Include="scripts\CSS\commerce-nav-bar-min.css" />
     <EntityDeploy Include="Models\DbModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbModel.Designer.cs</LastGenOutput>
@@ -276,6 +277,8 @@
     <Content Include="Views\SavingsGoal\Index.cshtml" />
     <Content Include="Views\Badges\Index.cshtml" />
     <Content Include="Views\Trends\Index.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Home\UserDashBoard.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
