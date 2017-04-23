@@ -11,7 +11,45 @@ namespace BudgetingApplication.Controllers
     public class HomeController : Controller
     {
         DataContext dbContext = new DataContext();
-        
+
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult Login(Client objClient)
+        {
+            if (ModelState.IsValid)
+            {
+                using (dbContext)
+                {
+                    var obj = dbContext.Clients.Where(a => a.Username.Equals(objClient.Username) && a.Password.Equals(objClient.Password)).FirstOrDefault();
+                    if (obj != null)
+                    {
+                        Session["UserID"] = obj.ClientID.ToString();
+                        Session["UserName"] = obj.Username.ToString();
+                        return RedirectToAction("UserDashBoard");
+                    }
+                }
+            }
+            return View(objClient);
+        }
+
+        public ActionResult UserDashBoard()
+        {
+            if (Session["UserID"] != null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login");
+            }
+        }
+
         public static int CLIENT_ID = 1;
 
         // GET: Home
@@ -31,11 +69,9 @@ namespace BudgetingApplication.Controllers
 
         public ActionResult TechnicalPrototype()
         {
-
-
-
             return View();
         }
+
         private decimal[] getTotalIncomeAndSpent()
         {
             decimal spent = 0, income = 0;

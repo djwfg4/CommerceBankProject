@@ -17,10 +17,10 @@ namespace BudgetingApplication.Controllers
         // GET: Badges
         public ActionResult Index()
         {
-            ViewBag.NumColumns = 10;
 
             BadgesModelView badgeModel = new BadgesModelView();
             badgeModel.badgeNames = getUserBadges();
+            badgeModel.badgeCount = badgeModel.badgeNames.Count();
             return View(badgeModel);
         }
 

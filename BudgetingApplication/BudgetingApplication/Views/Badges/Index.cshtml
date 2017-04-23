@@ -4,18 +4,27 @@
     ViewBag.PageName = "Badges";
     Layout = "~/Views/_Layout.cshtml";
 }
-<h2>My Badges</h2>
+<h2 align="center">My Badges</h2>
+
+<br />
 
 <table>
-    <tr>
-        <td colspan="@Model.numColumns"></td>
-    </tr>
     
-    <tr>
-        @foreach (var item in Model.badgeNames)
-        {
-          <td><img src="@Url.Content("~/images/" + item)" /></td>
-        }
-    </tr>
+    
+    @foreach (var item in Model.badgeNames)
+    {
+        <div class="col-md-3 myBadge"><img src="@Url.Content("~/images/" + item)" /></div>
+    }
+       
     
 </table>
+
+@section sidebar{
+    <div class="badge-sidebar">
+        <h3>Badge Progress</h3>
+        <div class="badge-progress-ratio" align="center">
+            @Model.badgeCount out of 50
+        </div>
+    </div>
+
+}

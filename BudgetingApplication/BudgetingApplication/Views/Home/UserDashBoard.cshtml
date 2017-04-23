@@ -1,0 +1,18 @@
+﻿@model BudgetingApplication.Models.Client
+
+@{
+    ViewBag.Title = "UserDashBoard";
+}
+
+< fieldset >
+    < legend > User DashBoard < /legend>
+
+if (Session["UserName"] != null)
+{ 
+    < text > Welcome @Session["UserName"].ToString() < /text>
+}
+
+ < /fieldset>  
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

@@ -8,7 +8,7 @@ namespace BudgetingApplication.ViewModels
     public class BadgesModelView
     {
         //an iterator of the badges needs to be here
-        public int numColumns;
+        public int badgeCount;
         public IEnumerable<String> badgeNames { get; set; }
     }
 }
