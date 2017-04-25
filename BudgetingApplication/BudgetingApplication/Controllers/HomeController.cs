@@ -1,4 +1,5 @@
 ﻿using BudgetingApplication.Models;
+using BudgetingApplication.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,6 +56,9 @@ namespace BudgetingApplication.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            BadgesModelView bmv = new BadgesModelView();
+            bmv.addNewBadge(74, CLIENT_ID); //Give user inital load of app badge if they havent earned it.
+
             indexModelView mv = new indexModelView();
 
             mv.budgetGoals = getBudgetInfo();
@@ -102,7 +106,7 @@ namespace BudgetingApplication.Controllers
         }
         private IEnumerable<Badge> getAllBadges()
         {
-            return dbContext.Badges.Where(x => x.Status == "active");
+            return dbContext.Badges;
         }
 
         private IEnumerable<ClientBadge> getClientBadges()
@@ -147,51 +151,6 @@ namespace BudgetingApplication.Controllers
             budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
             budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
             return budgetGoal;
-        }
-
-        public JsonResult GetCalendarData()
-        {
-            Dictionary<string, List<string>> transactionDictionary
-                = new Dictionary<string, List<string>>();
-            /*var transactions = dbContext.Transactions.Where(
-                trans => trans.TransactionAccountNo == 2 ||
-                trans.TransactionAccountNo == 3).ToArray();
-            var query = from cat in dbContext.Categories
-                        join trans in dbContext.Transactions on cat.CategoryID equals trans.TransactionCategory
-                        select new { CategoryType = cat.CategoryType, TransactionDate = trans.TransactionDate };*/
-            bool found;
-            /*foreach (var trans in query)
-            {
-                found = false;
-                if (transactionDictionary.Count == 0)
-                {
-                    transactionDictionary.Add(trans.CategoryType, new List<string>());
-                    string date1 = Convert.ToDateTime(trans.TransactionDate).ToString("yyyy-MM-dd");
-                    transactionDictionary[trans.CategoryType].Add(date1);
-                }
-                else
-                {
-                    foreach (KeyValuePair<string, List<string>> entry in transactionDictionary)
-                    {
-                        if (entry.Key.Equals(trans.CategoryType))
-                        {
-                            string date1 = Convert.ToDateTime(trans.TransactionDate).ToString("yyyy-MM-dd");
-                            entry.Value.Add(date1);
-                            found = true;
-                        }
-                    }
-                    if (found == false)
-                    {
-
-                        string date1 = Convert.ToDateTime(trans.TransactionDate).ToString("yyyy-MM-dd");
-                        transactionDictionary.Add(trans.CategoryType, new List<string>());
-                        transactionDictionary[trans.CategoryType].Add(date1);
-                    }
-                }
-            }*/
-            Debug.WriteLine("Categories: " + transactionDictionary.Keys.ToString());
-            Debug.WriteLine("Categories: " + transactionDictionary.Values.ToString());
-            return new JsonResult { Data = transactionDictionary, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
 
@@ -244,6 +203,26 @@ namespace BudgetingApplication.Controllers
             dict["labels"] = labels;
 
             return new JsonResult { Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public JsonResult GetNewlyEarnedBadges()
+        {
+            List<ClientBadge> newlyEarnedBadges = dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID && x.Status == "new").ToList();
+            Dictionary<String, object> dict = new Dictionary<String, object>();
+            
+            
+            foreach ( ClientBadge cb in newlyEarnedBadges)
+            {
+                Badge badge = dbContext.Badges.Where(x => x.BadgeID == cb.BadgeID).FirstOrDefault();
+                var badgeInfo = new { url = badge.BadgeName, date = cb.DateEarned.Date.ToLongDateString(), descr = badge.Description };
+                dict[cb.BadgeID.ToString()] = badgeInfo;
+                cb.Status = "earned";
+            }
+
+            //updated the badges as notified. 
+            dbContext.SaveChangesAsync();
+
+            return new JsonResult {Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
     }
 }

@@ -146,7 +146,57 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="images\10_badges.png" />
+    <Content Include="images\20_badges.png" />
+    <Content Include="images\3_ut_goals.png" />
+    <Content Include="images\50_badges.png" />
+    <Content Include="images\5_badges.png" />
+    <Content Include="images\5_ut_goals.png" />
+    <Content Include="images\add_1_b_cat.png" />
+    <Content Include="images\add_3_b_cat.png" />
+    <Content Include="images\add_5_b_cat.png" />
+    <Content Include="images\all_badges.png" />
+    <Content Include="images\all_holidays.png" />
+    <Content Include="images\bb_1_month.png" />
+    <Content Include="images\bb_3_months.png" />
+    <Content Include="images\bb_6_months.png" />
+    <Content Include="images\bb_year.png" />
     <Content Include="images\CommerceFDIC_RevTM.svg" />
+    <Content Include="images\completed_all_goals.png" />
+    <Content Include="images\created_3_goals.png" />
+    <Content Include="images\created_5_goals.png" />
+    <Content Include="images\created_first_goal.png" />
+    <Content Include="images\first_ut_goal.png" />
+    <Content Include="images\halfway_on_goals.png" />
+    <Content Include="images\in_black.png" />
+    <Content Include="images\kb_1_month.png" />
+    <Content Include="images\kb_6_months.png" />
+    <Content Include="images\kb_year.png" />
+    <Content Include="images\met_goals_1_month.png" />
+    <Content Include="images\met_goals_3_month.png" />
+    <Content Include="images\met_goals_6_months.png" />
+    <Content Include="images\met_goals_year.png" />
+    <Content Include="images\recat_transactions.png" />
+    <Content Include="images\shared_1_badge.png" />
+    <Content Include="images\shared_5_badges.png" />
+    <Content Include="images\started_services.png" />
+    <Content Include="images\ub_april_fools.png" />
+    <Content Include="images\ub_easter.png" />
+    <Content Include="images\ub_fall_equinox.png" />
+    <Content Include="images\ub_halloween.png" />
+    <Content Include="images\ub_independence.png" />
+    <Content Include="images\ub_memorial.png" />
+    <Content Include="images\ub_new_years.png" />
+    <Content Include="images\ub_patricks_day.png" />
+    <Content Include="images\ub_spring_equinox.png" />
+    <Content Include="images\ub_summer_solstice.png" />
+    <Content Include="images\ub_thanksgiving.png" />
+    <Content Include="images\ub_washington.png" />
+    <Content Include="images\ub_xmas.png" />
+    <Content Include="images\used_all_features.png" />
+    <Content Include="images\used_badge_page.png" />
+    <Content Include="images\used_trends_page.png" />
+    <Content Include="images\viewed_6_months.png" />
     <Content Include="Models\DbModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DbModel.edmx</DependentUpon>
@@ -157,11 +207,12 @@
       <DependentUpon>DbModel.edmx</DependentUpon>
       <LastGenOutput>DbModel.cs</LastGenOutput>
     </Content>
+    <Content Include="scripts\CSS\animate.css" />
+    <Content Include="scripts\JS\bootstrap-notify.js" />
     <Content Include="scripts\JS\Chart.bundle.min.js" />
     <Content Include="scripts\CSS\bootstrap-theme.min.css" />
     <Content Include="scripts\CSS\bootstrap.min.css" />
     <Content Include="scripts\CSS\BudgetTool.css" />
-    <Content Include="scripts\CSS\commerce-nav-bar-min.css" />
     <EntityDeploy Include="Models\DbModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbModel.Designer.cs</LastGenOutput>

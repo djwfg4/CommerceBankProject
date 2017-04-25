@@ -5,6 +5,45 @@
   "July", "August", "September", "October", "November", "December"
     ];
 
+    var getNotificationsURL = '/Home/GetNewlyEarnedBadges';
+
+    $.ajax({
+        async: true,
+        url: getNotificationsURL,
+        dataType: "json",
+        success: function (json) {
+            $.each(json, function (index, value) {
+                $.notify({
+                    icon: "images/" + value.url,
+                    title: "Badge Earned!",
+                    message: "   " + value.descr + " - <i>" + value.date + "</i>"
+                }, {
+                    type: 'minimalist',
+                    delay: 20000,
+                    placement: {
+                        from: 'bottom',
+                        align: 'right'
+                    },
+                    animate: {
+                        enter: 'animated bounceIn',
+                        exit: 'animated fadeOutDown'
+                    },
+                    icon_type: 'image',
+                    template: '<div data-notify="container" class=" alert-success col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                            '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+		                    '<img data-notify="icon" class="img-circle pull-left" width="40" height="40">' +
+		                    '<span data-notify="title">{1}</span>' +
+		                    '<span data-notify="message">{2}</span>' +
+	                        '</div>'
+
+                });
+            })
+            
+        },
+        error: function (e) {
+            alert("New Badges data request failed");
+        }
+    });
     ctx = $("#chartArea")[0];
     ctx2 = $("#chart-area")[0];
     ctx1 = $("#graph-chart")[0];
