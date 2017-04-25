@@ -10,9 +10,11 @@ namespace BudgetingApplication.ViewModels
     {
         //an iterator of the badges needs to be here
         public int badgeCount;
+        public int totalBadgeCount;
+
         private DataContext dbContext = new DataContext();
 
-        public IEnumerable<String> badgeNames { get; set; }
+        public IEnumerable<Badge> badges { get; set; }
 
         //Add a badge if the user has not earned it yet.
         public void addNewBadge(int badgeID, int clientID)
