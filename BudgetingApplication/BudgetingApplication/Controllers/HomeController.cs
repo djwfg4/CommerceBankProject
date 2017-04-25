@@ -1,4 +1,5 @@
 ﻿using BudgetingApplication.Models;
+using BudgetingApplication.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,6 +56,9 @@ namespace BudgetingApplication.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            BadgesModelView bmv = new BadgesModelView();
+            bmv.addNewBadge(74, CLIENT_ID); //Give user inital load of app badge if they havent earned it.
+
             indexModelView mv = new indexModelView();
 
             mv.budgetGoals = getBudgetInfo();
@@ -204,18 +208,21 @@ namespace BudgetingApplication.Controllers
         public JsonResult GetNewlyEarnedBadges()
         {
             List<ClientBadge> newlyEarnedBadges = dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID && x.Status == "new").ToList();
-            Dictionary<String, object> dict = new Dictionary<string, object>();
-            var badgeInfo = new { jon = 1 };
+            Dictionary<String, object> dict = new Dictionary<String, object>();
+            
             
             foreach ( ClientBadge cb in newlyEarnedBadges)
             {
+                Badge badge = dbContext.Badges.Where(x => x.BadgeID == cb.BadgeID).FirstOrDefault();
+                var badgeInfo = new { url = badge.BadgeName, date = cb.DateEarned.Date.ToLongDateString(), descr = badge.Description };
+                dict[cb.BadgeID.ToString()] = badgeInfo;
                 cb.Status = "earned";
             }
 
             //updated the badges as notified. 
             dbContext.SaveChangesAsync();
 
-            return new JsonResult { };
+            return new JsonResult {Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
     }
 }

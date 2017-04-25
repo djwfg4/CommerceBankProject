@@ -105,7 +105,7 @@
            {
                var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
                <div class="col-sm-4">
-                   <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="bottom" width="50" height="50" />
+                   <img src="@Url.Content("~/images/" + badge.BadgeName)" data-html="true"  class="badgeImage" data-toggle="tooltip" title="<b>Earned:</b><em> @item.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="bottom" width="50" height="50" />
                </div>
            }
        }
