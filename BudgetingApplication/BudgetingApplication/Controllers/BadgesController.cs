@@ -17,37 +17,38 @@ namespace BudgetingApplication.Controllers
         // GET: Badges
         public ActionResult Index()
         {
-
+            
+            //get badges the user has earned
             BadgesModelView badgeModel = new BadgesModelView();
-            badgeModel.badgeNames = getUserBadges();
-            badgeModel.badgeCount = badgeModel.badgeNames.Count();
+            badgeModel.badges = getUserBadges();
+
+            badgeModel.badgeCount = badgeModel.badges.Count();
+            badgeModel.totalBadgeCount = dbContext.Badges.Count();
+
             return View(badgeModel);
         }
 
-        private List<String> getUserBadges()
+        private List<Badge> getUserBadges()
         {
             List<ClientBadge> ClientBadgeList = new List<ClientBadge>();
             ClientBadgeList = dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID).ToList();
             List<Badge> TotalBadges = dbContext.Badges.ToList();
+            List<Badge> BadgesEarned = new List<Badge>();
 
-            List<String> returnList = new List<String>();
-
-            for(int i = 0; i < ClientBadgeList.Count(); i++)
+            for (int i = 0; i < ClientBadgeList.Count(); i++)
             {
-                for(int j = 0; j < TotalBadges.Count(); j++)
+                for (int j = 0; j < TotalBadges.Count(); j++)
                 {
-                    if(ClientBadgeList[i].BadgeID == TotalBadges[j].BadgeID)
+                    //find every badge the client has by their ID
+                    if (ClientBadgeList[i].BadgeID == TotalBadges[j].BadgeID)
                     {
-                        String temp = TotalBadges[j].BadgeName;
-                        temp += ".png";
-                        returnList.Add(TotalBadges[j].BadgeName );
+                        BadgesEarned.Add(TotalBadges[j]);
                     }
                 }
             }
 
-            return returnList;
-        }
 
-        
+            return BadgesEarned;
+        }
     }
 }
