@@ -8,22 +8,25 @@
 
 <br />
 
-<table>
-    
-    
-    @foreach (var item in Model.badgeNames)
-    {
-        <div class="col-md-3 myBadge"><img src="@Url.Content("~/images/" + item)" /></div>
-    }
-       
-    
-</table>
+@foreach (var item in Model.badges)
+{
+    <div class="col-md-3 myBadge" align="center">
+        <img src="@Url.Content("~/images/" + item.BadgeName)" />
+        <p style="margin-bottom:20px; margin-top:20px;"> @Url.Content(item.Description)</p>
+    </div>
+}
 
 @section sidebar{
-    <div class="badge-sidebar">
+    <div class="badge-sidebar-overview" align="center" style="border-bottom:1px solid; margin-bottom: 10px;">
         <h3>Badge Progress</h3>
         <div class="badge-progress-ratio" align="center">
-            @Model.badgeCount out of 50
+            @Model.badgeCount out of @Model.totalBadgeCount
+        </div>
+    </div>
+    <div class="badge-sidebar-recent" align="center" style="border-bottom:1px solid; margin-bottom: 10px;">
+        <h4>Most Recent Badge</h4>
+        <div class="badge-progress-ratio" align="center" style="margin-bottom:20px;">
+            <img src="@Url.Content("~/images/" + Model.badges.ElementAt(Model.badgeCount - 1).BadgeName)" style="max-height: 50px; max-width: 50px;" />
         </div>
     </div>
 
