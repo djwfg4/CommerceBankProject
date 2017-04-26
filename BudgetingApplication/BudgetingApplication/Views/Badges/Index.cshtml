@@ -13,7 +13,7 @@
     <div class="col-sm-3 myBadge" align="center">
         <img src="@Url.Content("~/images/" + item.BadgeName)" />
         <p style="margin-bottom:20px; margin-top:20px;"> @Url.Content(item.Description)</p>
-    </div>
+</div>
 }
 
 @section sidebar{
@@ -25,7 +25,7 @@
     </div>
     <div class="badge-sidebar-recent" align="center" style="border-bottom:1px solid; margin-bottom: 10px;">
         <h4>Most Recent Badge</h4>
-        <div class="badge-progress-ratio" align="center" style="margin-bottom:20px;">
+        <div class="badge-progress-ratio" align="center" style="margin-bottom:20px;" title="@Url.Content(Model.badges.ElementAt(Model.badgeCount - 1).Description)">
             <img src="@Url.Content("~/images/" + Model.badges.ElementAt(Model.badgeCount - 1).BadgeName)" style="max-height: 50px; max-width: 50px;" />
         </div>
     </div>
