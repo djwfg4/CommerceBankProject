@@ -197,15 +197,6 @@ canvas {
     color: green;
 }
 
-/* custom CSS for small screens */
-@media (max-width: 767px) {
-    body {
-        padding-top:55px;
-    }
-    #banner-brand {
-        margin-left:20px;
-    }
-}
 
 /* Notifications CSS */
 .alert-minimalist {
@@ -228,3 +219,19 @@ canvas {
 .alert-minimalist > [data-notify="message"] {
 	font-size: 80%;
 }
+
+.myBadge {
+    min-height:200px!important;
+}
+/* custom CSS for small screens */
+@media (max-width: 767px) {
+    body {
+        padding-top:55px;
+    }
+    #banner-brand {
+        margin-left:20px;
+    }
+    .myBadge {
+    min-height:150px!important;
+    }
+ }

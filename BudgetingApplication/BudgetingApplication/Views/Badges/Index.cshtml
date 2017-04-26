@@ -10,7 +10,7 @@
 
 @foreach (var item in Model.badges)
 {
-    <div class="col-md-3 myBadge" align="center">
+    <div class="col-sm-3 myBadge" align="center">
         <img src="@Url.Content("~/images/" + item.BadgeName)" />
         <p style="margin-bottom:20px; margin-top:20px;"> @Url.Content(item.Description)</p>
     </div>
