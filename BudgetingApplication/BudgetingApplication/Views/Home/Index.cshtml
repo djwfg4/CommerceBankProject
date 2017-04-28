@@ -5,7 +5,7 @@
 }
 <div id="graphContainer" class="col-md-10">
     <div id="showCharts" class="col-md-10">
-        <div class="dropdown pull-right">
+        <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                 <span id="currentType">Donut Chart</span>
                 <span class="caret"></span>
@@ -29,15 +29,17 @@
             </ul>
         </div>
     </div>
-    <center>
-        <div id="MyChart">
-            <canvas id="chartArea" height="350" />
-        </div>
-    </center>
+    <div class="col-sm-12">
+        <center>
+            <div id="MyChart">
+                <canvas id="chartArea" height="350" />
+            </div>
+        </center>
+    </div>
 </div>
 <div class="col-md-2 incomeBox">  
-   <p>Month's Income: <b>$@string.Format("{0:n2}", Model.totalIncome)</b></p>
-    <p>Month's Spending: <b>$@string.Format("{0:n2}", Model.totalSpent)</b></p>
+   <p>@DateTime.Now.ToString("MMMM")'s Income: <b>$@string.Format("{0:n2}", Model.totalIncome)</b></p>
+    <p>@DateTime.Now.ToString("MMMM")'s Spending: <b>$@string.Format("{0:n2}", Model.totalSpent)</b></p>
 </div>
 
 <div class="col-md-10"><center><h2>My Budget</h2></center></div>
@@ -58,7 +60,7 @@
     foreach (var item in Model.clientBadges)
     {
         var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
-        <div class="col-sm-2 visible-sm-block visible-xs-block">
+        <div class="col-sm-2 col-xs-3 visible-sm-block visible-xs-block">
             <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="bottom" width="50" height="50" />
         </div>
     }
@@ -71,31 +73,29 @@
            <h4>Accounts</h4>
        </div>
        <div class="col-sm-12">
-           Total: <b>$@string.Format("{0:n2}", Model.transactions.Sum(x=>x.TransactionAmount))</b>
+           <span>Total:</span>
+           <p class="pull-right"><b>$@string.Format("{0:n2}", Model.transactions.Sum(x => x.TransactionAmount))</b></p>
        </div>
-       <div class="col-sm-12">
-           @{ 
+           @{
                string cssClass = "text-success";
-               foreach(var item in Model.transactions)
+               foreach (var item in Model.transactions)
                {
-                   <div>
-                       <h3>@item.Description</h3>
-                   </div>
-                <div>
+                <div class="col-sm-12 col-xs-12">
+                    <span>@item.Description</span>
                     @{
                         if (item.TransactionAmount < 0)
                         {
                             cssClass = "text-danger";
-                        } else
+                        }
+                        else
                         {
                             cssClass = "text-success";
                         }
-                   }
-                    <p class="@cssClass">$@string.Format("{0:n2}", item.TransactionAmount)</p>
+                    }
+                    <p class="@cssClass pull-right"><b>$@string.Format("{0:n2}", item.TransactionAmount)</b></p>
                 </div>
-               }
+                        }
         }
-       </div>
        <hr />
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
            <h4 class="badgeHeader">Badges Earned</h4>
@@ -104,7 +104,7 @@
            foreach (var item in Model.clientBadges)
            {
                var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
-               <div class="col-sm-4">
+               <div class="col-xs-6 col-sm-4">
                    <img src="@Url.Content("~/images/" + badge.BadgeName)" data-html="true"  class="badgeImage" data-toggle="tooltip" title="<b>Earned:</b><em> @item.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="bottom" width="50" height="50" />
                </div>
            }

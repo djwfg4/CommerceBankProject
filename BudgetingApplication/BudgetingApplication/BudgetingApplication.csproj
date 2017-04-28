@@ -157,6 +157,7 @@
     <Content Include="images\add_5_b_cat.png" />
     <Content Include="images\all_badges.png" />
     <Content Include="images\all_holidays.png" />
+    <Content Include="images\avatar-default-icon.png" />
     <Content Include="images\bb_1_month.png" />
     <Content Include="images\bb_3_months.png" />
     <Content Include="images\bb_6_months.png" />
