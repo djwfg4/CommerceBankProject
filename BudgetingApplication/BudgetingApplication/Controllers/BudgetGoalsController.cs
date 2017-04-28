@@ -5,18 +5,27 @@ using System.Web;
 using System.Web.Mvc;
 using BudgetingApplication.Models;
 using System.Data.Entity;
+using BudgetingApplication.ViewModels;
 
 namespace BudgetingApplication.Controllers
 {
     public class BudgetGoalsController : Controller
     {
         private DataContext dbContext = new DataContext();
-        private static int CLIENT_ID = 1;
+        private static int CLIENT_ID;
 
         // GET: BudgetGoals
         public ActionResult Index()
         {
-
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+            }
+            updateBudgetGoals();
             List<BudgetGoals_VW> BudgetGoalList = new List<BudgetGoals_VW>();
 
 
@@ -31,7 +40,15 @@ namespace BudgetingApplication.Controllers
 
         public ActionResult InsertBudgetGoal(int? id)
         {
-           
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+            }
+
             BudgetGoalModelView budget = new BudgetGoalModelView();
             budget.category = GetSelectListItems(GetAllCategories());
 
@@ -105,5 +122,30 @@ namespace BudgetingApplication.Controllers
             return selectList;
         }
 
+        /// <summary>
+        /// This method will be used as a scheduled task to update the budget goals
+        /// Badges will also be earned for each user, no matter who is currently logged in
+        /// </summary>
+        private void updateBudgetGoals()
+        {
+            List<BudgetGoal> budgetGoals = dbContext.BudgetGoals.Where(x => x.Month.Month < DateTime.Now.Month && x.Month.Year <= DateTime.Now.Year && x.GoalCategory != 1 && x.Status =="A").ToList();
+            DateTime lastMonth = DateTime.Now.AddMonths(-1);
+            List<Transaction> transactions = dbContext.Transactions.Where(x => x.TransactionDate.Month == lastMonth.Month && x.TransactionDate.Year == lastMonth.Year && x.CategoryID != 1).ToList();
+
+            foreach(Client client in dbContext.Clients)
+            {
+                var account = dbContext.Accounts.Where(x => x.ClientID == client.ClientID).Select(x => x.AccountNo).ToList();
+                var total = transactions.Where(x => account.Contains(x.TransactionAccountNo)).Sum(x => x.TransactionAmount);
+                var budgeted = budgetGoals.Where(x => x.ClientID == client.ClientID).Sum(x => x.BudgetGoalAmount);
+
+                if(total <= budgeted)
+                {
+                    BadgesModelView bmv = new BadgesModelView();
+                    bmv.addNewBadge(84, client.ClientID); //Give user inital load of app badge if they havent earned it.
+                }
+            }
+            
+
+        }
     }
 }

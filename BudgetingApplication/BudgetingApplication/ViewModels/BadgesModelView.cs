@@ -28,6 +28,7 @@ namespace BudgetingApplication.ViewModels
             }
             cb.BadgeID = badgeID;
             cb.ClientID = clientID;
+            cb.DateEarned = DateTime.Now;
             cb.Status = "new";
             dbContext.ClientBadges.Add(cb);
             dbContext.SaveChanges();

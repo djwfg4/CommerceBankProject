@@ -72,12 +72,15 @@
                         </a>
                     </li>
                 </ul>
-                <div class="navbar-header navbar-right">
-                    <p class="navbar-text">
-                        <a href="/Home">Logout</a>
-                    </p>
-
-                </div>
+                @if (Session["UserName"] != null)
+                {
+                    <div class="navbar-header navbar-right">
+                        <p class="navbar-text">
+                            <em>@Session["UserName"] </em>
+                            <a href="/Home/logout">Logout</a>
+                        </p>  
+                    </div>    
+                }
             </div><!--/.nav-collapse -->
         </div>
             </div>
