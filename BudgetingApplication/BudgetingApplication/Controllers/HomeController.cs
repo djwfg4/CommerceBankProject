@@ -2,9 +2,7 @@
 using BudgetingApplication.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BudgetingApplication.Controllers
@@ -13,50 +11,27 @@ namespace BudgetingApplication.Controllers
     {
         DataContext dbContext = new DataContext();
 
-        public ActionResult Login()
+       
+        public static int CLIENT_ID;
+        public ActionResult checkUser()
         {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(Client objClient)
-        {
-            if (ModelState.IsValid)
+            if (Session["UserID"] == null)
             {
-                using (dbContext)
-                {
-                    var obj = dbContext.Clients.Where(a => a.Username.Equals(objClient.Username) && a.Password.Equals(objClient.Password)).FirstOrDefault();
-                    if (obj != null)
-                    {
-                        Session["UserID"] = obj.ClientID.ToString();
-                        Session["UserName"] = obj.Username.ToString();
-                        return RedirectToAction("UserDashBoard");
-                    }
-                }
-            }
-            return View(objClient);
-        }
-
-        public ActionResult UserDashBoard()
-        {
-            if (Session["UserID"] != null)
-            {
-                return View();
+                return RedirectToAction("Login", "Home");
             }
             else
             {
-                return RedirectToAction("Login");
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+                return null;
             }
+
         }
 
-        public static int CLIENT_ID = 1;
-
-        /// GET: Home - OVerview Page
-        /// Loads all necessary data for it to be shown in one place
-        /// 
+        // GET: Home
         public ActionResult Index()
         {
+            ActionResult result = checkUser();
+            if(result != null) { return result; }
 
             BadgesModelView bmv = new BadgesModelView();
             bmv.addNewBadge(74, CLIENT_ID); //Give user inital load of app badge if they havent earned it.
@@ -74,24 +49,71 @@ namespace BudgetingApplication.Controllers
         }
 
         /// <summary>
-        /// Technical Prototype for the project assignment. Just a proof of concept.
+        /// This was an assignment that was given to us. This may not work with all the updated changes that have been made. 
         /// </summary>
-        /// <returns>TechnicalProtoype.cshtml view</returns>
+        /// <returns></returns>
         public ActionResult TechnicalPrototype()
         {
+            checkUser();
             return View();
+        }
+        /// <summary>
+        /// Clear the session cache, and list all clients to choose.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Login()
+        {
+            Session.Clear();
+            LoginModelView loginView = new LoginModelView();
+            loginView.allClients = dbContext.Clients.ToList();
+            return View(loginView);
         }
 
         /// <summary>
-        /// This function will query the database for all the income for this current month and all the 
-        /// transactions spent in the current month. 
+        /// Clears session cache, then go to log in page.
         /// </summary>
-        /// <returns>A 2 element array, first element is income, second is spent amount</returns>
+        /// <returns></returns>
+        public ActionResult Logout()
+        {
+            Session.Clear();
+            return RedirectToAction("Login");
+        }
+
+        /// <summary>
+        /// Validates that the log in page passed correct values for logging in. 
+        /// Else goes back to the login page.
+        /// </summary>
+        /// <param name="objClient"></param>
+        /// <returns>redirect back to overview page or if error back to log in screen.</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(LoginModelView objClient)
+        {
+            if (ModelState.IsValid)
+            {
+                using (dbContext)
+                {
+                    var obj = dbContext.Clients.Where(a => a.Username.Equals(objClient.client.Username)).FirstOrDefault();
+                    if (obj != null)
+                    {
+                        Session["UserID"] = obj.ClientID.ToString();
+                        Session["UserName"] = obj.Username.ToString();
+                        return RedirectToAction("index");
+                    }
+                }
+            }
+            return View(objClient);
+        }
+
+        /// <summary>
+        /// Calculates the total income from all of the client's accounts and the total
+        /// amount spent. This is for the current month. 
+        /// </summary>
+        /// <returns>2 element array with total income first and spent second.</returns>
         private decimal[] getTotalIncomeAndSpent()
         {
             decimal spent = 0, income = 0;
-
-            //query for current client's transaction for this month
+            //Each account get all transactions and sum them up.
             var query = from trans in dbContext.Transactions
                         from account in dbContext.Accounts
                         where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
@@ -105,48 +127,46 @@ namespace BudgetingApplication.Controllers
                             categoryID = f.Select(x => x.trans.CategoryID)
                         };
 
-            //loop through all and add to either total spent or total income.
+            //sum up all different accounts into one 
             foreach (var item in query)
             {
-                if (item.categoryID.First() == 1)
-                {
-                    income += item.totalMoney;
-                }
-                else
-                {
-                    spent += item.totalMoney;
-                }
+                //categoryID == 1 is the income category
+                if (item.categoryID.First() == 1) { income += item.totalMoney; }
+                else{ spent += item.totalMoney; }
             }
             return new decimal[] { income, spent };
         }
+
         /// <summary>
-        /// Returns a list of all badges this app has to offer.
+        /// Get all the badges available
         /// </summary>
-        /// <returns>list of badges</returns>
+        /// <returns>All badges</returns>
         private IEnumerable<Badge> getAllBadges()
         {
             return dbContext.Badges;
         }
 
         /// <summary>
-        /// Get a list of current client's list of earned badges
+        /// Get all the badges earned by logged in client
         /// </summary>
-        /// <returns>list of earned badges</returns>
+        /// <returns>All earned badges</returns>
         private IEnumerable<ClientBadge> getClientBadges()
         {
             return dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID);
         }
 
         /// <summary>
-        /// Get all transactions from database for each account the client owns.
+        /// Get all the transactions made by the Client in each of their accounts.
+        /// Then calaculate the total amount in each account
+        /// The purpose of this is to show the total amounts in the sidebar on the overview page.
         /// </summary>
-        /// <returns>List of transactions for each account from current client</returns>
+        /// <returns>List of all transactions, ever</returns>
         private IEnumerable<Transaction> getTransactionInfo()
         {
             List<Transaction> transactions = new List<Transaction>();
 
-            //query database and group by the account type and its sum
-            var query = from trans in dbContext.Transactions
+            //get all accounts and the sum of them, create a new object to hold them
+            var query2 = from trans in dbContext.Transactions
                     from account in dbContext.Accounts
                     where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
                     group new { trans, account } by trans.TransactionAccountNo into f
@@ -157,8 +177,8 @@ namespace BudgetingApplication.Controllers
                         totalMoney = f.Sum(x => x.trans.TransactionAmount)
                     };
 
-            //add each grouped amount into the list
-            foreach (var item in query)
+            //convert the created object to Transaction, add to the list
+            foreach (var item in query2)
             {
                 Transaction trans = new Transaction();
                 trans.Description = item.accountDescr.First();
@@ -170,18 +190,17 @@ namespace BudgetingApplication.Controllers
         }
 
         /// <summary>
-        /// Return a BudgetGoalModelView full of the information needed for it to be displayed 
-        /// on the Overview Page. It will calculate the total budgeted and total spent. These will
-        /// be individually displayed on the page.
+        /// Calculate the budget of the client to display on the overview page.
         /// </summary>
-        /// <returns>BudgetGoalModelView</returns>
+        /// <returns></returns>
         private BudgetGoalModelView getBudgetInfo()
         {
             List<BudgetGoals_VW> BudgetGoalList = new List<BudgetGoals_VW>();
 
-
+            //all budgets categories the client has
             BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
 
+            //Insert them into the view model, calculate the totals
             BudgetGoalModelView budgetGoal = new BudgetGoalModelView();
             budgetGoal.budgetView = BudgetGoalList;
             budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
@@ -190,24 +209,24 @@ namespace BudgetingApplication.Controllers
         }
 
         /// <summary>
-        /// This method will be called through Ajax in the javascript files. This will 
-        /// calculate all the information needed for the graphs to display information
-        /// from each category. It generates the JSON that chart.js will use.
+        /// JSON requests for the charts that are shown in the overview page. This JSON data is created
+        /// to fit the needs of Chart.js.
+        /// This format of JSON works on all different types of charts, refer to the BudgetApplication.js.
         /// </summary>
-        /// <returns>JSON used by chart.js</returns>
+        /// <returns>JSON of graph data</returns>
         public JsonResult GetDonutAndBarGraphData()
         {
             List<Transaction> tr = new List<Transaction>();
-            Dictionary<string, List<object>> dict = new Dictionary<string, List<object>>();
-            Dictionary<string, List<object>> dict2 = new Dictionary<string, List<object>>();
+            Dictionary<string, List<object>> dataDict = new Dictionary<string, List<object>>();
+            Dictionary<string, List<object>> datasetsDict = new Dictionary<string, List<object>>();
 
-            //get all transaction for all accounts the client has
+            //get each transaction made this month.
             var monthlyTransacations = from trans in dbContext.Transactions
                                        from account in dbContext.Accounts
                                        where trans.TransactionDate.Month == DateTime.Now.Month && trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
                                        select new { trans, account };
 
-            //from the above query, get the sum of each category within all accounts.
+            //organize the transaction into categories and sum the total spent.
             var sumQuery = from querys in monthlyTransacations
                            group querys by new { querys.account.ClientID, querys.trans.CategoryID } into f
                            select new
@@ -223,7 +242,7 @@ namespace BudgetingApplication.Controllers
             List<object> labels = new List<object>();
             List<object> nums = new List<object>();
 
-            //the colors of the graph sections/bars
+            //colors of the graph sections. 
             string[] colors = { "rgb(255, 99, 132)",
                 "rgb(255, 159, 64)",
                 "rgb(255, 205, 86)",
@@ -232,10 +251,9 @@ namespace BudgetingApplication.Controllers
                 "rgb(153, 102, 255)",
                 "rgb(231,233,237)" };
 
-
-            //add each category and it's amount to separate lists, skipping category 1, which is the income category
             foreach (var trans in sumQuery)
             {
+                //add all categories to the labels except category 1 (this is the income category)
                 if (trans.CategoryID != 1)
                 {
                     labels.Add(trans.CategoryType.First());
@@ -243,31 +261,29 @@ namespace BudgetingApplication.Controllers
                 }
             }
 
+            dataDict["datasets"] = new List<object>();
 
-            //create dictionaries to easily have it converted into JSON.
-            dict["datasets"] = new List<object>();
+            datasetsDict["backgroundColor"] = colors.ToList<object>();
+            datasetsDict["data"] = nums;
 
-            dict2["backgroundColor"] = colors.ToList<object>();
-            dict2["data"] = nums;
+            dataDict["datasets"].Add(datasetsDict);
+            dataDict["labels"] = labels;
 
-            dict["datasets"].Add(dict2);
-            dict["labels"] = labels;
-
-            return new JsonResult { Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            return new JsonResult { Data = dataDict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
         /// <summary>
-        /// Gets all the badges the client has earned and returns the information to JSON. 
-        /// This will also update the status of the clientbadge from "new" to "earned"
+        /// Get all the badges that the user has earned but have not been notified of yet.
+        /// Once notified, change the status.
         /// </summary>
-        /// <returns>JSON of badges earned</returns>
+        /// <returns>JSON of badge info</returns>
         public JsonResult GetNewlyEarnedBadges()
         {
-            //Only return badges that are the client's and have a status of "new"
+            //get all badges that client has earned, but the status is "new"
             List<ClientBadge> newlyEarnedBadges = dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID && x.Status == "new").ToList();
             Dictionary<String, object> dict = new Dictionary<String, object>();
             
-            //get the badge info to be displayed, then update the status.
+            //get the badge name and details, change the client's badge status
             foreach ( ClientBadge cb in newlyEarnedBadges)
             {
                 Badge badge = dbContext.Badges.Where(x => x.BadgeID == cb.BadgeID).FirstOrDefault();

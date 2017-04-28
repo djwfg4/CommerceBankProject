@@ -14,7 +14,7 @@ canvas {
     -ms-user-select: none;
 }
 
-/*Nav Bar*/
+/* Nav Bar */
 .navBanner {
     background-color: #006f51;
     padding: 0;
@@ -22,36 +22,40 @@ canvas {
     height: 50px;
 }
 
-.navBanner button {
-    border-color: rgb(2, 58, 43);
-}
+    .navBanner button {
+        border-color: rgb(2, 58, 43);
+    }
 
-.navBanner button:hover, .navBanner button:active {
-    background-color: rgb(2, 58, 43);
-}
-.navBanner button:focus {
-    background-color: #006f51!important;
-}
+        .navBanner button:hover, .navBanner button:active {
+            background-color: rgb(2, 58, 43);
+        }
 
-.navBanner .icon-bar {
-    background-color: rgb(255, 255, 255);
-}
+        .navBanner button:focus {
+            background-color: #006f51 !important;
+        }
+
+    .navBanner .icon-bar {
+        background-color: rgb(255, 255, 255);
+    }
 
 .navLinks {
     background: #6ab244;
     box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
 }
 
-.navLinks a {
-    color: white !important;
-    padding: 15px;
-    text-decoration: none;
-}
+    .navLinks a {
+        color: white !important;
+        padding: 15px;
+        text-decoration: none;
+    }
 
-.navLinks a:hover {
-    background-color: #b3d78b !important;
-    padding: 15px;
-    text-decoration: none;
+        .navLinks a:hover, .navLinks a:focus {
+            background-color: #b3d78b !important;
+            padding: 15px;
+            text-decoration: none;
+        }
+.navbar-text{
+    color:white;
 }
 
 .active-indicator {
@@ -67,12 +71,7 @@ canvas {
     width: 225px;
     height: 50px;
     background-color: #006f51;
-    /*margin-left: 0px;
-    padding-left: 35px;
-    margin-right: 0px;
-    padding-right: 35px;*/
 }
-
 
 
 .content-wrap {
@@ -81,15 +80,6 @@ canvas {
     clear: both;
 }
 
-.fc-today {
-    background-color: #cccccc !important;
-    border: 1px solid #000 !important;
-}
-
-/*This gets rid of the extra space in the calendar */
-.fc-basic-view .fc-body .fc-row {
-    min-height: 1em !important;
-}
 
 
 /*sidebar properties*/
@@ -109,7 +99,7 @@ canvas {
     min-width: 150px;
 }
 
-.dropdown-menu > li span{
+.dropdown-menu > li span {
     display: block;
     padding: 3px 20px;
     clear: both;
@@ -118,26 +108,28 @@ canvas {
     color: #333;
     white-space: nowrap;
 }
-.dropdown-menu > li span:hover{
-    cursor: pointer;
-    background-color:#e2e2e2;
-}
-.badgeImage{
-    margin-bottom:5px;
-    margin-top:5px;
+
+    .dropdown-menu > li span:hover {
+        cursor: pointer;
+        background-color: #e2e2e2;
+    }
+
+.badgeImage {
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-.incomeBox{
+.incomeBox {
     border: 1px solid #ccc;
     margin-top: 55px;
     padding-top: 10px;
     background-color: rgba(242, 242, 242, 1);
-    text-align:center;
+    text-align: center;
 }
 
 
 
-/*budget goals */
+/* budget goals Page */
 #budgetGoalContainer,
 .bGoalContainer {
     margin: 0 auto;
@@ -149,9 +141,17 @@ canvas {
     padding: 5px;
 }
 
-    .bGoalContainer:hover {
-        background-color: #dff0d8;
-    }
+.bGoalContainerSubmit {
+    margin: 0 auto;
+    min-width: 500px;
+    max-width: 500px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.bGoalContainer:hover {
+    background-color: #dff0d8;
+}
 
 .bGoalUpper {
     width: 100%;
@@ -192,46 +192,70 @@ canvas {
 .bGoalIncome-sidebar-amount {
 }
 
-.bGoalIncome-sidebar-amount span {
-    font-weight: bold;
-    color: green;
-}
+    .bGoalIncome-sidebar-amount span {
+        font-weight: bold;
+        color: green;
+    }
 
-
-/* Notifications CSS */
-.alert-minimalist {
-	/*background-color: rgb(241, 242, 240);
-	border-color: rgba(149, 149, 149, 0.3);
-	border-radius: 3px;
-	color: rgb(149, 149, 149);
-	padding: 10px;*/
-}
-.alert-minimalist > [data-notify="icon"] {
-	height: 40px;
-	margin-right: 12px;
-}
-.alert-minimalist > [data-notify="title"] {
-	color: rgb(51, 51, 51);
-	display: block;
-	font-weight: bold;
-	margin-bottom: 5px;
-}
-.alert-minimalist > [data-notify="message"] {
-	font-size: 80%;
-}
-
-.myBadge {
-    min-height:200px!important;
-}
 /* custom CSS for small screens */
 @media (max-width: 767px) {
     body {
-        padding-top:55px;
+        padding-top: 55px;
     }
+
     #banner-brand {
-        margin-left:20px;
+        margin-left: 20px;
     }
-    .myBadge {
-    min-height:150px!important;
+}
+
+/* Notifications CSS */
+.alert-minimalist > [data-notify="icon"] {
+    height: 40px;
+    margin-right: 12px;
+}
+
+.alert-minimalist > [data-notify="title"] {
+    color: rgb(51, 51, 51);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.alert-minimalist > [data-notify="message"] {
+    font-size: 80%;
+}
+
+/* Login Page CSS*/
+.userNameBlock {
+    min-height: 150px;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    border: 1px solid black;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    background-color: #6ab244;
+    color: white;
+    text-align: center;
+    font-variant: small-caps;
+    font-size: x-large;
+}
+
+    .userNameBlock:hover {
+        cursor: pointer;
+        background-color: #60a23d;
     }
- }
+
+.userNameBlock-selected {
+    background-color: #006f51;
+    border: 2px solid #60a23d;
+}
+
+    .userNameBlock-selected:hover {
+        background-color: #006f51;
+    }
+
+#login-holder {
+    padding-top: 25px;
+}
