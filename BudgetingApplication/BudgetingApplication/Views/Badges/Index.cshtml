@@ -25,8 +25,17 @@
     </div>
     <div class="badge-sidebar-recent" align="center" style="border-bottom:1px solid; margin-bottom: 10px;">
         <h4>Most Recent Badge</h4>
-        <div class="badge-progress-ratio" align="center" style="margin-bottom:20px;" title="@Url.Content(Model.badges.ElementAt(Model.badgeCount - 1).Description)">
-            <img src="@Url.Content("~/images/" + Model.badges.ElementAt(Model.badgeCount - 1).BadgeName)" style="max-height: 50px; max-width: 50px;" />
+        <div class="badge-progress-ratio" align="center" style="margin-bottom:20px;" title="@Url.Content(Model.badges.ElementAt(Model.badgeCount-1).Description)">
+            <img src="@Url.Content("~/images/" + Model.badges.ElementAt(Model.badgeCount-1).BadgeName)" style="max-height: 50px; max-width: 50px;" />
+        </div>
+    </div>
+    <div class="badge-sharing" align="center" style="border-bottom:1px solid;">
+        <h4>Share this Badge</h4>
+        <div>
+            <a class="twitter-share-button"
+               href="https://twitter.com/intent/tweet?text=New%20Commerce%20Bank%20Badge:@Url.Content(Model.badges.ElementAt(Model.badgeCount-1).Description)@Url.Content(Model.tweetMessage)">
+                <img src="~/images/tweetbutton.png" style="max-height: 30px; max-width: 55px"/>
+            </a>
         </div>
     </div>
 
