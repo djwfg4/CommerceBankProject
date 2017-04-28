@@ -5,6 +5,40 @@
   "July", "August", "September", "October", "November", "December"
     ];
 
+    //This code is used to make the sidebar mobile friendly and visible on a click
+    $("#showSidebar").on('click', function () {
+        if (!$('#hoveringSidebar #sidebar').length) {
+            $('#sidebar').clone().appendTo('#hoveringSidebar');
+            $('#hoveringSidebar #sidebar').removeAttr('class');
+            $('[data-toggle="tooltip"]').tooltip();
+           
+        }
+        $(this).toggleClass('sidebarToggled', 500);
+        if ($(this).hasClass('sidebarToggled')) {
+            $('#hoveringSidebar').hide("slide", { direction: "left" }, 500);
+        } else {
+            $('#hoveringSidebar').show("slide", { direction: "left" }, 500);
+        }
+    })
+    var getWarningsURL = '/Home/getWarnings';
+
+    $.ajax({
+        async: true,
+        url: getWarningsURL,
+        dataType: "json",
+        success: function (json) {
+            $.each(json, function (index, value) {
+                $('#warnings').hide().append("<div id='"+index+"' class='alert alert-danger myWarning'><button type='button' aria-hidden='true' class='close'>×</button><p>" + value +"</p></div>").show('fast');
+            })
+            $('.myWarning button').on('click', function () {
+                $(this).parent().fadeOut();
+            })
+        },
+        error: function (e) {
+            alert("Warnings data request failed");
+        }
+    });
+
     var getNotificationsURL = '/Home/GetNewlyEarnedBadges';
 
     $.ajax({

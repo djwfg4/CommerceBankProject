@@ -76,6 +76,7 @@ namespace BudgetingApplication.Controllers
         public ActionResult Logout()
         {
             Session.Clear();
+            CLIENT_ID = -1;
             return RedirectToAction("Login");
         }
 
@@ -296,6 +297,28 @@ namespace BudgetingApplication.Controllers
             dbContext.SaveChangesAsync();
 
             return new JsonResult {Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+        public JsonResult getWarnings()
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+
+
+            if (Session["UserID"] == null)
+            {
+                //get budget warnings
+                List<BudgetGoals_VW> BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
+                foreach (BudgetGoals_VW budgetGoal in BudgetGoalList)
+                {
+                    int percentage = (int)(100 * (Math.Abs(budgetGoal.TransactionAmount) / budgetGoal.BudgetGoalAmount));
+                    if (percentage > 90)
+                    {
+                        dict[budgetGoal.CategoryType] = "You are within " + (100 - percentage) + "% of exceeding your " + budgetGoal.CategoryType + " budget.";
+                    }
+                }
+            }
+
+            return new JsonResult { Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+
         }
     }
 }
