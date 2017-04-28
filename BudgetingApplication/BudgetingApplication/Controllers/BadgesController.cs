@@ -21,6 +21,7 @@ namespace BudgetingApplication.Controllers
             //get badges the user has earned
             BadgesModelView badgeModel = new BadgesModelView();
             badgeModel.badges = getUserBadges();
+            badgeModel.tweetMessage = "! Come budget with Commerce today at commercebank.com";
 
             badgeTrigger(badgeModel);
 
