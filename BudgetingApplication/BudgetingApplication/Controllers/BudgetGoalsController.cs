@@ -155,10 +155,50 @@ namespace BudgetingApplication.Controllers
                 var total = transactions.Where(x => account.Contains(x.TransactionAccountNo)).Sum(x => x.TransactionAmount);
                 var budgeted = budgetGoals.Where(x => x.ClientID == client.ClientID).Sum(x => x.BudgetGoalAmount);
 
-                if(total <= budgeted)
+                BadgesModelView bmv = new BadgesModelView();
+                if (total <= budgeted)
                 {
-                    BadgesModelView bmv = new BadgesModelView();
+                    
                     bmv.addNewBadge(84, client.ClientID); //Give user inital load of app badge if they havent earned it.
+                    //determine what month of the streak we're at, award badge accordingly
+
+                    //determine if any holidays apply
+                    switch (lastMonth.Month)
+                    {
+                        case (2): //February
+                            bmv.addNewBadge(111, client.ClientID); //washington's birthday
+                            break;
+                        case (3): //March
+                            bmv.addNewBadge(112, client.ClientID); //april fools
+                            break;
+                        case (4): //April
+                            bmv.addNewBadge(113, client.ClientID);// easter
+                            break;
+                        case (5): //May
+                            bmv.addNewBadge(114, client.ClientID); //memorial day
+                            break;
+                        case (6): //June
+                            bmv.addNewBadge(116, client.ClientID); //Independence Day
+                            break;
+                        case (10): //October
+                            bmv.addNewBadge(117, client.ClientID); //Halloween
+                            break;
+                        case (11): //November
+                            bmv.addNewBadge(118, client.ClientID); //Thanksgiving
+                            break;
+                        case (12): //December
+                            bmv.addNewBadge(120, client.ClientID); //xmas
+                            break;
+                    }
+                }
+                else if(total == budgeted)
+                {
+                    //client is in the black for this month
+                    bmv.addNewBadge(97, client.ClientID);
+                }
+                else
+                {
+                    //client went over budget, streak is broken, update DB
                 }
             }
             
