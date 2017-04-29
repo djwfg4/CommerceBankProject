@@ -45,6 +45,7 @@ namespace BudgetingApplication.Controllers
             decimal[] totals = getTotalIncomeAndSpent();
             mv.totalIncome = totals[0];
             mv.totalSpent = totals[1];
+            badgeTriggers();
             return View(mv);
         }
 
@@ -331,6 +332,13 @@ namespace BudgetingApplication.Controllers
 
             return new JsonResult { Data = dict, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
 
+        }
+        
+        //adds badge if user has started
+        public void badgeTriggers()
+        {
+            BadgesModelView bmv = new BadgesModelView();
+            bmv.addNewBadge(74, CLIENT_ID);
         }
     }
 }
