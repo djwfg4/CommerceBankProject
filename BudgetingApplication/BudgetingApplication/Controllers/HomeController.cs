@@ -37,7 +37,7 @@ namespace BudgetingApplication.Controllers
             bmv.addNewBadge(74, CLIENT_ID); //Give user inital load of app badge if they havent earned it.
 
             indexModelView mv = new indexModelView();
-
+            mv.savingsGoals = getSavingGoals();
             mv.budgetGoals = getBudgetInfo();
             mv.transactions = getTransactionInfo();
             mv.badges = getAllBadges();
@@ -209,6 +209,17 @@ namespace BudgetingApplication.Controllers
             return budgetGoal;
         }
 
+        private SavingsGoalsViewModel getSavingGoals()
+        {
+            List<SavingsGoal> SavingsGoalList = new List<SavingsGoal>();
+            SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).Where(x => x.Status == "Active").ToList();
+
+            SavingsGoalsViewModel savingsGoal = new SavingsGoalsViewModel();
+            savingsGoal.savingsView = SavingsGoalList;
+            savingsGoal.totalBudgeted = savingsGoal.savingsView.Select(x => x).Where(x => x.SavingGoalID != 0).Sum(x => Convert.ToDouble(x.SavingsGoalAmount));
+            savingsGoal.totalSaved = savingsGoal.savingsView.Select(x => x).Sum(x => Convert.ToDouble(x.CurrentGoalAmount));
+            return savingsGoal;
+        }
         /// <summary>
         /// JSON requests for the charts that are shown in the overview page. This JSON data is created
         /// to fit the needs of Chart.js.
@@ -224,7 +235,7 @@ namespace BudgetingApplication.Controllers
             //get each transaction made this month.
             var monthlyTransacations = from trans in dbContext.Transactions
                                        from account in dbContext.Accounts
-                                       where trans.TransactionDate.Month == DateTime.Now.Month && trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
+                                       where trans.TransactionDate.Month == DateTime.Now.Month && trans.TransactionDate.Year == DateTime.Now.Year && trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
                                        select new { trans, account };
 
             //organize the transaction into categories and sum the total spent.
@@ -244,13 +255,14 @@ namespace BudgetingApplication.Controllers
             List<object> nums = new List<object>();
 
             //colors of the graph sections. 
-            string[] colors = { "rgb(255, 99, 132)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 205, 86)",
+            string[] colors = {
+                "rgb(7, 18, 40)",
                 "rgb(75, 192, 192)",
+                "rgb(255, 159, 64)",
+                "rgb(255, 99, 132)",
+                "rgb(255, 205, 86)",
                 "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)",
-                "rgb(231,233,237)" };
+                "rgb(153, 102, 255)" };
 
             foreach (var trans in sumQuery)
             {

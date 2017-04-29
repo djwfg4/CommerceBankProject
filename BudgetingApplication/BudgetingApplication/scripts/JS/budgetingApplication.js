@@ -134,7 +134,7 @@
                     }
                 };
                 if (json.datasets[0].data.length == 0) {
-                    window.graphContainer.innerHTML = "<center>There is no data for this month yet </center>";
+                    window.graphContainer.innerHTML = "<div id='noGraphData'>You have not spent any money this month! </div>";
                 } else {
                     window.myChart = new Chart(ctx, config);
                 }

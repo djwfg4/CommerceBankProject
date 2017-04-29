@@ -3,48 +3,51 @@
     Layout = "~/Views/_Layout.cshtml";
     ViewBag.PageName = "Index";
 }
-<div id="graphContainer" class="col-md-10">
-    <div id="showCharts" class="col-md-10">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-                <span id="currentType">Donut Chart</span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li>
-                    <span id="showDonut" data-show="doughnut" style="display:none;">Donut Chart</span>
-                </li>
-                <li>
-                    <span id="showBar-horizontal" data-show="horizontalBar">Horizontal Bar Chart</span>
-                </li>
-                <li>
-                    <span id="showBar" data-show="bar">Bar Chart</span>
-                </li>
-                <li>
-                    <span id="showPolar" data-show="polarArea">Polar Area Chart</span>
-                </li>
-                <li>
-                    <span id="showLine" data-show="line">Line Chart</span>
-                </li>
-            </ul>
+<div class="col-sm-9">
+    <div id="graphContainer" class="col-md-12">
+        <div id="showCharts" class="col-md-9">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <span id="currentType">Donut Chart</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <span id="showDonut" data-show="doughnut" style="display:none;">Donut Chart</span>
+                    </li>
+                    <li>
+                        <span id="showBar-horizontal" data-show="horizontalBar">Horizontal Bar Chart</span>
+                    </li>
+                    <li>
+                        <span id="showBar" data-show="bar">Bar Chart</span>
+                    </li>
+                    <li>
+                        <span id="showPolar" data-show="polarArea">Polar Area Chart</span>
+                    </li>
+                    <li>
+                        <span id="showLine" data-show="line">Line Chart</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <center>
+                <div id="MyChart">
+                    <canvas id="chartArea" height="350" />
+                </div>
+            </center>
         </div>
     </div>
-    <div class="col-sm-12">
-        <center>
-            <div id="MyChart">
-                <canvas id="chartArea" height="350" />
-            </div>
-        </center>
-    </div>
-</div>
-<div class="col-md-2 incomeBox">  
-   <p>@DateTime.Now.ToString("MMMM")'s Income: <b>$@string.Format("{0:n2}", Model.totalIncome)</b></p>
-    <p>@DateTime.Now.ToString("MMMM")'s Spending: <b>$@string.Format("{0:n2}", Model.totalSpent)</b></p>
-</div>
 
-<div class="col-md-10"><center><h2>My Budget</h2></center></div>
-    <div class="col-md-10">
+    <div class="col-md-12"><center><h2>My Budget</h2></center></div>
+    <div class="col-md-12">
         @{
+            if (Model.budgetGoals.budgetView.Count() < 1)
+            {
+                <div class="col-md-12">
+                    You have not set any budget categories. <a href="~/BudgetGoal/InsertBudgetGoal"><span class="btn btn-success"> Add a new category</span></a>
+                </div>
+            }
             foreach (var item in Model.budgetGoals.budgetView)
             {
                 @Html.Partial("~/Views/BudgetGoals/_ListGoals.cshtml", item)
@@ -52,7 +55,31 @@
         }
     </div>
 
-<!-- this is only visible when the screen gets too small-->
+</div>
+<div class="col-sm-3">
+    <div class="col-md-12 incomeBox">
+        <p>@DateTime.Now.ToString("MMMM")'s Income: <b>$@string.Format("{0:n2}", Model.totalIncome)</b></p>
+        <p>@DateTime.Now.ToString("MMMM")'s Spending: <b>$@string.Format("{0:n2}", Model.totalSpent)</b></p>
+    </div>
+    <br />
+    @{
+        if(Model.savingsGoals.savingsView.Count < 1)
+        {
+            <div class="col-md-12">
+                You have not set any goals. <a href="~/SavingsGoal/InsertSavingsGoal"><span class="btn btn-success"> Add a new goal</span></a> 
+            </div>
+        }
+        foreach (var item in Model.savingsGoals.savingsView)
+        {
+            <div class="col-sm-12">
+                @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
+            </div>
+        }
+    }
+
+
+</div>
+ <!-- this is only visible when the screen gets too small-->
 <div class="col-sm-12 visible-sm-block visible-xs-block" style="border-bottom:1px solid; margin-bottom:10px;">
     <h4 class="badgeHeader">Badges Earned</h4>
 </div>
@@ -64,9 +91,7 @@
             <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="bottom" width="50" height="50" />
         </div>
     }
-}
-<!--end of small screen visibility-->
-
+}    <!--end of small screen visibility-->
 @section sidebar {
    <div>
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">

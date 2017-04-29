@@ -123,7 +123,7 @@ canvas {
 
 .incomeBox {
     border: 1px solid #ccc;
-    margin-top: 55px;
+    /*margin-top: 55px;*/
     padding-top: 10px;
     background-color: rgba(242, 242, 242, 1);
     text-align: center;
@@ -189,9 +189,19 @@ canvas {
 }
 
 /*Overview page*/
-#graphContainer{
-    min-height:350px;
+#graphContainer {
+    min-height: 350px;
 }
+#noGraphData{
+    text-align:center;
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    min-height: 350px;
+    font-weight: 900;
+    font-size:x-large;
+}
+
 #showCharts{
     
 }
@@ -324,4 +334,10 @@ canvas {
 
 #login-holder {
     padding-top: 25px;
+}
+
+
+/* badge page */
+.myBadge{
+    min-height:220px!important;
 }
