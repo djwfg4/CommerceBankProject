@@ -58,7 +58,7 @@ namespace BudgetingApplication.Controllers
         {
             //check if user does not have any badges tied to the badge page
             //bool array for achievement of each badge
-            bool[] badgeObtained = new bool[8];
+            bool[] badgeObtained = new bool[9];
             int holidayCount = 0;
 
             List<ClientBadge> ClientBadgeList = new List<ClientBadge>();
@@ -98,6 +98,9 @@ namespace BudgetingApplication.Controllers
                         break;
                     case (123):
                         badgeObtained[7] = true;
+                        break;
+                    case (108):
+                        badgeObtained[8] = true;
                         break;
                 }
             }
@@ -151,6 +154,31 @@ namespace BudgetingApplication.Controllers
                             if (ClientBadgeList.Count() == 44)
                             {
                                 bmv.addNewBadge(123, CLIENT_ID);
+                            }
+                            break;
+                        case (8):
+                            //check if 106, 107, and 75 have been obtained
+                            int count = 0;
+
+                            for (int k = 0; k < ClientBadgeList.Count(); k++)
+                            {
+                                switch (ClientBadgeList[k].BadgeID)
+                                {
+                                    case (106):
+                                        count++;
+                                        break;
+                                    case (107):
+                                        count++;
+                                        break;
+                                    case (75):
+                                        count++;
+                                        break;
+                                }
+                            }
+
+                            if(count == 3)
+                            {
+                                bmv.addNewBadge(108, CLIENT_ID);
                             }
                             break;
                     }
