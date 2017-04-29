@@ -5,5 +5,54 @@
     Layout = "~/Views/_Layout.cshtml";
 }
 
-<h2>Savings Goals</h2>
+<script>
+    $(document).ready(function () {
 
+    $(".sGoalContainer").hover(
+  function() {
+      $(this).find('.sGoal-edit').show();
+  }, function() {
+      $(this).find('.sGoal-edit').hide();
+  }
+);
+    });
+</script>
+
+<center><h2>Savings Goals</h2></center>
+<div id="savingsGoalContainer">
+
+
+    @foreach (var item in ViewData.Model.savingsView)
+    {
+        @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
+    }
+    <div class="sGoalContainer" style="border:0px solid!important;">
+        <a type="button" class="btn btn-success" style="float:right;"
+           href="~/SavingsGoal/InsertSavingsGoal">+ Add New Goal</a>
+    </div>
+</div>
+
+@section sidebar{
+
+    @{double total = 0;
+        double complete = 0;
+
+
+        foreach (var item in Model.savingsView)
+        {
+            total += 1;
+            if (item.CurrentGoalAmount == item.SavingsGoalAmount)
+            {
+                complete += 1;
+
+                <div class="sGoalIncome-sidebar">
+                    <h3>Goals Met:  </h3>
+                    <div class="sGoal-sidebar-amount">
+                        <span>@complete of @total</span>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+}
