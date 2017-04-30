@@ -12,6 +12,8 @@ namespace BudgetingApplication.ViewModels
         public List<SavingsGoal> savingsView { get; set; }
         public SavingsGoal savingsGoal { get; set; }
         public List<SelectListItem> active { get; set; }
+        public string recurring { get; set; }
+        public DateTime date { get; set; }
         public double totalBudgeted { get; set; }
         public double totalSaved { get; set; }
         string progressType { get; set; }
