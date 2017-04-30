@@ -104,8 +104,21 @@
                @if (Session["UserName"] != null)
                {
                 <div id="UserArea">
-                    <img src="~/images/avatar-default-icon.png"/>
-                    @Session["UserName"]
+                    <table>
+                        <tr>
+                            <td rowspan="2">
+                                <img src="~/images/avatar-default-icon.png" />
+                            </td>
+                            <td>
+                                <h3>@Session["UserName"]</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <em>@DateTime.Now.ToLongDateString()</em>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                }
                 <div id="warnings">
