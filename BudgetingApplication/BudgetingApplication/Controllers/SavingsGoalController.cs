@@ -20,7 +20,7 @@ namespace BudgetingApplication.Controllers
 
             List<SavingsGoal> SavingsGoalList = new List<SavingsGoal>();
 
-
+           
             SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).Where(x => x.Status == "Active").ToList();
 
             SavingsGoalsViewModel savingsGoal = new SavingsGoalsViewModel();
@@ -67,6 +67,16 @@ namespace BudgetingApplication.Controllers
             }
             return View(model);
 
+        }
+
+        public ActionResult AddFunds(SavingsGoalsViewModel model)
+        {
+            SavingsGoal newSavingsGoal = new SavingsGoal();
+            newSavingsGoal = model.savingsGoal;
+            //newSavingsGoal.ClientID = CLIENT_ID;
+            //newSavingsGoal.SavingsPointValue = 0;
+
+            return View(model);
         }
 
     }
