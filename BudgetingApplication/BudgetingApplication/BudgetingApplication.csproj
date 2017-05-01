@@ -88,7 +88,8 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Formatting">
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -144,9 +145,59 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Site.css" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="images\10_badges.png" />
+    <Content Include="images\20_badges.png" />
+    <Content Include="images\3_ut_goals.png" />
+    <Content Include="images\50_badges.png" />
+    <Content Include="images\5_badges.png" />
+    <Content Include="images\5_ut_goals.png" />
+    <Content Include="images\add_1_b_cat.png" />
+    <Content Include="images\add_3_b_cat.png" />
+    <Content Include="images\add_5_b_cat.png" />
+    <Content Include="images\all_badges.png" />
+    <Content Include="images\all_holidays.png" />
+    <Content Include="images\avatar-default-icon.png" />
+    <Content Include="images\bb_1_month.png" />
+    <Content Include="images\bb_3_months.png" />
+    <Content Include="images\bb_6_months.png" />
+    <Content Include="images\bb_year.png" />
     <Content Include="images\CommerceFDIC_RevTM.svg" />
+    <Content Include="images\completed_all_goals.png" />
+    <Content Include="images\created_3_goals.png" />
+    <Content Include="images\created_5_goals.png" />
+    <Content Include="images\created_first_goal.png" />
+    <Content Include="images\first_ut_goal.png" />
+    <Content Include="images\halfway_on_goals.png" />
+    <Content Include="images\in_black.png" />
+    <Content Include="images\kb_1_month.png" />
+    <Content Include="images\kb_6_months.png" />
+    <Content Include="images\kb_year.png" />
+    <Content Include="images\met_goals_1_month.png" />
+    <Content Include="images\met_goals_3_month.png" />
+    <Content Include="images\met_goals_6_months.png" />
+    <Content Include="images\met_goals_year.png" />
+    <Content Include="images\recat_transactions.png" />
+    <Content Include="images\shared_1_badge.png" />
+    <Content Include="images\shared_5_badges.png" />
+    <Content Include="images\started_services.png" />
+    <Content Include="images\ub_april_fools.png" />
+    <Content Include="images\ub_easter.png" />
+    <Content Include="images\ub_fall_equinox.png" />
+    <Content Include="images\ub_halloween.png" />
+    <Content Include="images\ub_independence.png" />
+    <Content Include="images\ub_memorial.png" />
+    <Content Include="images\ub_new_years.png" />
+    <Content Include="images\ub_patricks_day.png" />
+    <Content Include="images\ub_spring_equinox.png" />
+    <Content Include="images\ub_summer_solstice.png" />
+    <Content Include="images\ub_thanksgiving.png" />
+    <Content Include="images\ub_washington.png" />
+    <Content Include="images\ub_xmas.png" />
+    <Content Include="images\used_all_features.png" />
+    <Content Include="images\used_badge_page.png" />
+    <Content Include="images\used_trends_page.png" />
+    <Content Include="images\viewed_6_months.png" />
     <Content Include="Models\DbModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DbModel.edmx</DependentUpon>
@@ -157,11 +208,13 @@
       <DependentUpon>DbModel.edmx</DependentUpon>
       <LastGenOutput>DbModel.cs</LastGenOutput>
     </Content>
+    <Content Include="scripts\CSS\animate.css" />
+    <Content Include="scripts\CSS\jquery-ui.css" />
+    <Content Include="scripts\JS\bootstrap-notify.js" />
     <Content Include="scripts\JS\Chart.bundle.min.js" />
     <Content Include="scripts\CSS\bootstrap-theme.min.css" />
     <Content Include="scripts\CSS\bootstrap.min.css" />
     <Content Include="scripts\CSS\BudgetTool.css" />
-    <Content Include="scripts\CSS\commerce-nav-bar-min.css" />
     <EntityDeploy Include="Models\DbModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbModel.Designer.cs</LastGenOutput>
@@ -169,9 +222,6 @@
     <Content Include="Models\DbModel.edmx.diagram">
       <DependentUpon>DbModel.edmx</DependentUpon>
     </Content>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="scripts\JS\bootstrap.min.js" />
     <Content Include="scripts\JS\budgetingApplication.js" />
     <Content Include="scripts\JS\jquery-ui.min.js" />
@@ -182,6 +232,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BadgesController.cs" />
     <Compile Include="Controllers\BudgetGoalsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SavingsGoalController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
@@ -198,6 +249,7 @@
     <Compile Include="Models\BudgetGoal.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DecimalModelBinder.cs" />
     <Compile Include="ViewModels\BadgesModelView.cs" />
     <Compile Include="ViewModels\BudgetGoalModelView.cs" />
     <Compile Include="Models\BudgetGoals_VW.cs">
@@ -250,6 +302,7 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\LoginModelView.cs" />
     <Compile Include="ViewModels\SavingsGoalsViewModel.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="ViewModels\TrendsViewModel.cs" />
@@ -277,6 +330,13 @@
     <Content Include="Views\SavingsGoal\Index.cshtml" />
     <Content Include="Views\Badges\Index.cshtml" />
     <Content Include="Views\Trends\Index.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Error\PageNotFound.cshtml" />
+    <Content Include="Views\Error\GeneralError.cshtml" />
+    <Content Include="Views\SavingsGoal\_ListGoals.cshtml" />
+    <Content Include="Views\SavingsGoal\InsertSavingsGoal.cshtml" />
+    <Content Include="Views\SavingsGoal\AddFunds.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -286,6 +346,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="fonts\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

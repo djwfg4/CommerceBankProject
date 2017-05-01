@@ -56,10 +56,11 @@
           <Key>
             <PropertyRef Name="BadgeID" />
           </Key>
-          <Property Name="BadgeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BadgeID" Type="int" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="Status" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="DateEarned" Type="datetime" Nullable="true" />
         </EntityType>
         <EntityType Name="PointsRecord">
           <Key>
@@ -661,6 +662,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="ClientID" Type="Int32" Nullable="false" />
           <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="DateEarned" Type="DateTime" Nullable="true" Precision="0" />
           <NavigationProperty Name="Badge" Relationship="DataModel.FK_ClientBadge_Badge" FromRole="ClientBadge" ToRole="Badge" />
           <NavigationProperty Name="Client" Relationship="DataModel.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
         </EntityType>
@@ -867,6 +869,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <EntitySetMapping Name="ClientBadges">
             <EntityTypeMapping TypeName="DataModel.ClientBadge">
               <MappingFragment StoreEntitySet="ClientBadge">
+                <ScalarProperty Name="DateEarned" ColumnName="DateEarned" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />

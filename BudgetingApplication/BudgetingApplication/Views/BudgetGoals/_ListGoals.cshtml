@@ -36,6 +36,7 @@
             <span class="bGoal-child-label">@Html.DisplayFor(modelItem => Model.CategoryType)</span>
             <div class="bGoal-edit" style="float:right;display:none;">
                 @Html.ActionLink("Edit", "InsertBudgetGoal", new { id = Model.BudgetGoalID })
+                @Html.ActionLink("Delete", "inactivateBudget",  new { id = Model.BudgetGoalID }, new { @class = "delete" })
             </div>
         </div>
         <span style="font-style:italic; font-size:x-small">@Html.DisplayFor(modelItem => Model.Description)</span>
@@ -48,7 +49,7 @@
         </div>
         <div class="bGoalLower">
             <div style="float:left;">Total Spent: <span class="bGoal-amount">$@TransactionAmount</span> </div>
-            <div style="float:right;">Remaining: <span class="bGoal-amount">$@remaining</span></div>
+            <div class="visible-md-block visible-lg-block " style="float:right;">Remaining: <span class="bGoal-amount">$@remaining</span></div>
             <center><div>Total Budgeted: <span class="bGoal-amount"> $@BudgetGoalAmount</span></div></center>
         </div>
     </div>
