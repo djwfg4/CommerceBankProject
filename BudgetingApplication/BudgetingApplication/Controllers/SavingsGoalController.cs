@@ -36,6 +36,7 @@ namespace BudgetingApplication.Controllers
             savingsGoal.savingsViewSuccesses = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID && x.Status == "Success").ToList();
             savingsGoal.totalBudgeted = savingsGoal.savingsView.Select(x => x).Where(x => x.SavingGoalID != 0).Sum(x => Convert.ToDouble(x.SavingsGoalAmount));
             savingsGoal.totalSaved = savingsGoal.savingsView.Select(x => x).Sum(x => Convert.ToDouble(x.CurrentGoalAmount));
+            addBadge();
             return View(savingsGoal);
         }
 
@@ -159,5 +160,56 @@ namespace BudgetingApplication.Controllers
             return View(model);
         }
 
+        public void addBadge()
+        {
+            //count number of badges
+            List<SavingsGoal> goalList = new List<SavingsGoal>();
+            goalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).ToList();
+            BadgesModelView bmv = new BadgesModelView();
+
+            //add badges based on goal count
+            switch (goalList.Count())
+            {
+                case (1):
+                    bmv.addNewBadge(75, CLIENT_ID);
+                    break;
+                case (3):
+                    //add previous badges for testing
+                    bmv.addNewBadge(75, CLIENT_ID);
+
+                    bmv.addNewBadge(76, CLIENT_ID);
+                    break;
+                case (5):
+                    bmv.addNewBadge(75, CLIENT_ID);
+
+                    bmv.addNewBadge(76, CLIENT_ID);
+
+                    bmv.addNewBadge(77, CLIENT_ID);
+                    break;
+            }
+
+            
+            //determine if user is completed with goals
+            List<SavingsGoal> activeGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).Where(x => x.Status == "Active").ToList();
+            List<SavingsGoal> successGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).Where(x => x.Status == "Success").ToList();
+            if (activeGoalList.Count() == 0 && successGoalList.Count() >= 1)
+            {
+                bmv.addNewBadge(96, CLIENT_ID);
+            }
+            //determine is user is halfway through goals
+            else
+            {
+            double totalGoalAmount = activeGoalList.Sum(x => Convert.ToDouble(x.SavingsGoalAmount));
+            double totalSavingsAlloted = activeGoalList.Sum(x => Convert.ToDouble(x.CurrentGoalAmount));
+
+            double ratio = totalSavingsAlloted / totalGoalAmount;
+
+            if(ratio >= .5)
+                {
+                 bmv.addNewBadge(95, CLIENT_ID);
+                }
+            }
+            
+        }
     }
 }
