@@ -3,7 +3,7 @@
     Layout = "~/Views/_Layout.cshtml";
     ViewBag.PageName = "Index";
 }
-<div class="col-sm-9">
+<div class="col-sm-8">
     <div id="graphContainer" class="col-md-12">
         <div id="showCharts" class="col-md-9">
             <div class="dropdown">
@@ -56,26 +56,31 @@
     </div>
 
 </div>
-<div class="col-sm-3">
+<div class="col-sm-4">
     <div class="col-md-12 incomeBox">
         <p>@DateTime.Now.ToString("MMMM")'s Income: <b>$@string.Format("{0:n2}", Model.totalIncome)</b></p>
         <p>@DateTime.Now.ToString("MMMM")'s Spending: <b>$@string.Format("{0:n2}", Model.totalSpent)</b></p>
     </div>
     <br />
-    @{
-        if(Model.savingsGoals.savingsView.Count < 1)
-        {
-            <div class="col-md-12">
-                You have not set any goals. <a href="~/SavingsGoal/InsertSavingsGoal"><span class="btn btn-success"> Add a new goal</span></a> 
-            </div>
+    <div class="col-sm-12">
+        <h3>Saving Goals</h3>
+    </div>
+    <div id="goals">
+        @{
+            if (Model.savingsGoals.savingsView.Count < 1)
+            {
+                <div class="col-md-12">
+                    You have not set any goals. <a href="~/SavingsGoal/InsertSavingsGoal"><span class="btn btn-success"> Add a new goal</span></a>
+                </div>
+            }
+            foreach (var item in Model.savingsGoals.savingsView)
+            {
+                <div class="col-sm-12">
+                    @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
+                </div>
+            }
         }
-        foreach (var item in Model.savingsGoals.savingsView)
-        {
-            <div class="col-sm-12">
-                @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
-            </div>
-        }
-    }
+    </div>
 
 
 </div>

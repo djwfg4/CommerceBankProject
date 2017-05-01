@@ -273,6 +273,53 @@ canvas {
         color: green;
     }
 
+/*saving goals page*/
+.sGoal-label{
+    font-size:larger;
+    font-weight:bolder;
+}
+
+.sGoalContainer{
+    max-width: 500px;
+}
+#savingGoalContainer,
+.sGoalContainer {
+    margin: 0 auto;
+    max-width: 500px;
+    border: 1px solid #e0dcdc;
+    margin-bottom: 10px;
+    padding: 5px;
+    min-height:100px;
+    background-color:#dff0d8;
+}
+.progress {
+    background-color:#ddd!important;
+}
+.sGoalContainerSubmit {
+    margin: 0 auto;
+    max-width: 500px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.sGoalContainer:hover {
+    background-color: white;
+}
+
+.sGoalProgress {
+    margin-bottom:-15px;
+    padding:0px!important;
+}
+
+#sGoalAddFund{
+    top:0px;
+    position:relative;
+}
+
+.sGoal-sidebar{
+    border-bottom:1px solid #e0dcdc;
+    padding-bottom:10px;
+}
 /* custom CSS for small screens */
 @media (max-width: 767px) {
     body {
@@ -336,8 +383,19 @@ canvas {
     padding-top: 25px;
 }
 
+.col-centered{
+    float: none!important;
+    margin: 0 auto;
+    text-align:center;
+} 
 
 /* badge page */
 .myBadge{
     min-height:220px!important;
+}
+
+
+/*Overview Savings Goals */
+#goals {
+    font-size:x-small;
 }

@@ -249,6 +249,7 @@
     <Compile Include="Models\BudgetGoal.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DecimalModelBinder.cs" />
     <Compile Include="ViewModels\BadgesModelView.cs" />
     <Compile Include="ViewModels\BudgetGoalModelView.cs" />
     <Compile Include="Models\BudgetGoals_VW.cs">
@@ -335,6 +336,7 @@
     <Content Include="Views\Error\GeneralError.cshtml" />
     <Content Include="Views\SavingsGoal\_ListGoals.cshtml" />
     <Content Include="Views\SavingsGoal\InsertSavingsGoal.cshtml" />
+    <Content Include="Views\SavingsGoal\AddFunds.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

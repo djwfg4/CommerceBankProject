@@ -29,29 +29,48 @@
         progressType = "progress-bar-danger";
     }
 
-    <div id="savigsGoal_@Model.SavingGoalID" class="sGoalContainer">
+    <div id="savigsGoal_@Model.SavingGoalID" class="sGoalContainer col-sm-12">
         <div class="sGoalUpper">
             <div class="sGoalLabel">
-                <span class="sGoal-label">Goal: @goalName</span>
+                <span class="sGoal-label">@goalName</span>
                 <span class="sGoal-date-label"></span>
+            @if (Model.Status.Trim().ToUpper() == "Active".ToUpper())
+            {
                 <div class="sGoal-edit" style="float:right;display:none;">
                     @Html.ActionLink("Edit", "InsertSavingsGoal", new { id = Model.SavingGoalID })
                 </div>
+            }
             </div>
-            <span style="font-style:italic; font-size:x-small">Date Set: @Html.DisplayFor(modelItem => Model.StartDate)</span>
+            <div style="margin-bottom:5px;">
+                <div class="col-sm-8" style="font-style:italic;">Finish Date: @Model.EndDate.ToShortDateString()</div>
+                @if (Model.Status.Trim().ToUpper() == "Active".ToUpper())
+                {
+                    <div class="col-sm-4" style="padding:0px;"> @( (Model.EndDate - DateTime.Now).Days) Days Left</div>
+                }
+            </div>
+
         </div>
-        <div class="sGoalProgress">
+        <div class="sGoalProgress col-sm-12 col-xs-12">
             <div class="progress">
                 <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
-
+                    <div style="color:#333; min-width:100px;">$@TransactionAmount</div>
                 </div>
             </div>
-            <div class="sGoalLower">
-                <div style="float:left;">Total Saved: <span class="sGoal-amount">$@TransactionAmount</span> </div>
-                <div style="float:right;">Remaining: <span class="sGoal-amount">$@remaining</span></div>
-                <center><div>Total Budgeted: <span class="sGoal-amount"> $@BudgetGoalAmount</span></div></center>
-            </div>
         </div>
+        <div class="sGoalLower col-sm-12">
+            <div class="col-sm-4">Goal: <span class="sGoal-amount pull-right">$@BudgetGoalAmount</span> </div>
+            <div class="col-sm-4 pull-right">Remaining: <span class="sGoal-amount pull-right">$@remaining</span></div>
+        </div>
+        @if (Model.Status.Trim().ToUpper() == "Active".ToUpper())
+        {
+            <div class="col-sm-12 col-centered">
+                    <div id="sGoalAddFund" style="border:0px solid!important;">
+                        <a type="button" class="btn btn-sm btn-success" style="right:auto; "
+                           href="~/SavingsGoal/AddFunds/@Model.SavingGoalID">Add Funds $</a>
+                    </div>            
+            </div>
+        }
+
     </div>
     <hr />
 }

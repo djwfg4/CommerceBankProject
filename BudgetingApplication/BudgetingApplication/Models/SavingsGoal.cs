@@ -11,16 +11,22 @@ namespace BudgetingApplication.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class SavingsGoal
     {
         public int SavingGoalID { get; set; }
         public int ClientID { get; set; }
+        [DisplayName("Goal Name")]
         public string GoalDescription { get; set; }
+        [DisplayName("Start Date")]
         public System.DateTime StartDate { get; set; }
+        [DisplayName("End Date")]
         public System.DateTime EndDate { get; set; }
         public Nullable<int> SavingsPointValue { get; set; }
+        [DisplayName("Savings Amount")]
         public decimal SavingsGoalAmount { get; set; }
+        [DisplayName("Current Saved")]
         public decimal CurrentGoalAmount { get; set; }
         public string Recurring { get; set; }
         public string Status { get; set; }

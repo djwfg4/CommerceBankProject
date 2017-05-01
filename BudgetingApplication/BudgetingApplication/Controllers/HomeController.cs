@@ -163,7 +163,7 @@ namespace BudgetingApplication.Controllers
         /// The purpose of this is to show the total amounts in the sidebar on the overview page.
         /// </summary>
         /// <returns>List of all transactions, ever</returns>
-        private IEnumerable<Transaction> getTransactionInfo()
+        public IEnumerable<Transaction> getTransactionInfo()
         {
             List<Transaction> transactions = new List<Transaction>();
 
