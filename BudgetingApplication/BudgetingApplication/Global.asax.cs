@@ -15,6 +15,7 @@ namespace BudgetingApplication
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
         }

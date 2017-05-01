@@ -9,7 +9,7 @@
     $(document).ready(function () {
 
     $(".sGoalContainer").hover(
-  function() {
+  function () {
       $(this).find('.sGoal-edit').show();
   }, function() {
       $(this).find('.sGoal-edit').hide();
@@ -18,41 +18,83 @@
     });
 </script>
 
-<center><h2>Savings Goals</h2></center>
-<div id="savingsGoalContainer">
+<div class="col-sm-12"><h2>Savings Goals</h2></div>
+<div id="savingsGoalContainer" class="col-sm-12">
 
-
-    @foreach (var item in ViewData.Model.savingsView)
-    {
-        @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
-    }
-    <div class="sGoalContainer" style="border:0px solid!important;">
-        <a type="button" class="btn btn-success" style="float:right;"
-           href="~/SavingsGoal/InsertSavingsGoal">+ Add New Goal</a>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#activeGoals">Active Goals</a></li>
+        <li><a data-toggle="tab" href="#successes">Successful Goals</a></li>
+        <li><a data-toggle="tab" href="#Unsuccessful">Unsuccessful Goals</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="activeGoals" class="tab-pane fade in active">
+            <div class="col-sm-12">
+                <h3>Currently Active Goals</h3>
+                <em>Goals that are currently active.</em>
+            </div>
+            @foreach (var item in ViewData.Model.savingsView)
+            {
+                @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
+            }
+            <div class="col-sm-12">
+                <a type="button" class="btn btn-success"
+                   href="~/SavingsGoal/InsertSavingsGoal">+ Add New Goal</a>
+            </div>
+        </div>
+        <div id="successes" class="tab-pane fade">
+            <div class="col-sm-12">
+                <h3>Successful Goals</h3>
+                <em>Goals that were successful!</em>
+            </div>
+                @foreach (var item in ViewData.Model.savingsViewSuccesses)
+            {
+                    @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
+                }
+            </div>
+        <div id="Unsuccessful" class="tab-pane fade">
+            <div class="col-sm-12">
+                <h3>Unsuccessful Goals</h3>
+                <em>Goals that did not reach their goal by the finish date.</em>
+            </div>
+                @foreach (var item in ViewData.Model.savingsViewFails)
+            {
+                    @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
+                }
+            </div>
     </div>
 </div>
+   
 
-@section sidebar{
+        @section sidebar{
 
-    @{double total = 0;
-        double complete = 0;
+            @{double total = 0;
+                double complete = 0;
 
 
-        foreach (var item in Model.savingsView)
-        {
-            total += 1;
-            if (item.CurrentGoalAmount == item.SavingsGoalAmount)
-            {
-                complete += 1;
-            }
-        }
-                <div class="sGoalIncome-sidebar">
+                total = Model.savingsView.Count() + Model.savingsViewFails.Count() + Model.savingsViewSuccesses.Count();
+                complete = Model.savingsViewSuccesses.Count();
+
+                <div class="col-sm-12 sGoal-sidebar">
                     <h3>Goals Met:  </h3>
                     <div class="sGoal-sidebar-amount">
                         <span>@complete of @total</span>
                     </div>
                 </div>
+
+                <div class="col-sm-12 sGoal-sidebar">
+                    <h4>Active Goals:</h4>
+                    @Model.savingsView.Count()
+                </div>
+                <div class="col-sm-12 sGoal-sidebar">
+                    <h4>Sucessful Goals</h4>
+                    @Model.savingsViewSuccesses.Count()
+                </div>
+                <div class="col-sm-12 sGoal-sidebar">
+                    <h4>Unsuccessful Goals</h4>
+                    @Model.savingsViewFails.Count()
+                </div>
+                
             }
         }
-    
+
 
