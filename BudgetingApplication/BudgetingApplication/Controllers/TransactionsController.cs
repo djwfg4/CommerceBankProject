@@ -13,7 +13,20 @@ namespace BudgetingApplication.Controllers
     public class TransactionsController : Controller
     {
         private DataContext dbContext = new DataContext();
-        private int CLIENT_ID = 2;
+        private int CLIENT_ID = 1;
+
+        /*public ActionResult checkUser()
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+                return null;
+            }
+        }*/
 
         /// <summary>
         /// Called on initial page load.
@@ -23,6 +36,9 @@ namespace BudgetingApplication.Controllers
         /// <returns> Returns the new TransactionsViewModel to the Index View. </returns>
         public ActionResult Index()
         {
+            /*ActionResult result = checkUser();
+            if (result != null) { return result; }*/
+
             DateTime dateTime = System.DateTime.Now;
             TransactionsViewModel model = this.CreateModel(dateTime.Month, dateTime.Year);
             return View(model);

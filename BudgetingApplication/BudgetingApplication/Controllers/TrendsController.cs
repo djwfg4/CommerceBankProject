@@ -14,9 +14,25 @@ namespace BudgetingApplication.Controllers
         private DataContext dbContext = new DataContext();
         private int CLIENT_ID = 1;
 
+        /*public ActionResult checkUser()
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+                return null;
+            }
+        }*/
+
         // GET: Trends
         public ActionResult Index(bool? validDates)
         {
+           /* ActionResult result = checkUser();
+            if (result != null) { return result; }*/
+
             DateTime endDate = System.DateTime.Now;
             DateTime tempDate = endDate.AddMonths(-3); //default is spending from last three months
 

@@ -10,9 +10,22 @@
 <script src="~/scripts/JS/HighCharts-5.0.10/code/modules/exporting.js"></script>
 
 <style>
-    .form-div {
+    .form-container {
+        text-align: center;
+    }
+
+    .block-start {
         float: left;
-        margin-left: 40px;
+        margin-left:40px;
+    }
+
+    .block-category {
+        float: left;
+        margin-left:40px;
+    }
+
+    .form-right {
+        float: left;
     }
 
     .button {
@@ -23,12 +36,9 @@
 
     #reset-button {
         margin-top: 25px;
+        margin-left:40px;
         font-weight: bold;
-    }
-
-    #reset-div {
-        float: left;
-        clear: right;
+        float:left;
     }
 
     .sidebar-padding {
@@ -39,8 +49,59 @@
         text-align: center;
     }
 
+    #spending-by {
+        float:none;
+    }
+
     .spending-by {
         padding-top: 20px;
+    }
+
+    .block-end{
+        float:left;
+    }
+
+    .section-container{
+        float:left;
+    }
+
+    .graph-container {
+        float:none;
+        width:100%;
+    }
+
+    @@media(max-width: 768px) {
+        .section-container {
+            width:100%;
+            float:none;
+        }
+
+        .block-start {
+            float:left;
+            width:50%;
+            margin-left:0;
+            margin-right:0;
+        }
+
+        .block-end {
+            float:left;
+            width:50%;
+            margin-left:0;
+            margin-right:0;
+        }
+
+        .block-category {
+            width:100%;
+            margin-left:0;
+            margin-right:0;
+        }
+
+        #reset-button {
+            width:100%;
+            float:left;
+            margin-left:0px;
+            margin-right:0px;
+        }
     }
 </style>
 
@@ -54,7 +115,7 @@
     <h6 class="sidebar-padding">$@string.Format("{0:n2}", Model.LeastSpent) in @Model.LeastSpentCategory</h6>
     <h4>Average Spending:</h4>
     <h6>$@string.Format("{0:n2}", Model.AverageSpending)</h6>
-    
+
 }
 
 <h2 class="center-align">Trends</h2>
@@ -66,88 +127,100 @@
 
 @using (Html.BeginForm("Filter", "Trends"))
 {
-    <!-- FORM CONTAINER -->
-    <div style="width:95%">
-        <!-- CATEGORY DROPDOWN LIST -->
-        <div class="form-group form-div">
-            @Html.Label("Select Category")
-            @Html.DropDownList("Category", new SelectList(Model.Categories, "CategoryType", "CategoryType"), "All", new { @class = "form-control" })
-        </div>
-        <!-- START DATE MONTH-->
-        <div class="form-group form-div">
+    <!-- CATEGORY DROPDOWN LIST -->
+    <div class="form-group block-category">
+        @Html.Label("Select Category")
+        @Html.DropDownList(
+                "Category",
+                new SelectList(Model.Categories, "CategoryType", "CategoryType"),
+                "All",
+                new { @class = "form-control" }
+        )
+    </div>
+    <!-- START DATE MONTH-->
+    <section class="section-container">
+        <div class="form-group block-start">
             @Html.Label("Start Month")
             @Html.DropDownList(
-                 "StartMonth",
-                 new SelectList(Model.Months, Model.Months.Single(x => x.Equals(Model.StartDate.ToString("MMMM")))),
-                 new { @class = "form-control" }
-         )
+                    "StartMonth",
+                    new SelectList(Model.Months, Model.Months.Single(x => x.Equals(Model.StartDate.ToString("MMMM")))),
+                    new { @class = "form-control" }
+            )
         </div>
-        <!-- START DATE YEAR -->
-        <div class="form-group" style="float:left">
+        <div class="form-group block-end">
             @Html.Label("Start Year")
-            @Html.DropDownList("StartYear",
-                 new SelectList(Model.Years, Model.Years.Single(x => x.Equals(Model.StartDate.Year.ToString()))),
-                 new { @class = "form-control" }
-         )
+            @Html.DropDownList(
+                    "StartYear",
+                    new SelectList(Model.Years, Model.Years.Single(x => x.Equals(Model.StartDate.Year.ToString()))),
+                    new { @class = "form-control" }
+            )
         </div>
+    </section>
+    <section class="section-container">
         <!-- END DATE MONTH -->
-        <div class="form-group form-div">
+        <div class="form-group block-start">
             @Html.Label("End Month")
             @Html.DropDownList(
-                 "EndMonth",
-                 new SelectList(Model.Months, Model.Months.Single(x => x.Equals(Model.EndDate.ToString("MMMM")))),
-                 new { @class = "form-control" }
-         )
+                     "EndMonth",
+                     new SelectList(Model.Months, Model.Months.Single(x => x.Equals(Model.EndDate.ToString("MMMM")))),
+                     new { @class = "form-control" }
+            )
         </div>
         <!-- END DATE YEAR -->
-        <div class="form-group" style="float:left">
+        <div class="form-group block-end">
             @Html.Label("End Year")
             @Html.DropDownList(
-                 "EndYear",
-                 new SelectList(Model.Years, Model.Years.Single(x => x.Equals(Model.EndDate.Year.ToString()))),
-                 new { @class = "form-control" }
-         )
+                     "EndYear",
+                     new SelectList(Model.Years, Model.Years.Single(x => x.Equals(Model.EndDate.Year.ToString()))),
+                     new { @class = "form-control" }
+            )
         </div>
+    </section>
+    <section class="section-container">
         <!-- FILTER BUTTON -->
-        <div class="form-group form-div">
+        <div class="form-group block-start">
             @Html.Label(" ")
             <button class="btn btn-default form-control button" type="submit"><b>Filter</b></button>
         </div>
-    </div>
+        <!-- RESET BUTTON -->
+        <div class="form-group block-end">
+            @Html.ActionLink(
+                    "Reset",
+                    "Index",
+                    null,
+                    new { @id="reset-button", @class = "btn btn-default button" }
+            )
+        </div>
+    </section>
+    
 }
 
-<!-- RESET BUTTON -->
-<div id="reset-div" class="form-group form-div">
-    @Html.ActionLink(
-        "Reset",
-        "Index",
-        null,
-        new { @id = "reset-button", @class = "btn btn-default button" }
-    )
-</div>
+<section id="spending-by">
+    <!-- SPENDING BY... HEADER -->
+    @if (!String.IsNullOrEmpty(Model.Category))
+    {
+        <h4 style="clear:left" class="center-align spending-by">Spending In @Model.Category</h4>
+    }
+    else
+    {
+        <h4 style="clear:left" class="center-align spending-by">Spending From</h4>
+    }
+    <h4 style="line-height:7px" class="center-align">@Model.StartDate.ToString("MMMM") @Model.StartDate.Year to @Model.EndDate.ToString("MMMM") @Model.EndDate.Year</h4>
+</section>          
 
-<!-- SPENDING BY... HEADER -->
-@if (!String.IsNullOrEmpty(Model.Category))
-{
-    <h4 class="center-align spending-by" style="clear:left">Spending By Category</h4>
-}
-else
-{
-    <h4 class="center-align spending-by" style="clear:left">Spending By Month</h4>   
-}
-
-
-<canvas id="donut-chart" height="100"></canvas>
-
-
-<h4 class="center-align" style="clear:left;margin-top:50px">Budget Breakdown</h4>
-<div id="budget-breakdown-chart" style="max-height:400px; margin:auto"></div>
-
+    <canvas id="donut-chart" height="160"></canvas>
+          
+<section>
+    <h4 class="center-align" style="clear:left;margin-top:50px">Budget Breakdown</h4>
+</section>
+<section class="graph-container">
+    <div id="budget-breakdown-chart" style="max-height:400px; margin:auto"></div>
+</section>       
+            
 <script>
-    var ctx = document.getElementById("donut-chart").getContext("2d");
+    var ctx = document.getElementById("donut-chart");
     var data = {
-        labels: 
-            @Html.Raw(Json.Encode(Model.ChartLabels)),
+        labels: @Html.Raw(Json.Encode(Model.ChartLabels)),
         datasets: [
             {
                 data: @Html.Raw(Json.Encode(Model.TransactionAmounts.Values)),
@@ -172,15 +245,28 @@ else
     };
     var options = {
         responsive: true,
+        maintainAspectRatio: true,
         animation:{
             animateScale: true,
             animateRotate: true
         },
         legend:{
-            fullWidth: true
+            display: true,
+            responsive: true,
+            position: 'bottom',
+            fullWidth: false,
+            labels:{
+                responsive: true,
+                marginTop: 10,
+                boxWidth: 10,
+                fontSize: 10,
+                padding: 5,
+                fullWidth: true
+            }
         }
     };
-    var myDoughnutChart = new Chart(ctx, {
+
+    window.myDoughnutChart = new Chart(ctx, {
         type: 'doughnut',
         data: data,
         options: options
