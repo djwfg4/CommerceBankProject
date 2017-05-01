@@ -49,6 +49,7 @@ namespace BudgetingApplication.Controllers
             if(account != null)
             {
                 model.Transactions = this.FilterTransactionsByAccount(model.Transactions, account.Value);
+                model.AccountNo = account.Value;
             }
             if (!String.IsNullOrEmpty(category))
             {
@@ -154,7 +155,6 @@ namespace BudgetingApplication.Controllers
         /// <returns></returns>
         private List<Transaction> GetTransactions(int month, int year)
         {
-
             var transactions = from transaction in dbContext.Transactions
                                join account in dbContext.Accounts
                                on transaction.TransactionAccountNo equals account.AccountNo

@@ -126,7 +126,10 @@ namespace BudgetingApplication.Controllers
 
             var monthlyTransacations = from trans in dbContext.Transactions
                                        from account in dbContext.Accounts
-                                       where trans.TransactionDate.Month == DateTime.Now.Month && trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
+                                       where trans.TransactionDate.Month == DateTime.Now.Month &&
+                                            trans.TransactionDate.Year == DateTime.Now.Year && 
+                                            trans.TransactionAccountNo == account.AccountNo && 
+                                            account.ClientID == CLIENT_ID
                                        select new { trans, account };
 
             var sumQuery = from querys in monthlyTransacations

@@ -5,7 +5,9 @@
     ViewBag.PageName = "Transaction";
     Layout = "~/Views/_Layout.cshtml";
 }
-<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+<link href="~/scripts/CSS/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <style>
     table {
         text-align: center;
@@ -85,6 +87,7 @@
 
     #over-budget-legend-color {
         background-color:rgb(255,80,80);
+        clear:left;
         float:left;
         height:20px;
         width:40px;
@@ -95,6 +98,16 @@
         float:left;
         margin-left:10px;
     }
+
+    #no-budget-label {
+        clear:left;
+        float:left;
+        margin-left:10px;
+    }
+
+    .sidebar-padding {
+        padding-bottom: 10px;
+    }
 </style>
 
 @section sidebar{
@@ -104,14 +117,14 @@
         var checking = Model.Accounts.Where(account => account.AccountType.Equals("Checking"));
         var creditCard = Model.Accounts.Where(account => account.AccountType.Equals("CC"));
         var savings = Model.Accounts.Where(account => account.AccountType.Equals("Savings"));
-    }
+    }       
     @if (checking.Any())
     {
         //displays checking account numbers if the user has any
         <h4>Checking:</h4>
         foreach (var item in checking)
         {
-            <h6>@item.AccountNo</h6>
+            <h6 class="sidebar-padding">@item.AccountNo</h6>
         }
     }
     @if (creditCard.Any())
@@ -120,7 +133,7 @@
         <h4>Credit Card:</h4>
         foreach (var item in creditCard)
         {
-            <h6>@item.AccountNo</h6>
+            <h6 class="sidebar-padding">@item.AccountNo</h6>
         }
     }
     @if (savings.Any())
@@ -129,9 +142,24 @@
         <h4>Savings:</h4>
         foreach (var item in savings)
         {
-            <h6>@item.AccountNo</h6>
+            <h6 class="sidebar-padding">@item.AccountNo</h6>
         }
-    }  
+    }
+    @if (!String.IsNullOrEmpty(Model.Category) && 
+        (Model.BudgetGoals.Where(goal => goal.Category.CategoryType.Equals(Model.Category))).Any()
+    )
+    {
+        decimal transactionSum = 0;
+        foreach (var item in Model.Transactions)
+        {
+            transactionSum += Math.Abs(item.TransactionAmount);
+        }
+        <h3><b>@Model.Category Budget</b></h3>
+        <h4>Budgeted:</h4>
+        <h6 class="sidebar-padding"><b>$@string.Format("{0:n2}", Model.BudgetGoals.Where(goal => goal.Category.CategoryType.Equals(Model.Category)).Single().BudgetGoalAmount)</b></h6>
+        <h4>Spent:</h4>
+        <h6><b>$@string.Format("{0:n2}", transactionSum)</b></h6>        
+    }
 }
 
 <!-- MONTH AND YEAR HEADER SECTION -->
@@ -170,7 +198,6 @@
     </tr>
 </table>
 
-
 <!-- FILTERING AND SEARCHING (FORM) SECTION -->
 @using (Html.BeginForm("Filter", "Transactions"))
 {
@@ -200,6 +227,7 @@
         </div>
     </div>
 }
+
 <!-- RESET BUTTON SECTION -->
 <div id="reset-div" class="form-group form-div">
     @Html.ActionLink(
@@ -211,12 +239,14 @@
 </div>
 
 <!-- OVER-BUDGET LEGEND SECTION-->
-@if (Model.Category != null)
+@if (!String.IsNullOrEmpty(Model.Category) &&
+    (Model.BudgetGoals.Where(goal => goal.Category.CategoryType.Equals(Model.Category))).Any()
+)
 {
     string legendPlaceHolder = "       "; //used for creating legend color item
-    <div style="clear:left">
+    <div>
         <span id="over-budget-legend-color" class="label">@legendPlaceHolder</span>       
-        <h5 id="over-budget-legend-label"><b>=  Went over budget</b></h5>
+        <h5 id="over-budget-legend-label"><b>=  Over budget</b></h5>
     </div>   
 }
 
@@ -249,9 +279,11 @@ else
 
             transactionSum += Math.Abs(item.TransactionAmount);
 
-            if ((Model.Category != null) &&
-                        (Model.BudgetGoals.Any()) &&
-                        (transactionSum > (Model.BudgetGoals.Where(goal => goal.Category.CategoryType == Model.Category).Single().BudgetGoalAmount)))
+            if ((!String.IsNullOrEmpty(Model.Category)) &&
+                (Model.BudgetGoals.Any()) &&
+                (Model.BudgetGoals.Where(goal => goal.Category.CategoryType.Equals(Model.Category))).Any() &&
+                (transactionSum > (Model.BudgetGoals.Where(goal => goal.Category.CategoryType.Equals(Model.Category)).Single().BudgetGoalAmount)
+            ))
             {
                 //set variables if transaction went over budget
                 backgroundColor = "background-color:rgb(255,80,80)";
