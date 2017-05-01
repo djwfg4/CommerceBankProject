@@ -327,7 +327,7 @@ namespace BudgetingApplication.Controllers
                     int percentage = (int)(100 * (Math.Abs(budgetGoal.TransactionAmount) / budgetGoal.BudgetGoalAmount));
                     if(percentage > 100)
                     {
-                        dict[budgetGoal.CategoryType] = "You have exceeding your " + budgetGoal.CategoryType + " budget by $" + (int)(Math.Abs(budgetGoal.TransactionAmount) - budgetGoal.BudgetGoalAmount) + ".";
+                        dict[budgetGoal.CategoryType] = "You have exceeded your " + budgetGoal.CategoryType + " budget by $" + (int)(Math.Abs(budgetGoal.TransactionAmount) - budgetGoal.BudgetGoalAmount) + ".";
                     }
                     else if (percentage > 90)
                     {
