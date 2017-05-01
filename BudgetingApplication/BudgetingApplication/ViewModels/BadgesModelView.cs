@@ -9,9 +9,10 @@ namespace BudgetingApplication.ViewModels
     public class BadgesModelView
     {
         //an iterator of the badges needs to be here
-        public int badgeCount;
-        public int totalBadgeCount;
-        public string tweetMessage;
+        public int badgeCount = 0;
+        public int totalBadgeCount = 0;
+        public string tweetMessage = "";
+        public Badge mostRecent = new Badge();
 
         private DataContext dbContext = new DataContext();
 
@@ -35,6 +36,8 @@ namespace BudgetingApplication.ViewModels
             cb.DateEarned = DateTime.Now;
             dbContext.ClientBadges.Add(cb);
             dbContext.SaveChanges();
+
+            mostRecent = dbContext.Badges.Where(x => x.BadgeID == cb.BadgeID).First();
         }
     }
 }
