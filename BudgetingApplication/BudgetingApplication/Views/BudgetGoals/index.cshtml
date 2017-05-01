@@ -5,19 +5,42 @@
     Layout = "~/Views/_Layout.cshtml";
 }
 
-<script >
+<script>
     $(document).ready(function () {
 
-    $(".bGoalContainer").hover(
-  function() {
-      $(this).find('.bGoal-edit').show();
-  }, function() {
-      $(this).find('.bGoal-edit').hide();
-  }
-);
-    });
-</script>
+        $(".bGoalContainer").hover(
+              function () {
+                  $(this).find('.bGoal-edit').show();
+              }, function () {
+                  $(this).find('.bGoal-edit').hide();
+              }
+            );
+        $("#dialog").dialog({
+            autoOpen: false,
+            modal: true
+        });
+        $(document).on('click', '.bGoalContainer .delete', function (e) {
+            e.preventDefault();
+            var targetUrl = $(this).attr("href");
 
+            $("#dialog").dialog({
+                buttons: {
+                    "Confirm": function () {
+                        window.location.href = targetUrl;
+                    },
+                    "Cancel": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#dialog").dialog("open");
+        });
+    })
+</script>
+<div id="dialog" title="Confirmation Required">
+    Are you sure you want to transfer this amount?
+</div>
 <center><h2>My Budget</h2></center>
 <div id="budgetGoalContainter">
 

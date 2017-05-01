@@ -28,7 +28,7 @@ namespace BudgetingApplication.Controllers
             List<SavingsGoal> SavingsGoalList = new List<SavingsGoal>();
 
            
-            SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).Where(x => x.Status == "Active").ToList();
+            SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID && x.Status == "Active").OrderByDescending(x=>x.CurrentGoalAmount/x.SavingsGoalAmount).ToList();
 
             SavingsGoalsViewModel savingsGoal = new SavingsGoalsViewModel();
             savingsGoal.savingsView = SavingsGoalList;
@@ -66,6 +66,7 @@ namespace BudgetingApplication.Controllers
             newSavingsGoal = model.savingsGoal;
             newSavingsGoal.ClientID = CLIENT_ID;
             newSavingsGoal.SavingsPointValue = 0;
+            newSavingsGoal.Status = "Active";
             if (newSavingsGoal.SavingGoalID == 0)
             {
                 newSavingsGoal.StartDate = model.savingsGoal.StartDate;
@@ -73,8 +74,7 @@ namespace BudgetingApplication.Controllers
                 newSavingsGoal.SavingsGoalAmount = model.savingsGoal.SavingsGoalAmount;
                 newSavingsGoal.EndDate = model.savingsGoal.EndDate;
                 newSavingsGoal.GoalDescription = model.savingsGoal.GoalDescription;
-                newSavingsGoal.Status = "Active";
-                newSavingsGoal.Recurring = "No";
+                newSavingsGoal.Recurring = model.savingsGoal.Recurring;
                 dbContext.SavingsGoals.Add(newSavingsGoal);
                 ModelState.Remove("savingsGoal.SavingGoalId"); //remove the error saying that this id is needed, when it will be automatically generated on insert
             }

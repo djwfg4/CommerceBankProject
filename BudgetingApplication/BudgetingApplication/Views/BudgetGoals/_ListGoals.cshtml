@@ -36,6 +36,7 @@
             <span class="bGoal-child-label">@Html.DisplayFor(modelItem => Model.CategoryType)</span>
             <div class="bGoal-edit" style="float:right;display:none;">
                 @Html.ActionLink("Edit", "InsertBudgetGoal", new { id = Model.BudgetGoalID })
+                @Html.ActionLink("Delete", "inactivateBudget",  new { id = Model.BudgetGoalID }, new { @class = "delete" })
             </div>
         </div>
         <span style="font-style:italic; font-size:x-small">@Html.DisplayFor(modelItem => Model.Description)</span>

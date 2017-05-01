@@ -32,12 +32,12 @@ namespace BudgetingApplication.Controllers
             List<BudgetGoals_VW> BudgetGoalList = new List<BudgetGoals_VW>();
 
             //use the view that displays all transaction for current month
-            BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
+            BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID && x.Status == "A").OrderBy(x=>x.TransactionAmount/x.BudgetGoalAmount).ToList();
 
             BudgetGoalModelView budgetGoal = new BudgetGoalModelView();
             budgetGoal.budgetView = BudgetGoalList;
-            budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
-            budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
+            budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1 && x.GoalCategory != 17).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
+            budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1 && x.GoalCategory != 17).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
             return View(budgetGoal);
         }
 
@@ -113,6 +113,33 @@ namespace BudgetingApplication.Controllers
             }
             return View(model);
         }
+        public ActionResult inactivateBudget(int? id)
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+            }
+
+            if(id == null)
+            {
+                return RedirectToAction("index");
+            }
+            BudgetGoal bg = dbContext.BudgetGoals.Where(x => x.ClientID == CLIENT_ID && x.BudgetGoalID == id).FirstOrDefault();
+            if(bg == null)
+            {
+                return RedirectToAction("index");
+            }
+            else
+            {
+                bg.Status = "I";
+                dbContext.SaveChanges();
+                return RedirectToAction("index");
+            }
+        }
 
         // Just return a list of categories
         private IEnumerable<Category> GetAllCategories()
@@ -129,11 +156,15 @@ namespace BudgetingApplication.Controllers
             //     <option value="CategoryID">Category Type</option>
             foreach (var element in elements)
             {
-                selectList.Add(new SelectListItem
-                {
-                    Value = element.CategoryID.ToString(),
-                    Text = element.CategoryType
-                });
+                if (element.CategoryID == 17) { continue; }
+                if (element.CategoryID == 1) { continue; }
+                if(dbContext.BudgetGoals_VW.Where(x=>x.GoalCategory == element.CategoryID && x.ClientID == CLIENT_ID && x.Status == "A").FirstOrDefault() == null) { 
+                    selectList.Add(new SelectListItem
+                    {
+                        Value = element.CategoryID.ToString(),
+                        Text = element.CategoryType
+                    });
+                }
             }
             selectList.OrderBy(x => x.Text);
             return selectList;

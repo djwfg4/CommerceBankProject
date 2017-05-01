@@ -132,6 +132,7 @@ namespace BudgetingApplication.Controllers
             //sum up all different accounts into one 
             foreach (var item in query)
             {
+                if(item.categoryID.First() == 17) { continue; } //category 17 is transfers into a goal, not money spent
                 //categoryID == 1 is the income category
                 if (item.categoryID.First() == 1) { income += item.totalMoney; }
                 else{ spent += item.totalMoney; }
@@ -200,20 +201,20 @@ namespace BudgetingApplication.Controllers
             List<BudgetGoals_VW> BudgetGoalList = new List<BudgetGoals_VW>();
 
             //all budgets categories the client has
-            BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
+            BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID && x.Status == "A").OrderBy(x => x.TransactionAmount / x.BudgetGoalAmount).ToList();
 
             //Insert them into the view model, calculate the totals
             BudgetGoalModelView budgetGoal = new BudgetGoalModelView();
             budgetGoal.budgetView = BudgetGoalList;
-            budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
-            budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
+            budgetGoal.totalBudgeted = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1 && x.GoalCategory != 17).Sum(x => Convert.ToDouble(x.BudgetGoalAmount));
+            budgetGoal.totalSpent = budgetGoal.budgetView.Select(x => x).Where(x => x.GoalCategory != 1 && x.GoalCategory != 17).Sum(x => Convert.ToDouble(x.TransactionAmount)) * -1;
             return budgetGoal;
         }
 
         private SavingsGoalsViewModel getSavingGoals()
         {
             List<SavingsGoal> SavingsGoalList = new List<SavingsGoal>();
-            SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID).Where(x => x.Status == "Active").ToList();
+            SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID && x.Status == "Active").OrderByDescending(x => x.CurrentGoalAmount / x.SavingsGoalAmount).ToList();
 
             SavingsGoalsViewModel savingsGoal = new SavingsGoalsViewModel();
             savingsGoal.savingsView = SavingsGoalList;
@@ -268,7 +269,8 @@ namespace BudgetingApplication.Controllers
             foreach (var trans in sumQuery)
             {
                 //add all categories to the labels except category 1 (this is the income category)
-                if (trans.CategoryID != 1)
+                //and 17 - the transfers to goals.
+                if (trans.CategoryID != 1 && trans.CategoryID != 17)
                 {
                     labels.Add(trans.CategoryType.First());
                     nums.Add(Math.Abs(trans.TransactionAmount));
@@ -316,14 +318,18 @@ namespace BudgetingApplication.Controllers
             Dictionary<string, object> dict = new Dictionary<string, object>();
 
 
-            if (Session["UserID"] == null)
+            if (Session["UserID"] != null)
             {
                 //get budget warnings
                 List<BudgetGoals_VW> BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
                 foreach (BudgetGoals_VW budgetGoal in BudgetGoalList)
                 {
                     int percentage = (int)(100 * (Math.Abs(budgetGoal.TransactionAmount) / budgetGoal.BudgetGoalAmount));
-                    if (percentage > 90)
+                    if(percentage > 100)
+                    {
+                        dict[budgetGoal.CategoryType] = "You have exceeding your " + budgetGoal.CategoryType + " budget by $" + (int)(Math.Abs(budgetGoal.TransactionAmount) - budgetGoal.BudgetGoalAmount) + ".";
+                    }
+                    else if (percentage > 90)
                     {
                         dict[budgetGoal.CategoryType] = "You are within " + (100 - percentage) + "% of exceeding your " + budgetGoal.CategoryType + " budget.";
                     }

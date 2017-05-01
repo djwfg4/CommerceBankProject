@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="col-md-12"><center><h2>My Budget</h2></center></div>
+    <div class="col-md-12"><center><h2><a href="/budgetGoals">My Budget</a></h2></center></div>
     <div class="col-md-12">
         @{
             if (Model.budgetGoals.budgetView.Count() < 1)
@@ -63,7 +63,7 @@
     </div>
     <br />
     <div class="col-sm-12">
-        <h3>Saving Goals</h3>
+        <h3><a href="/savingsgoals">Saving Goals</a></h3>
     </div>
     <div id="goals">
         @{
@@ -86,7 +86,7 @@
 </div>
  <!-- this is only visible when the screen gets too small-->
 <div class="col-sm-12 visible-sm-block visible-xs-block" style="border-bottom:1px solid; margin-bottom:10px;">
-    <h4 class="badgeHeader">Badges Earned</h4>
+    <h4 class="badgeHeader"><a href="/badges">Badges Earned</a></h4>
 </div>
 @{
     foreach (var item in Model.clientBadges)
@@ -100,7 +100,7 @@
 @section sidebar {
    <div>
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
-           <h4>Accounts</h4>
+           <h4>My Accounts</h4>
        </div>
        <div class="col-sm-12">
            <span>Total:</span>
@@ -128,7 +128,7 @@
         }
        <hr />
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
-           <h4 class="badgeHeader">Badges Earned</h4>
+           <h4 class="badgeHeader"><a href="/badges">Badges Earned</a></h4>
        </div>
        @{
            foreach (var item in Model.clientBadges)
