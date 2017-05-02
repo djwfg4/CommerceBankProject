@@ -26,8 +26,9 @@ namespace BudgetingApplication.Controllers
                 CLIENT_ID = int.Parse(Session["UserID"].ToString());
             }
             List<SavingsGoal> SavingsGoalList = new List<SavingsGoal>();
+            checkGoalStatus(); //trigger for all savings goals passed their end date
 
-           
+
             SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID && x.Status == "Active").OrderByDescending(x=>x.CurrentGoalAmount/x.SavingsGoalAmount).ToList();
 
             SavingsGoalsViewModel savingsGoal = new SavingsGoalsViewModel();
@@ -210,6 +211,36 @@ namespace BudgetingApplication.Controllers
                 }
             }
             
+        }
+        public void checkGoalStatus()
+        {
+            List<SavingsGoal> passedGoalDate = dbContext.SavingsGoals.Where(x => x.EndDate <= DateTime.Now && x.Status.Trim().ToUpper() == "ACTIVE").ToList();
+            foreach(SavingsGoal goal in passedGoalDate)
+            {
+                if(goal.CurrentGoalAmount == goal.SavingsGoalAmount)
+                {
+                    goal.Status = "Success";
+                }
+                else
+                {
+                    goal.Status = "Fail";
+                }
+                if(goal.Recurring.Trim().ToUpper() == "YES")
+                {
+                    SavingsGoal newSavingGoal = new SavingsGoal();
+                    newSavingGoal.Status = "Active";
+                    newSavingGoal.StartDate = goal.StartDate.AddMonths(1);
+                    newSavingGoal.EndDate = goal.EndDate.AddMonths(1);
+                    newSavingGoal.GoalDescription = goal.GoalDescription;
+                    newSavingGoal.Recurring = goal.Recurring;
+                    newSavingGoal.SavingsGoalAmount = goal.SavingsGoalAmount;
+                    newSavingGoal.CurrentGoalAmount = 0;
+                    newSavingGoal.ClientID = goal.ClientID;
+                    newSavingGoal.SavingsPointValue = 0;
+                    dbContext.SavingsGoals.Add(newSavingGoal);
+                }
+            }
+            dbContext.SaveChanges();
         }
     }
 }
