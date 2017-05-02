@@ -18,7 +18,7 @@
             <PropertyRef Name="BadgeID" />
           </Key>
           <Property Name="BadgeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="BadgeName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="BadgeName" Type="varchar" MaxLength="25" />
           <Property Name="Description" Type="text" />
           <Property Name="Status" Type="char" MaxLength="10" Nullable="false" />
         </EntityType>
@@ -51,6 +51,16 @@
           <Property Name="ClientID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Birthdate" Type="date" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="State" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="Notify" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="PhotoURL" Type="nvarchar" MaxLength="50" Nullable="true" />
         </EntityType>
         <EntityType Name="ClientBadge">
           <Key>
@@ -59,8 +69,8 @@
           <Property Name="BadgeID" Type="int" Nullable="false" />
           <Property Name="ClientID" Type="int" Nullable="false" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="Status" Type="char" MaxLength="10" Nullable="false" />
-          <Property Name="DateEarned" Type="datetime" Nullable="true" />
+          <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DateEarned" Type="datetime" />
         </EntityType>
         <EntityType Name="PointsRecord">
           <Key>
@@ -119,11 +129,12 @@ warning 6002: The table/view 'cs451.dbo.BudgetGoals_VW' does not have a primary 
           <Property Name="GoalCategory" Type="int" />
           <Property Name="BudgetPointValue" Type="int" />
           <Property Name="BudgetGoalAmount" Type="money" />
-          <Property Name="TransactionAmount" Type="money" Nullable="false" />
-          <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
-          <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Month" Type="date" />
           <Property Name="Status" Type="char" MaxLength="10" />
           <Property Name="Description" Type="text" />
+          <Property Name="TransactionAmount" Type="money" Nullable="false" />
+          <Property Name="CategoryType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ParentCategory" Type="varchar" MaxLength="20" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -295,7 +306,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <EntitySet Name="BudgetGoal" EntityType="Self.BudgetGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" Schema="dbo" store:Type="Tables" />
+		  <EntitySet Name="ClientBadge" EntityType="Self.ClientBadge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PointsRecord" EntityType="Self.PointsRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SavingsGoal" EntityType="Self.SavingsGoal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -307,11 +318,12 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
     [BudgetGoals_VW].[GoalCategory] AS [GoalCategory], 
     [BudgetGoals_VW].[BudgetPointValue] AS [BudgetPointValue], 
     [BudgetGoals_VW].[BudgetGoalAmount] AS [BudgetGoalAmount], 
-    [BudgetGoals_VW].[TransactionAmount] AS [TransactionAmount], 
-    [BudgetGoals_VW].[ParentCategory] AS [ParentCategory], 
-    [BudgetGoals_VW].[CategoryType] AS [CategoryType], 
+    [BudgetGoals_VW].[Month] AS [Month], 
     [BudgetGoals_VW].[Status] AS [Status], 
-    [BudgetGoals_VW].[Description] AS [Description]
+    [BudgetGoals_VW].[Description] AS [Description], 
+    [BudgetGoals_VW].[TransactionAmount] AS [TransactionAmount], 
+    [BudgetGoals_VW].[CategoryType] AS [CategoryType], 
+    [BudgetGoals_VW].[ParentCategory] AS [ParentCategory]
     FROM [dbo].[BudgetGoals_VW] AS [BudgetGoals_VW]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Categories_VW" EntityType="Self.Categories_VW" store:Type="Views" store:Schema="dbo">
@@ -338,7 +350,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             <End Role="Category" EntitySet="Category" />
             <End Role="Category1" EntitySet="Category" />
           </AssociationSet>
-          <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
+		  <AssociationSet Name="FK_ClientBadge_Badge" Association="Self.FK_ClientBadge_Badge">
             <End Role="Badge" EntitySet="Badge" />
             <End Role="ClientBadge" EntitySet="ClientBadge" />
           </AssociationSet>
@@ -383,7 +395,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             <PropertyRef Name="BadgeID" />
           </Key>
           <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BadgeName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BadgeName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
           <NavigationProperty Name="ClientBadge" Relationship="DataModel.FK_ClientBadge_Badge" FromRole="Badge" ToRole="ClientBadge" />
@@ -400,7 +412,17 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <NavigationProperty Name="BudgetGoals" Relationship="DataModel.FK_BudgetGoal_Client" FromRole="Client" ToRole="BudgetGoal" />
           <NavigationProperty Name="ClientBadges" Relationship="DataModel.FK_ClientBadge_Client" FromRole="Client" ToRole="ClientBadge" />
           <NavigationProperty Name="SavingsGoals" Relationship="DataModel.FK_SavingsGoal_ClientID" FromRole="Client" ToRole="SavingsGoal" />
-
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Birthdate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Notify" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="PhotoURL" Type="String" Nullable="true" MaxLength="50" FixedLength="false" Unicode="false" />
+     
         </EntityType>
         <EntityType Name="PointsRecord">
           <Key>
@@ -661,8 +683,8 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="BadgeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ClientID" Type="Int32" Nullable="false" />
           <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="DateEarned" Type="DateTime" Nullable="true" Precision="0" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DateEarned" Type="DateTime" Nullable="true" Precision="3" />
           <NavigationProperty Name="Badge" Relationship="DataModel.FK_ClientBadge_Badge" FromRole="ClientBadge" ToRole="Badge" />
           <NavigationProperty Name="Client" Relationship="DataModel.FK_ClientBadge_Client" FromRole="ClientBadge" ToRole="Client" />
         </EntityType>
@@ -733,6 +755,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <Property Name="CategoryType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Month" Type="DateTime" Precision="0" />
         </EntityType>
 
       </Schema>
@@ -766,6 +789,16 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
             <EntityTypeMapping TypeName="DataModel.Client">
 
               <MappingFragment StoreEntitySet="Client">
+                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
+                <ScalarProperty Name="Notify" ColumnName="Notify" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Birthdate" ColumnName="Birthdate" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
@@ -896,6 +929,7 @@ warning 6002: The table/view 'cs451.dbo.Categories_VW' does not have a primary k
           <EntitySetMapping Name="BudgetGoals_VW">
             <EntityTypeMapping TypeName="DataModel.BudgetGoals_VW">
               <MappingFragment StoreEntitySet="BudgetGoals_VW">
+                <ScalarProperty Name="Month" ColumnName="Month" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="CategoryType" ColumnName="CategoryType" />

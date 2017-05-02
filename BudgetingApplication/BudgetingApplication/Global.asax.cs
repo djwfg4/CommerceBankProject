@@ -47,11 +47,12 @@ namespace BudgetingApplication
 
                 // clear error on server
                 Server.ClearError();
-
-                Response.Redirect(String.Format("~/Error/{0}/?message={1}", action, exception.Message));
+                String urlClean = HttpContext.Current.Server.UrlEncode(exception.Message);
+                Response.Redirect(String.Format("~/Error/{0}/?message={1}", action, urlClean));
             } else
             {
-                Response.Redirect(String.Format("~/Error/{0}/?message={1}", "index", exception.Message));
+                String urlClean = HttpContext.Current.Server.UrlEncode(exception.Message);
+                Response.Redirect(String.Format("~/Error/{0}/?message={1}", "index", urlClean));
             }
         }
     }

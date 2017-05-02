@@ -317,9 +317,33 @@ canvas {
 }
 
 .sGoal-sidebar{
+
+    border-bottom:1px solid #e0dcdc;
+    padding-bottom:10px;
+
+    
+   
+}
+.sGoal-sidebar-successful{
     border-bottom:1px solid #e0dcdc;
     padding-bottom:10px;
 }
+
+    .sGoal-sidebar-successful h4{
+        color: green;
+        
+    }
+
+.sGoal-sidebar-unsuccessful{
+    border-bottom:1px solid #e0dcdc;
+    padding-bottom:10px;
+}
+
+    .sGoal-sidebar-unsuccessful h4{
+        color: red;
+        
+    }
+
 /* custom CSS for small screens */
 @media (max-width: 767px) {
     body {
@@ -398,4 +422,10 @@ canvas {
 /*Overview Savings Goals */
 #goals {
     font-size:x-small;
+}
+
+
+/*User Preferences*/
+.currentPhoto {
+    border: 3px solid blue;
 }
