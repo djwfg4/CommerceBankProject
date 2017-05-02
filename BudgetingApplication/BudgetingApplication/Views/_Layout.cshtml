@@ -87,9 +87,12 @@
                 {
                     <div class="navbar-header navbar-right">
                         <p class="navbar-text">
-                            <em>@Session["UserName"] </em>
+                            <a href="/user">
+                                <em>@Session["UserName"] </em>
+                            </a>
+
                             <a href="/Home/logout">Logout</a>
-                        </p>  
+                        </p>
                     </div>    
                 }
             </div><!--/.nav-collapse -->
@@ -103,14 +106,17 @@
             <div id="sidebar" class="visible-md-block visible-lg-block col-sm-3">
                @if (Session["UserName"] != null)
                {
-                <div id="UserArea">
+                <div id="UserArea" style="border:1px solid #cacaca" >
                     <table>
                         <tr>
                             <td rowspan="2">
-                                <img src="~/images/avatar-default-icon.png" />
+                                <img src="@Session["img"]" width="50" height="50" style="margin:15px"/>
                             </td>
                             <td>
-                                <h3>@Session["UserName"]</h3>
+                                <div id="userEdit" style="float:right; display:none;">
+                                    <a href="/user"> Edit</a>
+                                </div>
+                                <h3 style="margin-top:10px;">@Session["fullName"]</h3>
                             </td>
                         </tr>
                         <tr>
