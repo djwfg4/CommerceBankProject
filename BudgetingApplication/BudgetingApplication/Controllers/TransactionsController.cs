@@ -13,9 +13,9 @@ namespace BudgetingApplication.Controllers
     public class TransactionsController : Controller
     {
         private DataContext dbContext = new DataContext();
-        private int CLIENT_ID = 1;
+        private int CLIENT_ID;
 
-        /*public ActionResult checkUser()
+        public ActionResult checkUser()
         {
             if (Session["UserID"] == null)
             {
@@ -26,7 +26,7 @@ namespace BudgetingApplication.Controllers
                 CLIENT_ID = int.Parse(Session["UserID"].ToString());
                 return null;
             }
-        }*/
+        }
 
         /// <summary>
         /// Called on initial page load.
@@ -36,8 +36,8 @@ namespace BudgetingApplication.Controllers
         /// <returns> Returns the new TransactionsViewModel to the Index View. </returns>
         public ActionResult Index()
         {
-            /*ActionResult result = checkUser();
-            if (result != null) { return result; }*/
+            ActionResult result = checkUser();
+            if (result != null) { return result; }
 
             DateTime dateTime = System.DateTime.Now;
             TransactionsViewModel model = this.CreateModel(dateTime.Month, dateTime.Year);
@@ -110,6 +110,73 @@ namespace BudgetingApplication.Controllers
             return View("Index", model);
         }
 
+       /* [HttpPost]
+        public ActionResult ChangeCategory(TransactionsViewModel model)
+        {
+
+        }*/
+
+        public ActionResult SplitTransaction(string transNo)
+        {
+            TransactionsViewModel model = new TransactionsViewModel();
+            model.Categories = this.GetCategories();
+            model.Transaction = this.GetTransaction(int.Parse(transNo));
+            return View(model);
+        }
+
+        public ActionResult Split(int? account, string amount, string category, DateTime date, string description, int? transNo)
+        {
+            decimal amountDec = 0;
+            try
+            {
+                amountDec = decimal.Parse(amount);
+            }
+            catch (Exception e)
+            {
+                DateTime dateTime = System.DateTime.Now;
+                TransactionsViewModel model = this.CreateModel(dateTime.Month, dateTime.Year);
+                model.InvalidAmount = "Split amount was invalid.";
+                return View("SplitTransaction", model);
+            }
+            Transaction splitFrom = this.GetTransaction(transNo.Value);
+
+            if (amountDec >= Math.Abs(splitFrom.TransactionAmount))
+            {
+                DateTime dateTime = System.DateTime.Now;
+                TransactionsViewModel model = this.CreateModel(dateTime.Month, dateTime.Year);
+                model.InvalidSplit = "Split amount was greater than initial transaction amount.";
+                return View("SplitTransaction", model);
+            }
+
+            Transaction splitTo = new Transaction();
+            splitTo.Account.AccountNo = account.Value;
+            splitTo.Category.CategoryType = category;
+            splitTo.TransactionDate = date;
+            splitTo.Description = description;
+
+            dbContext.Transactions.Remove(splitFrom);
+
+            decimal updatedValue = 0;
+            if (splitFrom.TransactionAmount < 0)
+            {
+                updatedValue = Math.Abs(splitFrom.TransactionAmount) - splitTo.TransactionAmount;
+                splitFrom.TransactionAmount = updatedValue * -1;
+                splitTo.TransactionAmount = amountDec * -1;
+            }
+            else
+            {
+                updatedValue = Math.Abs(splitFrom.TransactionAmount) - splitTo.TransactionAmount;
+                splitFrom.TransactionAmount = updatedValue;
+                splitTo.TransactionAmount = amountDec;
+            }
+
+            dbContext.Transactions.Add(splitTo);
+            dbContext.Transactions.Add(splitFrom);
+            dbContext.SaveChanges();
+
+            return View("Index");
+        }
+
         /// <summary>
         /// Creates a new TransactionsViewModel.
         /// Initializes its DateTime, Month, Year, Accounts, Categories, Client, and Transactions.
@@ -130,6 +197,13 @@ namespace BudgetingApplication.Controllers
             model.Client = this.GetClient();
             model.Transactions = this.GetTransactions(month, year);
             return model;
+        }
+
+        private Transaction GetTransaction(int number)
+        {
+            Transaction transaction = dbContext.Transactions.Where(x => x.TransactionNo == number).Single();
+
+            return transaction;
         }
 
         /// <summary>

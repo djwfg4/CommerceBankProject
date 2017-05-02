@@ -337,6 +337,7 @@
     <Content Include="Views\SavingsGoal\_ListGoals.cshtml" />
     <Content Include="Views\SavingsGoal\InsertSavingsGoal.cshtml" />
     <Content Include="Views\SavingsGoal\AddFunds.cshtml" />
+    <Content Include="Views\Transactions\SplitTransaction.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

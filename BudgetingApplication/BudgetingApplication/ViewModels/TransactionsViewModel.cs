@@ -10,6 +10,9 @@ namespace BudgetingApplication.ViewModels
 {
     public class TransactionsViewModel
     {
+        public string InvalidAmount { get; set; }
+        public string InvalidSplit { get; set; }
+        public Transaction Transaction { get; set; }
         public int AccountNo { get; set; } //selected account via filtering
         public List<Account> Accounts { get; set; } //for displaying account filtering options
         public List<BudgetGoal> BudgetGoals { get; set; }
