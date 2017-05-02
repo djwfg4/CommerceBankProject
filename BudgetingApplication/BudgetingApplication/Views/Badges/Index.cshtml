@@ -8,10 +8,11 @@
 
 <br />
 
-@foreach (var item in Model.badges)
+@foreach (var item in Model.badges.OrderByDescending(x=>x.ClientBadge.DateEarned))
 {
+    var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
     <div class="col-sm-3 myBadge" align="center">
-        <img src="@Url.Content("~/images/" + item.BadgeName)" />
+        <img src="@Url.Content("~/images/" + item.BadgeName)" data-html="true"  data-toggle="tooltip" title="<b>Earned:</b><em> @item.ClientBadge.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="bottom" />
         <p style="margin-bottom:20px; margin-top:20px;"> @Url.Content(item.Description)</p>
 </div>
 }
