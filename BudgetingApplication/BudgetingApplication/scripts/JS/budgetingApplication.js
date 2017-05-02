@@ -4,7 +4,14 @@
     var monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
     ];
-
+    //Sidebar hover for editing user info
+    $("#UserArea").hover(
+              function () {
+                  $(this).find('#userEdit').show();
+              }, function () {
+                  $(this).find('#userEdit').hide();
+              }
+            );
     //This code is used to make the sidebar mobile friendly and visible on a click
     $("#showSidebar").on('click', function () {
         if (!$('#hoveringSidebar #sidebar').length) {
@@ -35,7 +42,7 @@
             })
         },
         error: function (e) {
-            alert("Warnings data request failed");
+            //alert("Warnings data request failed");
         }
     });
 
@@ -75,7 +82,7 @@
             
         },
         error: function (e) {
-            alert("New Badges data request failed");
+            //alert("New Badges data request failed");
         }
     });
     ctx = $("#chartArea")[0];
@@ -140,7 +147,7 @@
                 }
             },
             error: function () {
-                alert("Transactions 2 data request failed");
+                //alert("Transactions 2 data request failed");
             }
         });
         $('#showCharts li span').on('click', function () {

@@ -423,3 +423,9 @@ canvas {
 #goals {
     font-size:x-small;
 }
+
+
+/*User Preferences*/
+.currentPhoto {
+    border: 3px solid blue;
+}

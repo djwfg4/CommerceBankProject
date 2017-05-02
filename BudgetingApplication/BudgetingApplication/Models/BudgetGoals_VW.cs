@@ -24,5 +24,6 @@ namespace BudgetingApplication.Models
         public string CategoryType { get; set; }
         public string Status { get; set; }
         public string Description { get; set; }
+        public DateTime Month { get; set; }
     }
 }

@@ -100,6 +100,13 @@ namespace BudgetingApplication.Controllers
                     {
                         Session["UserID"] = obj.ClientID.ToString();
                         Session["UserName"] = obj.Username.ToString();
+                        Session["FullName"] = obj.FirstName + " " + obj.LastName;
+                        string photourl = "/Images/avatar-default-icon.png";
+                        if (obj.PhotoURL != null && obj.PhotoURL != "")
+                        {
+                            photourl = "/Images/Users/" + obj.ClientID + "/" + obj.PhotoURL;
+                        }
+                        Session["img"] = photourl;
                         return RedirectToAction("index");
                     }
                 }
@@ -295,6 +302,14 @@ namespace BudgetingApplication.Controllers
         /// <returns>JSON of badge info</returns>
         public JsonResult GetNewlyEarnedBadges()
         {
+            Client c = dbContext.Clients.Where(x => x.ClientID == CLIENT_ID).FirstOrDefault();
+            if (c != null  && c.Notify == "N") //user does not want notifications
+            {
+                return new JsonResult
+                {
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
+            }
             //get all badges that client has earned, but the status is "new"
             List<ClientBadge> newlyEarnedBadges = dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID && x.Status == "new").ToList();
             Dictionary<String, object> dict = new Dictionary<String, object>();
@@ -320,6 +335,14 @@ namespace BudgetingApplication.Controllers
 
             if (Session["UserID"] != null)
             {
+                Client c = dbContext.Clients.Where(x => x.ClientID == CLIENT_ID).FirstOrDefault();
+                if (c.Notify == "N") //user does not want notifications
+                {
+                   return new JsonResult
+                    {
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                    };
+                }
                 //get budget warnings
                 List<BudgetGoals_VW> BudgetGoalList = dbContext.BudgetGoals_VW.Where(x => x.ClientID == CLIENT_ID).ToList();
                 foreach (BudgetGoals_VW budgetGoal in BudgetGoalList)
