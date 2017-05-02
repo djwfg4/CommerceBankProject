@@ -368,7 +368,7 @@ else
                     textColor = "color:white";
                 }
 
-                @using (Html.BeginForm("ChangeCategory", "Transactions", FormMethod.Post, new { id = "demoForm", name = "demoForm" }))
+                using (Html.BeginForm("ChangeCategory", "Transactions", FormMethod.Post, new { id = "demoForm", name = "demoForm" }))
                 {
                     <tr style="@backgroundColor">
                         <td style="@textColor" class="clickable-row" data-href="@url">
