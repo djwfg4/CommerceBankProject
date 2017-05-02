@@ -12,12 +12,20 @@ namespace BudgetingApplication.Controllers
     public class BadgesController : Controller
     {
         private DataContext dbContext = new DataContext();
-        private static int CLIENT_ID = 1;
+        private static int CLIENT_ID;
 
         // GET: Badges
         public ActionResult Index()
         {
-
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                CLIENT_ID = int.Parse(Session["UserID"].ToString());
+            }
+            
             //get badges the user has earned
             BadgesModelView badgeModel = new BadgesModelView();
             badgeModel.badges = getUserBadges();
