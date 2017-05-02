@@ -12,7 +12,7 @@ namespace BudgetingApplication.Controllers
     public class TrendsController : Controller
     {
         private DataContext dbContext = new DataContext();
-        private int CLIENT_ID = 1;
+        private static int CLIENT_ID;
 
         public ActionResult checkUser()
         {

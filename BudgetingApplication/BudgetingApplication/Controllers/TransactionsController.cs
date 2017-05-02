@@ -13,7 +13,7 @@ namespace BudgetingApplication.Controllers
     public class TransactionsController : Controller
     {
         private DataContext dbContext = new DataContext();
-        private int CLIENT_ID;
+        private static int CLIENT_ID;
 
         public ActionResult checkUser()
         {
@@ -194,7 +194,7 @@ namespace BudgetingApplication.Controllers
             model.Year = year;
             model.Accounts = this.GetAccounts();            
             model.Categories = this.GetCategories();
-            model.Client = this.GetClient();
+            //model.Client = this.GetClient();
             model.Transactions = this.GetTransactions(month, year);
             return model;
         }
@@ -230,11 +230,11 @@ namespace BudgetingApplication.Controllers
         /// Returns the Client entity.
         /// </summary>
         /// <returns></returns>
-        private Client GetClient()
+        /*private Client GetClient()
         {
             var client = dbContext.Clients.Single(cl => cl.ClientID == CLIENT_ID);
             return client;
-        }
+        }*/
 
         /// <summary>
         /// Gets Transactions from the database which fall in the month and year.
