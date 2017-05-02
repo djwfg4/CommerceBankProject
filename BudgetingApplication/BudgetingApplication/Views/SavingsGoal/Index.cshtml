@@ -5,6 +5,7 @@
     Layout = "~/Views/_Layout.cshtml";
 }
 
+@*Adds edit button when hovering over a goal*@
 <script>
     $(document).ready(function () {
 
@@ -18,9 +19,10 @@
     });
 </script>
 
+
 <div class="col-sm-12"><h2>Savings Goals</h2></div>
 <div id="savingsGoalContainer" class="col-sm-12">
-
+    @*Separates Goals into Active, Successful, and Unsuccessful pages*@
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#activeGoals">Active Goals</a></li>
         <li><a data-toggle="tab" href="#successes">Successful Goals</a></li>
@@ -32,10 +34,14 @@
                 <h3>Currently Active Goals</h3>
                 <em>Goals that are currently active.</em>
             </div>
+
+            @*Generates a list of Active Savings Goals*@
             @foreach (var item in ViewData.Model.savingsView)
             {
                 @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
             }
+
+            @*Allows users to insert new savings goals*@
             <div class="col-sm-12">
                 <a type="button" class="btn btn-success"
                    href="~/SavingsGoal/InsertSavingsGoal">+ Add New Goal</a>
@@ -46,6 +52,7 @@
                 <h3>Successful Goals</h3>
                 <em>Goals that were successful!</em>
             </div>
+            @*Generates lst of savings goals that were met in the past*@
                 @foreach (var item in ViewData.Model.savingsViewSuccesses)
             {
                     @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
@@ -56,6 +63,7 @@
                 <h3>Unsuccessful Goals</h3>
                 <em>Goals that did not reach their goal by the finish date.</em>
             </div>
+            @*Generates list of goals that were not met*@
                 @foreach (var item in ViewData.Model.savingsViewFails)
             {
                     @Html.Partial("~/Views/SavingsGoal/_ListGoals.cshtml", item)
@@ -64,7 +72,7 @@
     </div>
 </div>
    
-
+ @*Displays goal statistics in sidebar*@
         @section sidebar{
 
             @{double total = 0;
@@ -80,17 +88,17 @@
                         <span>@complete of @total</span>
                     </div>
                 </div>
-
+               
                 <div class="col-sm-12 sGoal-sidebar">
                     <h4>Active Goals:</h4>
                     @Model.savingsView.Count()
                 </div>
-                <div class="col-sm-12 sGoal-sidebar">
-                    <h4>Successful Goals</h4>
+                <div class="col-sm-12 sGoal-sidebar-successful">
+                    <h4>Successful Goals:</h4>
                     @Model.savingsViewSuccesses.Count()
                 </div>
-                <div class="col-sm-12 sGoal-sidebar">
-                    <h4>Unsuccessful Goals</h4>
+                <div class="col-sm-12 sGoal-sidebar-unsuccessful">
+                    <h4>Unsuccessful Goals:</h4>
                     @Model.savingsViewFails.Count()
                 </div>
                 

@@ -2,15 +2,6 @@
 
 @{
 
-    /*double incomeGoal, incomeAmount;
-    if (Model.GoalCategory == 1)
-    { //skip displaying the deposit goal
-        incomeAmount = Convert.ToDouble(Model.TransactionAmount);
-        incomeGoal = Convert.ToDouble(Model.BudgetGoalAmount);
-        ViewData.Add("Parent", this);
-        return;
-    }*/
-
     double TransactionAmount = (double)Model.CurrentGoalAmount;
     double BudgetGoalAmount = (double)Model.SavingsGoalAmount;
     int percentage = (int)((TransactionAmount / BudgetGoalAmount) * 100);
@@ -18,7 +9,7 @@
     double remaining = BudgetGoalAmount - TransactionAmount;
     string goalName = Model.GoalDescription;
 
-
+    <!--changes the color of the progress bar when certain percentages are reached-->
     string progressType = "progress-bar-success";
     if (percentage > 30 && percentage < 65)
     {
@@ -28,7 +19,7 @@
     {
         progressType = "progress-bar-danger";
     }
-
+    <!--creates containers for each goal to be displayed-->
     <div id="savigsGoal_@Model.SavingGoalID" class="sGoalContainer col-sm-12">
         <div class="sGoalUpper">
             <div class="sGoalLabel">
@@ -50,6 +41,8 @@
             </div>
 
         </div>
+
+        <!--Progress bar-->
         <div class="sGoalProgress col-sm-12 col-xs-12">
             <div class="progress">
                 <div class="progress-bar @progressType" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%">
@@ -61,6 +54,8 @@
             <div class="col-sm-4">Goal: <span class="sGoal-amount pull-right">$@BudgetGoalAmount</span> </div>
             <div class="col-sm-4 pull-right">Remaining: <span class="sGoal-amount pull-right">$@remaining</span></div>
         </div>
+
+        @*Adds button to add funds to active goals*@
         @if (Model.Status.Trim().ToUpper() == "Active".ToUpper())
         {
             <div class="col-sm-12 col-centered">
