@@ -33,7 +33,7 @@
         <div class="col-sm-12">
             <center>
                 <div id="MyChart">
-                    <canvas id="chartArea" height="350" />
+                    <canvas id="chartArea"  />
                 </div>
             </center>
         </div>
@@ -99,6 +99,11 @@
 }    <!--end of small screen visibility-->
 @section sidebar {
    <div>
+       <div class="row">
+           <div id="warnings" class="col-sm-12">
+
+           </div>
+       </div>
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
            <h4>My Accounts</h4>
        </div>
@@ -126,19 +131,20 @@
                 </div>
                         }
         }
-       <hr />
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
            <h4 class="badgeHeader"><a href="/badges">Badges Earned</a></h4>
        </div>
-       @{
-           foreach (var item in Model.clientBadges)
-           {
-               var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
-               <div class="col-xs-6 col-sm-4">
-                   <img src="@Url.Content("~/images/" + badge.BadgeName)" data-html="true"  class="badgeImage" data-toggle="tooltip" title="<b>Earned:</b><em> @item.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="bottom" width="50" height="50" />
-               </div>
+       <div class="row">
+           @{
+               foreach (var item in Model.clientBadges)
+               {
+                   var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
+                   <div class="col-xs-6 col-sm-4">
+                       <img src="@Url.Content("~/images/" + badge.BadgeName)" data-html="true" class="badgeImage" data-toggle="tooltip" title="<b>Earned:</b><em> @item.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="top" width="50" height="50" />
+                   </div>
+               }
            }
-       }
+       </div>
 
     </div>
      }

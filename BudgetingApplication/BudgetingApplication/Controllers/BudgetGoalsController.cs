@@ -69,6 +69,7 @@ namespace BudgetingApplication.Controllers
 
             //let's look for it
             budget.budgetGoal = dbContext.BudgetGoals.Find(id);
+            budget.budgetView = dbContext.BudgetGoals_VW.Where(x => x.BudgetGoalID == budget.budgetGoal.BudgetGoalID);
             if(budget.budgetGoal == null || budget.budgetGoal.ClientID != CLIENT_ID)
             {
                 //we couldn't find the budget category to edit or it is not the client's, redirect
@@ -156,8 +157,7 @@ namespace BudgetingApplication.Controllers
             //     <option value="CategoryID">Category Type</option>
             foreach (var element in elements)
             {
-                if (element.CategoryID == 17) { continue; }
-                if (element.CategoryID == 1) { continue; }
+                if (element.CategoryID == 17) { continue; } //ignore category of Goals, mainly used on transactions
                 if(dbContext.BudgetGoals_VW.Where(x=>x.GoalCategory == element.CategoryID && x.ClientID == CLIENT_ID && x.Status == "A").FirstOrDefault() == null) { 
                     selectList.Add(new SelectListItem
                     {

@@ -30,7 +30,15 @@
        <div class="form-group">
             @Html.LabelFor(model => model.budgetGoal.GoalCategory, htmlAttributes: new { @class = "control-label col-md-5" })
             <div class="col-md-7">
-                @Html.DropDownListFor(model => model.budgetGoal.GoalCategory, Model.category, Model.budgetGoal == null || Model.budgetGoal.BudgetGoalID == 0 ? new { @class = "form-control" } as object : new { @class = "form-control", @disabled = "disabled" } as object)
+                @if (Model.budgetGoal.BudgetGoalID > 0)
+                {
+                    @Html.HiddenFor(model =>model.budgetGoal.GoalCategory)
+                    @Html.DisplayFor(model => model.budgetView.First().CategoryType);
+                }
+                else
+                {
+                     @Html.DropDownListFor(model => model.budgetGoal.GoalCategory, Model.category, Model.budgetGoal == null || Model.budgetGoal.BudgetGoalID == 0 ? new { @class = "form-control" } as object : new { @class = "form-control", @disabled = "disabled" } as object)
+                }
                
                 @Html.ValidationMessageFor(model => model.budgetGoal.GoalCategory, "", new { @class = "text-danger" })
             </div>

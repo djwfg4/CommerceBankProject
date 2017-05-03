@@ -9,7 +9,14 @@
     <h4>View Your Personal Details</h4>
 </div>
 <div class="col-md-6">
-    <img src="~/Images/Users/@Model.ClientID/@Model.PhotoURL" width="150" height="150" />
+    @if (Model.PhotoURL == null || Model.PhotoURL == "")
+    {
+        <img src="~/Images/avatar-default-icon.png" width="150" height="150" />
+    }
+    else
+    {
+        <img src="~/Images/Users/@Model.ClientID/@Model.PhotoURL" width="150" height="150" />
+    }
 </div>
 <div class="col-md-12">
     <hr />
@@ -33,7 +40,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Birthdate)
+            @Model.Birthdate.ToShortDateString()
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Username)

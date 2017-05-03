@@ -47,10 +47,39 @@
 
             </div>
         </div>
-        <div class="bGoalLower">
-            <div style="float:left;">Total Spent: <span class="bGoal-amount">$@TransactionAmount</span> </div>
-            <div class="visible-md-block visible-lg-block " style="float:right;">Remaining: <span class="bGoal-amount">$@remaining</span></div>
-            <center><div>Total Budgeted: <span class="bGoal-amount"> $@BudgetGoalAmount</span></div></center>
+        <div class="bGoalLower clearfix">
+            <div class="col-md-4 col-xs-6">
+                <div class="col-xs-12">Total Spent: </div>
+                <div class="col-xs-12"><span class="bGoal-amount">$@TransactionAmount</span> </div>
+            </div>
+            <div class="col-md-4 col-xs-6">
+                <div class="col-xs-12">Total Budgeted: </div>
+                <div class="col-xs-12"><span class="bGoal-amount"> $@BudgetGoalAmount</span></div>
+            </div>
+            <div class="col-md-4 visible-md-block visible-lg-block " style="float:right;">
+               
+                    @if (remaining > 0)
+                    {
+                        <div class="col-xs-12">
+                            <span>Remaining:</span>
+                            <div class="col-xs-12">
+                                <span class="bGoal-amount">$@remaining</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xs-12">
+                            <div class="col-xs-12">
+                                <span class="bGoal-amount" style="color:red;">Over:</span>
+                            </div>
+                            <div class="col-xs-12">
+                                <span class="bGoal-amount"  style="color:red;">$@Math.Abs(remaining)</span>
+                            </div>
+                        </div>
+                    }
+            </div>
+            
         </div>
     </div>
 </div>
