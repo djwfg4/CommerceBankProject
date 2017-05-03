@@ -18,6 +18,16 @@
             $('#sidebar').clone().appendTo('#hoveringSidebar');
             $('#hoveringSidebar #sidebar').removeAttr('class');
             $('[data-toggle="tooltip"]').tooltip();
+            $('.myWarning button').on('click', function () {
+                $(this).parent().fadeOut();
+            });
+            $("#UserArea").hover(
+              function () {
+                  $(this).find('#userEdit').show();
+              }, function () {
+                  $(this).find('#userEdit').hide();
+              }
+            );
            
         }
         $(this).toggleClass('sidebarToggled', 500);
@@ -104,7 +114,7 @@
                     type: 'doughnut',
                     data: json,
                     options: {
-                        responsive: false,
+                        responsive: true,
                         legend: {
                             position: 'bottom',
                             labels: {
