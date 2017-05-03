@@ -1,12 +1,12 @@
 # CS451R Spring 2017 Team 6
 Team Members:
-Jeremy Troshynski
-Colin Zeiler
-Emily Thomas
-Derek Wilson
-Alex Sweeney
-Jonathan Whipple
-Jeremiah Trahern
+Jeremy Troshynski,
+Colin Zeiler,
+Emily Thomas,
+Derek Wilson,
+Alex Sweeney,
+Jonathan Whipple,
+Jeremiah Trahern,
 Daniel McNary
 
 Duration: January-May 2017
