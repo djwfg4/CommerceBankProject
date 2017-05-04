@@ -342,6 +342,7 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\Details.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\Transactions\SplitTransaction.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

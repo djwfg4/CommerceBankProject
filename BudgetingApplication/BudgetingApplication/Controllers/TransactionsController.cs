@@ -124,7 +124,7 @@ namespace BudgetingApplication.Controllers
             return View(model);
         }
 
-        public ActionResult Split(int? account, string amount, string category, DateTime date, string description, int? transNo)
+        public ActionResult Split(int? account, string amount, string category, string description, int? transNo, int? month, int? day, int? year)
         {
             decimal amountDec = 0;
             try
@@ -138,6 +138,7 @@ namespace BudgetingApplication.Controllers
                 model.InvalidAmount = "Split amount was invalid.";
                 return View("SplitTransaction", model);
             }
+
             Transaction splitFrom = this.GetTransaction(transNo.Value);
 
             if (amountDec >= Math.Abs(splitFrom.TransactionAmount))
@@ -148,11 +149,14 @@ namespace BudgetingApplication.Controllers
                 return View("SplitTransaction", model);
             }
 
-            Transaction splitTo = new Transaction();
-            splitTo.Account.AccountNo = account.Value;
-            splitTo.Category.CategoryType = category;
-            splitTo.TransactionDate = date;
-            splitTo.Description = description;
+            Transaction splitTo = new Transaction
+            {
+                TransactionAccountNo = this.GetAccount(account.Value),
+                Category = this.GetCategory(category),
+                TransactionDate = new DateTime(year.Value, month.Value, day.Value),
+                Description = description
+            };
+            
 
             dbContext.Transactions.Remove(splitFrom);
 
@@ -255,6 +259,24 @@ namespace BudgetingApplication.Controllers
                                select transaction;
 
             return transactions.ToList();
+        }
+
+        private int GetAccount(int accountNo)
+        {
+            var account = from acct in dbContext.Accounts
+                          where acct.AccountNo == accountNo
+                          select acct;
+
+            return account.Single().AccountNo;
+        }
+
+        private Category GetCategory(string category)
+        {
+            var cat = from c in dbContext.Categories
+                      where c.CategoryType.Equals(category)
+                      select c;
+
+            return cat.Single();
         }
 
         /// <summary>
