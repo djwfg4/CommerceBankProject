@@ -35,7 +35,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.savingsGoal.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-8">
-                @Html.EditorFor(model => model.savingsGoal.StartDate, new { htmlAttributes = new { @Value = Model.savingsGoal.StartDate.ToShortDateString(), @class = "form-control datepicker" } })
+                @Html.EditorFor(model => model.savingsGoal.StartDate, new { htmlAttributes = new { @Value = Model.savingsGoal == null ? "" : Model.savingsGoal.StartDate.ToShortDateString(), @class = "form-control datepicker" } })
                 @Html.ValidationMessageFor(model => model.savingsGoal.StartDate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -43,7 +43,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.savingsGoal.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-8">
-                @Html.EditorFor(model => model.savingsGoal.EndDate, new { htmlAttributes = new { @Value = Model.savingsGoal.EndDate.ToShortDateString(), @class = "form-control datepicker" } })
+                @Html.EditorFor(model => model.savingsGoal.EndDate, new { htmlAttributes = new { @Value = Model.savingsGoal == null ? "" : Model.savingsGoal.EndDate.ToShortDateString(), @class = "form-control datepicker" } })
                 @Html.ValidationMessageFor(model => model.savingsGoal.EndDate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -65,7 +65,11 @@
                 @{
                     //create options for dropdown menu
                     List<SelectListItem> choices = new List<SelectListItem>();
-                    string yesNo = Model.savingsGoal.Recurring.Trim();
+                    string yesNo = "Yes";
+                    if (Model.savingsGoal != null)
+                    {
+                        yesNo = Model.savingsGoal.Recurring.Trim();
+                    }
                     string opposite = yesNo == "Yes" ? "No" : "Yes";
                     choices.Add(new SelectListItem() { Value = yesNo, Text = yesNo});
                     choices.Add(new SelectListItem() { Value = opposite, Text = opposite });

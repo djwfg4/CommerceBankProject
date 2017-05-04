@@ -462,3 +462,7 @@ canvas {
 .currentPhoto {
     border: 3px solid blue;
 }
+
+#ui-datepicker-div{
+    z-index:1000;
+}

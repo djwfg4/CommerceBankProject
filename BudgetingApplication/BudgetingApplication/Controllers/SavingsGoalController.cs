@@ -29,6 +29,12 @@ namespace BudgetingApplication.Controllers
             checkGoalStatus(); //trigger for all savings goals passed their end date
 
 
+            //any messages to move on to the page?
+            if(TempData["SuccessTitle"] != null) {
+                ViewBag.SuccessTitle = TempData["SuccessTitle"];
+                ViewBag.SuccessBody = TempData["SuccessBody"];
+            }
+
             SavingsGoalList = dbContext.SavingsGoals.Where(x => x.ClientID == CLIENT_ID && x.Status == "Active").OrderByDescending(x=>x.CurrentGoalAmount/x.SavingsGoalAmount).ToList();
 
             SavingsGoalsViewModel savingsGoal = new SavingsGoalsViewModel();
@@ -127,12 +133,12 @@ namespace BudgetingApplication.Controllers
             if(model.addToGoal + model.savingsGoal.CurrentGoalAmount > model.savingsGoal.SavingsGoalAmount)
             {
                 //Trying to add more than specified goal amount error
-                ModelState.AddModelError("addToGoal", "The amount you want to enter is too large.");
+                ModelState.AddModelError("addToGoal", "The amount you want to add cannot exceed the savings goal limit.");
             }
             if(model.addToGoal <= 0)
             {
                 //less than 0 transaction error
-                ModelState.AddModelError("addToGoal", "The amount you want to enter is too small.");
+                ModelState.AddModelError("addToGoal", "The amount you want to enter cannot be less than 0.");
             }
             SavingsGoal goal = dbContext.SavingsGoals.Where(x => x.SavingGoalID == model.savingsGoal.SavingGoalID).FirstOrDefault();
             if(goal == null)
@@ -150,7 +156,28 @@ namespace BudgetingApplication.Controllers
                 trans.CategoryID = 17;
 
                 goal.CurrentGoalAmount = goal.CurrentGoalAmount + model.addToGoal;
-
+                if(goal.CurrentGoalAmount >= goal.SavingsGoalAmount) //User just achieved goal
+                {
+                    goal.Status = "Success";
+                    TimeSpan difference = goal.EndDate.Subtract(DateTime.Now);
+                    TempData["SuccessTitle"] = "Congratulations! \"" + goal.GoalDescription + "\" Completed!";
+                    TempData["SuccessBody"] = "You just achieved your goal of saving " + goal.CurrentGoalAmount + " by " +
+                        goal.EndDate.ToLongDateString() + ". You finished this " + difference.Days + " Days before your target date!";
+                    if (goal.Recurring.Trim().ToUpper() == "YES")
+                    {
+                        SavingsGoal newSavingGoal = new SavingsGoal();
+                        newSavingGoal.Status = "Active";
+                        newSavingGoal.StartDate = goal.StartDate.AddMonths(1);
+                        newSavingGoal.EndDate = goal.EndDate.AddMonths(1);
+                        newSavingGoal.GoalDescription = goal.GoalDescription;
+                        newSavingGoal.Recurring = goal.Recurring;
+                        newSavingGoal.SavingsGoalAmount = goal.SavingsGoalAmount;
+                        newSavingGoal.CurrentGoalAmount = 0;
+                        newSavingGoal.ClientID = goal.ClientID;
+                        newSavingGoal.SavingsPointValue = 0;
+                        dbContext.SavingsGoals.Add(newSavingGoal);
+                    }
+                }
                 dbContext.Transactions.Add(trans);
 
                 dbContext.SaveChanges();

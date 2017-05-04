@@ -30,7 +30,7 @@
        <div class="form-group">
             @Html.LabelFor(model => model.budgetGoal.GoalCategory, htmlAttributes: new { @class = "control-label col-md-5" })
             <div class="col-md-7">
-                @if (Model.budgetGoal.BudgetGoalID > 0)
+                @if (Model.budgetGoal != null && Model.budgetGoal.BudgetGoalID > 0)
                 {
                     @Html.HiddenFor(model =>model.budgetGoal.GoalCategory)
                     @Html.DisplayFor(model => model.budgetView.First().CategoryType);

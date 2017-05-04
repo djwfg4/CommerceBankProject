@@ -14,6 +14,7 @@ public class DecimalModelBinder : IModelBinder
         try
         {
             string value = valueResult.AttemptedValue.Replace(",", "");
+            if(value == "") { value = "0"; }
             actualValue = Convert.ToDecimal(value,
                 CultureInfo.CurrentCulture);
         }
