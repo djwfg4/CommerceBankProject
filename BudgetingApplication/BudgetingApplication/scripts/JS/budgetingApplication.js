@@ -30,6 +30,10 @@
             );
            
         }
+        $('#closeSideBar').on("click", function () {
+            $('#hoveringSidebar').hide("slide", { direction: "left" }, 500);
+            $("#showSidebar").removeClass('sidebarToggled', 500);
+        })
         $(this).toggleClass('sidebarToggled', 500);
         if ($(this).hasClass('sidebarToggled')) {
             $('#hoveringSidebar').hide("slide", { direction: "left" }, 500);
@@ -96,9 +100,6 @@
         }
     });
     ctx = $("#chartArea")[0];
-    ctx2 = $("#chart-area")[0];
-    ctx1 = $("#graph-chart")[0];
-    ctxPolar = $("#polar-chart")[0];
 
     if (ctx != null) {
         // getting data for donut and bar graph
@@ -155,6 +156,8 @@
                 } else {
                     window.myChart = new Chart(ctx, config);
                 }
+
+                afterResizing();
             },
             error: function () {
                 //alert("Transactions 2 data request failed");
@@ -193,6 +196,22 @@
             window.myChart = new Chart(ctx, temp);
         }
 
+
+        var resizeId;
+        $(window).resize(function () {
+            clearTimeout(resizeId);
+            resizeId = setTimeout(afterResizing, 100);
+        });
+        function afterResizing() {
+            var canvasheight = $("#chartArea").height();
+            if (canvasheight <= 375) {
+                window.myChart.options.legend.display = false;
+            } else {
+                window.myChart.options.legend.display = true;
+                window.myChart.options.legend.position = 'bottom';
+            }
+            window.myChart.update();
+        }
     }
 });
 

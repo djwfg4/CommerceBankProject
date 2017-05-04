@@ -13,6 +13,7 @@ canvas {
     -ms-user-select: none;
 }
 .mainBody {
+        height:95vh;
     min-height: calc(100vh - 105px);
     max-height:  calc(100vh - 105px);
     overflow: auto;
@@ -25,7 +26,7 @@ canvas {
         min-width:100px;
     }
     #banner-brand {
-        width: 100px;
+        width: 150px!important;
         height: 30px;
         background-color: #006f51;
     }
@@ -152,7 +153,6 @@ canvas {
 }
 .sidebarToggled {
     left: 210px;
-    transition: ease-in;
 }
 
 #showSidebar{
@@ -196,12 +196,18 @@ canvas {
     background-color:#6ab244;
     position:fixed;
     top:50px;
-    z-index:999;
+    z-index:900;
     float:left;
+        height:95vh;
     max-height:calc(100vh - 50px);
     min-height:calc(100vh - 50px);
     overflow:auto;
     padding-left:5px;
+}
+#closeSideBar {
+    color:white;
+    text-align:right;
+    padding: 0px 10px;
 }
 #warnings{
     max-height:150px;
@@ -217,10 +223,13 @@ canvas {
 #UserArea table{
     border:1px solid #cacaca;
 }
+#UserArea tr{
+ background-color:#FFF!important;
+}   
 
 /*Overview page*/
 #graphContainer {
-    min-height: 350px;
+    min-height: 150px;
 }
 #noGraphData{
     text-align:center;
@@ -247,7 +256,7 @@ canvas {
 
 .bGoalContainerSubmit {
     margin: 0 auto;
-    min-width: 500px;
+    /*min-width: 500px;*/
     max-width: 500px;
     margin-bottom: 10px;
     padding: 5px;
@@ -373,6 +382,7 @@ canvas {
         padding-top: 55px;
     }
     .mainBody {
+        height:95vh;
     min-height: calc(100vh - 50px);
     max-height:  calc(100vh - 50px);
     overflow: auto;
