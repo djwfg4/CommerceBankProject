@@ -124,6 +124,11 @@ namespace BudgetingApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddFunds(SavingsGoalsViewModel model)
         {
+            if(model.savingsGoal.CurrentGoalAmount >= model.savingsGoal.CurrentGoalAmount)
+            {
+                //trying to add to goal that is already met error
+                ModelState.AddModelError("addToGoal", "This goal has already been met.");
+            }
             if(model.addToGoal + model.savingsGoal.CurrentGoalAmount > model.savingsGoal.SavingsGoalAmount)
             {
                 //Trying to add more than specified goal amount error
