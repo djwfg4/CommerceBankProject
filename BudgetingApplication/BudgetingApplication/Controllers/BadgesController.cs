@@ -36,6 +36,10 @@ namespace BudgetingApplication.Controllers
             badgeModel.badgeCount = badgeModel.badges.Count();
             badgeModel.totalBadgeCount = dbContext.Badges.Count();
 
+            //get most recent badge
+            ClientBadge recent = dbContext.ClientBadges.Where(x => x.ClientID == CLIENT_ID).OrderByDescending(t => t.DateEarned).FirstOrDefault();
+            badgeModel.mostRecent = dbContext.Badges.Where(x => x.BadgeID == recent.BadgeID).FirstOrDefault();
+            
             return View(badgeModel);
         }
 

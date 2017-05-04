@@ -37,7 +37,6 @@ namespace BudgetingApplication.ViewModels
             dbContext.ClientBadges.Add(cb);
             dbContext.SaveChanges();
 
-            mostRecent = dbContext.Badges.Where(x => x.BadgeID == cb.BadgeID).First();
         }
     }
 }
