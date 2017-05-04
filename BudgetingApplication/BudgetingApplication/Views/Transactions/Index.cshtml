@@ -42,7 +42,7 @@
     .button {
         margin-top: 5px;
         color: white;
-        background-color: darkgreen;
+        background-color: #0d6e51
     }
 
     .month-header {
@@ -174,7 +174,7 @@
 
 @section sidebar{
     <!-- SIDEBAR SECTION -->
-    <h3><b>Account Numbers</b></h3>
+    <h3>Accounts</h3>
     @{
         var checking = Model.Accounts.Where(account => account.AccountType.Equals("Checking"));
         var creditCard = Model.Accounts.Where(account => account.AccountType.Equals("CC"));

@@ -1,11 +1,10 @@
 ﻿body {
-    padding-top: 105px;
+    padding-top: 125px;
 }
 
 html, body {
     background: #f9f9f9;
-    margin: 0;
-    font-family: Open Sans,sans-serif;
+    font-family: Calibri,Open Sans,sans-serif;
 }
 
 canvas {
@@ -346,12 +345,8 @@ canvas {
 }
 
 .sGoal-sidebar{
-
     border-bottom:1px solid #e0dcdc;
     padding-bottom:10px;
-
-    
-   
 }
 .sGoal-sidebar-successful{
     border-bottom:1px solid #e0dcdc;
@@ -368,10 +363,9 @@ canvas {
     padding-bottom:10px;
 }
 
-    .sGoal-sidebar-unsuccessful h4{
+.sGoal-sidebar-unsuccessful h4{
         color: red;
-        
-    }
+ }
 
 /* custom CSS for small screens */
 @media (max-width: 767px) {
