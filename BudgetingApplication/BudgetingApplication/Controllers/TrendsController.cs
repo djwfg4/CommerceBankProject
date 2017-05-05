@@ -90,8 +90,16 @@ namespace BudgetingApplication.Controllers
 
             if (!String.IsNullOrEmpty(category))
             {
-                Dictionary<string, decimal> initialTransactions = this.GetTransactionsByCategory(startDate, endDate, category); 
-                Dictionary<string, decimal> updatedTransactions = this.NewDictionary(startDate, endDate);
+                DateTime newStartDate = startDate;
+                if (startDate.AddMonths(12) < endDate)
+                {
+                    startDate = endDate.AddMonths(-12);
+                    newStartDate = new DateTime(startDate.Year, startDate.Month, 1, 0, 0, 0, 0);
+                    model.StartDate = newStartDate;
+                    model.TooManyMonths = true;                   
+                }
+                Dictionary<string, decimal> initialTransactions = this.GetTransactionsByCategory(newStartDate, endDate, category); 
+                Dictionary<string, decimal> updatedTransactions = this.NewDictionary(newStartDate, endDate);
                 updatedTransactions = this.UpdateDictionary(initialTransactions, updatedTransactions);
                 model.TransactionAmounts = updatedTransactions;
 
@@ -114,16 +122,17 @@ namespace BudgetingApplication.Controllers
                 updatedBudgetGoals = this.UpdateDictionary(initialBudgetGoals, updatedBudgetGoals);
                 model.BudgetTotals = updatedBudgetGoals;
 
-                model.ChartLabels = model.Categories.Select(x => x.CategoryType).ToList();
+                model.ChartLabels = model.Categories.Where(x => x.CategoryID != 1).Select(x => x.CategoryType).ToList();
+                //model.ChartLabels = updatedTransactions.Keys.ToList();
             }
-
+            
             model.TotalSpent = model.TransactionAmounts.Sum(x => x.Value);
             model.MostSpent = model.TransactionAmounts.Max(x => x.Value);
             model.MostSpentCategory = model.TransactionAmounts.OrderByDescending(x => x.Value).First().Key;
             model.LeastSpent = model.TransactionAmounts.Min(x => x.Value);
             model.LeastSpentCategory = model.TransactionAmounts.OrderBy(x => x.Value).First().Key;
             model.AverageSpending = model.TransactionAmounts.Average(x => x.Value);
-            model.Colors = this.GenerateColors(model, model.TransactionAmounts.Keys.Count);
+            model.Colors = this.GenerateColors(model, model.TransactionAmounts.Count());
             model.ValidDates = true;
             return model;
         }
@@ -139,6 +148,7 @@ namespace BudgetingApplication.Controllers
                                      transaction.TransactionDate >= startDate &&
                                      transaction.TransactionDate <= endDate &&
                                      transaction.Category.ParentCategoryID == null
+                                     && transaction.Category.CategoryID != 1
                                orderby transaction.Category.CategoryType
                                select transaction;
             
@@ -156,7 +166,8 @@ namespace BudgetingApplication.Controllers
                                      transaction.TransactionDate >= startDate &&
                                      transaction.TransactionDate <= endDate &&
                                      transaction.Category.ParentCategoryID == null &&
-                                     transaction.Category.CategoryType.Equals(category)
+                                     transaction.Category.CategoryType.Equals(category) &&
+                                     transaction.CategoryID != 1
                                orderby transaction.Category.CategoryType
                                select transaction;
 
@@ -174,13 +185,25 @@ namespace BudgetingApplication.Controllers
 
         private Dictionary<string, decimal> GetBudgetGoalsByCategory(DateTime startDate, DateTime endDate, string category)
         {
-            var budgetGoals = from goal in dbContext.BudgetGoals
+            IQueryable<BudgetGoal> budgetGoals = null;
+            if (startDate.Month == endDate.Month && startDate.Year == endDate.Year)
+            {
+                budgetGoals = from goal in dbContext.BudgetGoals
+                                  where goal.ClientID == CLIENT_ID &&
+                                        goal.Category.CategoryType.Equals(category) &&
+                                        goal.Status.Equals("A")
+                                  select goal;
+            }
+            else
+            {
+                budgetGoals = from goal in dbContext.BudgetGoals
                               orderby goal.Category.CategoryType
                               where goal.ClientID == CLIENT_ID &&
                                     goal.Month >= startDate &&
                                     goal.Month <= endDate &&
                                     goal.Category.CategoryType.Equals(category)
                               select goal;
+            }
 
             var groupedBudgetGoals = budgetGoals.GroupBy(x => new { x.Month.Year, x.Month.Month }).ToDictionary(x => x.Key, group => group.Sum(item => Math.Abs(item.BudgetGoalAmount)));
 
@@ -201,7 +224,9 @@ namespace BudgetingApplication.Controllers
                               orderby goal.Category.CategoryType
                               where goal.ClientID == CLIENT_ID &&
                                     goal.Month >= startDate &&
-                                    goal.Month <= endDate
+                                    goal.Month <= endDate &&
+                                    goal.Category.CategoryID != 1 &&
+                                    goal.Category.ParentCategoryID == null
                               select goal;
 
             var sums = budgetGoals.GroupBy(x => x.Category.CategoryType).ToDictionary(x => x.Key, group => group.Sum(item => Math.Abs(item.BudgetGoalAmount)));
@@ -215,7 +240,8 @@ namespace BudgetingApplication.Controllers
         {
             var categories = from category in dbContext.Categories
                              orderby category.CategoryType
-                             where category.ParentCategoryID == null
+                             where category.ParentCategoryID == null &&
+                                   category.CategoryID != 1
                              select category;
 
             return categories.ToList();

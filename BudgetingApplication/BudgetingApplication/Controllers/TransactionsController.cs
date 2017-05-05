@@ -70,7 +70,7 @@ namespace BudgetingApplication.Controllers
             if (!String.IsNullOrEmpty(category))
             {
                 model.Transactions = this.FilterTransactionsByCategory(model.Transactions, category);
-                model.BudgetGoals = this.GetBudgetGoals(month.Value, year.Value);
+                model.BudgetGoals = this.GetBudgetGoals(month.Value, year.Value, category);
                 model.Category = category;
             }
             if (!String.IsNullOrEmpty(searchString))
@@ -124,7 +124,7 @@ namespace BudgetingApplication.Controllers
             return View(model);
         }
 
-        public ActionResult Split(int? account, string amount, string category, DateTime date, string description, int? transNo)
+        public ActionResult Split(int? account, string amount, string category, string description, int? transNo, int? month, int? day, int? year)
         {
             decimal amountDec = 0;
             try
@@ -138,6 +138,7 @@ namespace BudgetingApplication.Controllers
                 model.InvalidAmount = "Split amount was invalid.";
                 return View("SplitTransaction", model);
             }
+
             Transaction splitFrom = this.GetTransaction(transNo.Value);
 
             if (amountDec >= Math.Abs(splitFrom.TransactionAmount))
@@ -148,13 +149,19 @@ namespace BudgetingApplication.Controllers
                 return View("SplitTransaction", model);
             }
 
-            Transaction splitTo = new Transaction();
-            splitTo.Account.AccountNo = account.Value;
-            splitTo.Category.CategoryType = category;
-            splitTo.TransactionDate = date;
-            splitTo.Description = description;
+            Transaction splitTo = new Transaction
+            {
+                TransactionAccountNo = this.GetAccountNo(account.Value),
+                Account = this.GetAccount(account.Value),
+                TransactionAmount = amountDec,
+                Category = this.GetCategory(category),
+                CategoryID = this.GetCategoryID(category),
+                TransactionDate = new DateTime(year.Value, month.Value, day.Value),
+                Description = description
+            };
 
             dbContext.Transactions.Remove(splitFrom);
+            dbContext.SaveChanges();
 
             decimal updatedValue = 0;
             if (splitFrom.TransactionAmount < 0)
@@ -171,6 +178,8 @@ namespace BudgetingApplication.Controllers
             }
 
             dbContext.Transactions.Add(splitTo);
+            dbContext.SaveChanges();
+
             dbContext.Transactions.Add(splitFrom);
             dbContext.SaveChanges();
 
@@ -214,15 +223,29 @@ namespace BudgetingApplication.Controllers
         /// <param name="month"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        private List<BudgetGoal> GetBudgetGoals(int month, int year)
+        private List<BudgetGoal> GetBudgetGoals(int month, int year, string category)
         {
-            var budgetGoals = from goal in dbContext.BudgetGoals
+            DateTime selectedDate = new DateTime(year, month, 1);
+
+            IQueryable<BudgetGoal> selectedBudgetGoals = from goal in dbContext.BudgetGoals
                               where goal.ClientID == CLIENT_ID &&
                                     goal.Month.Month == month &&
-                                    goal.Month.Year == year
+                                    goal.Month.Year == year &&
+                                    goal.Category.CategoryType.Equals(category)
                               select goal;
 
-            return budgetGoals.ToList();
+            if (!selectedBudgetGoals.Any())
+            {
+                 var budgetGoals = from goal in dbContext.BudgetGoals
+                              where goal.ClientID == CLIENT_ID &&
+                                    goal.Category.CategoryType.Equals(category) &&
+                                    goal.Status.Equals("A")
+                              select goal;
+
+                return budgetGoals.ToList();
+            }
+
+            return selectedBudgetGoals.ToList();
         }
 
         /// <summary>
@@ -255,6 +278,24 @@ namespace BudgetingApplication.Controllers
                                select transaction;
 
             return transactions.ToList();
+        }
+
+        private int GetAccountNo(int accountNo)
+        {
+            var account = from acct in dbContext.Accounts
+                          where acct.AccountNo == accountNo
+                          select acct;
+
+            return account.Single().AccountNo;
+        }
+
+        private Category GetCategory(string category)
+        {
+            var cat = from c in dbContext.Categories
+                      where c.CategoryType.Equals(category)
+                      select c;
+
+            return cat.Single();
         }
 
         /// <summary>
@@ -335,6 +376,24 @@ namespace BudgetingApplication.Controllers
                              select category;
 
             return categories.ToList();
+        }
+
+        private int GetCategoryID(string category)
+        {
+            var cat = from c in dbContext.Categories
+                      where c.CategoryType.Equals(category)
+                      select c;
+
+            return cat.Single().CategoryID;
+        }
+
+        private Account GetAccount(int accountNo)
+        {
+            var account = from acct in dbContext.Accounts
+                          where acct.AccountNo == accountNo
+                          select acct;
+
+            return account.Single();
         }
     }
 }
