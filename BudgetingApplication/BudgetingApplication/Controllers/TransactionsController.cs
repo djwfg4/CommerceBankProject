@@ -183,7 +183,7 @@ namespace BudgetingApplication.Controllers
             dbContext.Transactions.Add(splitFrom);
             dbContext.SaveChanges();
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         /// <summary>

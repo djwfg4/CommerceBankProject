@@ -127,22 +127,28 @@ namespace BudgetingApplication.Controllers
                         from account in dbContext.Accounts
                         where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
                         && trans.TransactionDate.Month == System.DateTime.Now.Month && trans.TransactionDate.Year == System.DateTime.Now.Year
-                        group new { trans, account } by trans.TransactionAccountNo into f
-                        select new
-                        {
-                            accountDescr = f.Select(x => x.account.AccountType),
-                            accountNo = f.Select(x => x.account.AccountNo),
-                            totalMoney = f.Sum(x => x.trans.TransactionAmount),
-                            categoryID = f.Select(x => x.trans.CategoryID)
-                        };
+                        group new { trans, account } by trans.CategoryID;
 
             //sum up all different accounts into one 
             foreach (var item in query)
             {
-                if(item.categoryID.First() == 17) { continue; } //category 17 is transfers into a goal, not money spent
-                //categoryID == 1 is the income category
-                if (item.categoryID.First() == 1) { income += item.totalMoney; }
-                else{ spent += item.totalMoney; }
+                foreach(var grouping in item)
+                {
+                    switch (grouping.trans.CategoryID)
+                    {
+                        case (1):
+                            //deposit
+                            income += grouping.trans.TransactionAmount;
+                            break;
+                        case (17):
+                            //transfers into a goal, money was not actually spent
+                            break;
+                        default:
+                            spent += Math.Abs(grouping.trans.TransactionAmount);
+                            break;
+
+                    }
+                }
             }
             return new decimal[] { income, spent };
         }
