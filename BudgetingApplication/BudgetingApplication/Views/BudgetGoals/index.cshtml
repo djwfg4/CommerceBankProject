@@ -15,6 +15,16 @@
                   $(this).find('.bGoal-edit').hide();
               }
             );
+
+        $(".bGoalContainer").hover(
+             function () {
+                 $(this).find('.bGoal-edit').show();
+             }, function () {
+                 $(this).find('.bGoal-edit').hide();
+             }
+           );
+
+
         $("#dialog").dialog({
             autoOpen: false,
             modal: true
@@ -37,6 +47,7 @@
             $("#dialog").dialog("open");
         });
     })
+        
 </script>
 <div id="dialog" title="Confirmation Required">
     Are you sure you want to transfer this amount?
@@ -115,7 +126,11 @@
                 </div>
             </div>
         }
-
+        <div id="updateIncome" class="col-sm-12">
+            <div class="pull-right">
+                @Html.ActionLink("Edit", "InsertBudgetGoal", new { id = item.BudgetGoalID })
+            </div>
+        </div>
     }
     @*@foreach (var item in Model.budgetView.Where(x => x.GoalCategory == 1))
     {

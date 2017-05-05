@@ -1,12 +1,10 @@
 ﻿body {
-    padding-top: 105px;
-    min-width:400px;
+    padding-top: 125px;
 }
 
 html, body {
     background: #f9f9f9;
-    margin: 0;
-    font-family: Open Sans,sans-serif;
+    font-family: Calibri,Open Sans,sans-serif;
 }
 
 canvas {
@@ -14,14 +12,39 @@ canvas {
     -webkit-user-select: none;
     -ms-user-select: none;
 }
+.mainBody {
+        height:95vh;
+    min-height: calc(100vh - 105px);
+    max-height:  calc(100vh - 105px);
+    overflow: auto;
+}
 
 /* Nav Bar */
+/* custom CSS for small screens */
+@media (max-width: 500px) {
+    .navBanner {
+        min-width:100px;
+    }
+    #banner-brand {
+        width: 150px!important;
+        height: 30px;
+        background-color: #006f51;
+    }
+    .bGoalLower{        
+        font-size: x-small;
+        margin-bottom: 10px;
+    }
+    #UserArea {
+        font-size:small;
+    }
+}
+
+
 .navBanner {
     background-color: #006f51;
     padding: 0;
     margin: 0;
     height: 50px;
-    min-width:400px;
 }
 
     .navBanner button {
@@ -87,7 +110,7 @@ canvas {
 /*sidebar properties*/
 .custom-sidebar {
     min-height: 150px !important;
-    min-width: 200px;
+    min-width: 150px;
     max-width: 150px;
     padding: 0 10px;
     position: relative;
@@ -128,18 +151,19 @@ canvas {
     background-color: rgba(242, 242, 242, 1);
     text-align: center;
 }
+.sidebarToggled {
+    left: 210px;
+}
+
 #showSidebar{
     position:fixed;
     top:50vh;
     z-index:1000;
     float:left;
 }
-.sidebarToggled {
-    left:210px;
-    transition:ease-in;
-}
 #showSidebar button{
     position: relative;
+    left:-20px;
     padding: 9px 10px;
     margin-top: 8px;
     margin-right: 15px;
@@ -172,12 +196,18 @@ canvas {
     background-color:#6ab244;
     position:fixed;
     top:50px;
-    z-index:999;
+    z-index:900;
     float:left;
-    max-height:100vh;
-    min-height:100vh;
+        height:95vh;
+    max-height:calc(100vh - 50px);
+    min-height:calc(100vh - 50px);
     overflow:auto;
     padding-left:5px;
+}
+#closeSideBar {
+    color:white;
+    text-align:right;
+    padding: 0px 10px;
 }
 #warnings{
     max-height:150px;
@@ -187,10 +217,19 @@ canvas {
     padding:5px;
     margin:5px;
 }
+#UserArea{
+    margin-top:10px;
+}
+#UserArea table{
+    border:1px solid #cacaca;
+}
+#UserArea tr{
+ background-color:#FFF!important;
+}   
 
 /*Overview page*/
 #graphContainer {
-    min-height: 350px;
+    min-height: 150px;
 }
 #noGraphData{
     text-align:center;
@@ -201,7 +240,6 @@ canvas {
     font-weight: 900;
     font-size:x-large;
 }
-
 #showCharts{
     
 }
@@ -209,17 +247,16 @@ canvas {
 #budgetGoalContainer,
 .bGoalContainer {
     margin: 0 auto;
-    min-width: 500px;
+    /*min-width: 500px;*/
     max-width: 500px;
     border-top: 1px solid #e0dcdc;
     border-bottom: 1px solid #e0dcdc;
     margin-bottom: 10px;
-    padding: 5px;
 }
 
 .bGoalContainerSubmit {
     margin: 0 auto;
-    min-width: 500px;
+    /*min-width: 500px;*/
     max-width: 500px;
     margin-bottom: 10px;
     padding: 5px;
@@ -317,12 +354,8 @@ canvas {
 }
 
 .sGoal-sidebar{
-
     border-bottom:1px solid #e0dcdc;
     padding-bottom:10px;
-
-    
-   
 }
 .sGoal-sidebar-successful{
     border-bottom:1px solid #e0dcdc;
@@ -339,17 +372,21 @@ canvas {
     padding-bottom:10px;
 }
 
-    .sGoal-sidebar-unsuccessful h4{
+.sGoal-sidebar-unsuccessful h4{
         color: red;
-        
-    }
+ }
 
 /* custom CSS for small screens */
 @media (max-width: 767px) {
     body {
         padding-top: 55px;
     }
-
+    .mainBody {
+        height:95vh;
+    min-height: calc(100vh - 50px);
+    max-height:  calc(100vh - 50px);
+    overflow: auto;
+}
     #banner-brand {
         margin-left: 20px;
     }
@@ -428,4 +465,8 @@ canvas {
 /*User Preferences*/
 .currentPhoto {
     border: 3px solid blue;
+}
+
+#ui-datepicker-div{
+    z-index:1000;
 }

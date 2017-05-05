@@ -33,14 +33,14 @@
         <div class="col-sm-12">
             <center>
                 <div id="MyChart">
-                    <canvas id="chartArea" height="350" />
+                    <canvas id="chartArea"  />
                 </div>
             </center>
         </div>
     </div>
 
     <div class="col-md-12"><center><h2><a href="/budgetGoals">My Budget</a></h2></center></div>
-    <div class="col-md-12">
+    <div class="col-md-12" style="max-height:400px; overflow:auto;">
         @{
             if (Model.budgetGoals.budgetView.Count() < 1)
             {
@@ -65,7 +65,7 @@
     <div class="col-sm-12">
         <h3><a href="/savingsgoals">Saving Goals</a></h3>
     </div>
-    <div id="goals">
+    <div id="goals" class="col-sm-12" style="max-height:75%; overflow:auto; padding:0px;">
         @{
             if (Model.savingsGoals.savingsView.Count < 1)
             {
@@ -81,8 +81,6 @@
             }
         }
     </div>
-
-
 </div>
  <!-- this is only visible when the screen gets too small-->
 <div class="col-sm-12 visible-sm-block visible-xs-block" style="border-bottom:1px solid; margin-bottom:10px;">
@@ -99,6 +97,11 @@
 }    <!--end of small screen visibility-->
 @section sidebar {
    <div>
+       <div class="row">
+           <div id="warnings" class="col-sm-12">
+
+           </div>
+       </div>
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
            <h4>My Accounts</h4>
        </div>
@@ -126,19 +129,20 @@
                 </div>
                         }
         }
-       <hr />
        <div class="col-sm-12" style="border-bottom:1px solid; margin-bottom:10px;">
            <h4 class="badgeHeader"><a href="/badges">Badges Earned</a></h4>
        </div>
-       @{
-           foreach (var item in Model.clientBadges)
-           {
-               var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
-               <div class="col-xs-6 col-sm-4">
-                   <img src="@Url.Content("~/images/" + badge.BadgeName)" data-html="true"  class="badgeImage" data-toggle="tooltip" title="<b>Earned:</b><em> @item.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="bottom" width="50" height="50" />
-               </div>
+       <div class="row">
+           @{
+               foreach (var item in Model.clientBadges)
+               {
+                   var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
+                   <div class="col-xs-6 col-sm-4">
+                       <img src="@Url.Content("~/images/" + badge.BadgeName)" data-html="true" class="badgeImage" data-toggle="tooltip" title="<b>Earned:</b><em> @item.DateEarned.ToShortDateString() </em> <br>@badge.Description" data-placement="top" width="50" height="50" />
+                   </div>
+               }
            }
-       }
+       </div>
 
     </div>
      }

@@ -8,14 +8,47 @@
 @*Adds edit button when hovering over a goal*@
 <script>
     $(document).ready(function () {
+        @{ var msgTitle = "";
+            var msgBody = "";}
+        $(".sGoalContainer").hover(
+            function () {
+                $(this).find('.sGoal-edit').show();
+            }, function() {
+                $(this).find('.sGoal-edit').hide();
+            }
+        );
+        @if (ViewBag.SuccessTitle != null) {
+            msgTitle = ViewBag.SuccessTitle;
+            msgBody = ViewBag.SuccessBody;
 
-    $(".sGoalContainer").hover(
-  function () {
-      $(this).find('.sGoal-edit').show();
-  }, function() {
-      $(this).find('.sGoal-edit').hide();
-  }
-);
+        }
+        var messageTitle = '@msgTitle';
+        var messageBody = '@msgBody';
+        if(messageTitle != ""){
+            $.notify({
+                title: messageTitle,
+                message: messageBody
+            }, {
+                type: 'minimalist',
+                delay: 20000,
+                placement: {
+                    from: 'bottom',
+                    align: 'right'
+                },
+                animate: {
+                    enter: 'animated bounceIn',
+                    exit: 'animated fadeOutDown'
+                },
+                icon_type: 'image',
+                template: '<div data-notify="container" class=" alert-success col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                        '<span data-notify="title">{1}</span>' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+
+            });
+
+        }
     });
 </script>
 
