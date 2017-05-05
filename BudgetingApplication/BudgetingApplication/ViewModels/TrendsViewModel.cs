@@ -9,6 +9,7 @@ namespace BudgetingApplication.ViewModels
 {
     public class TrendsViewModel
     {
+        public bool TooManyMonths { get; set; }
         public DateTime StartDate { get; set; } //filtered start date
         public DateTime EndDate { get; set; } //filtered end date
         public decimal AverageSpending { get; set; }
@@ -39,20 +40,20 @@ namespace BudgetingApplication.ViewModels
         };
         public List<string> ColorsList = new List<string>
         {
-            "#0000FF", //blue
-            "#FF0000", //red
-            "#008000", //green
-            "#EEEE00", //yellow 
-            "#800080", //purple
-            "#FFA500", //orange
-            "#FFC0CB", //pink
-            "#ADD8E6", //lightblue
-            "#90EE90", //lightgreen
-            "#EE82EE", //violet
-            "#40E0D0", //turquoise
-            "#A52A2A", //brown
-            "#006400", //darkgreen
-            "#FFD700"  //gold
+            "#000000", //black
+            "#8b84b7", //lavendar purple
+            "#264653", //japanese indigo
+            "#2a9d8f", //jungle green
+            "#e9c46a", //hansa yellow
+            "#f4a261", //sandy brown
+            "#e76f51", //light red ochre
+            "#bce784", //medium spring bud
+            "#348aa7", //steel blue
+            "#5dd39e", //medium aquamarine
+            "#525174", //independence
+            "#513b56", //pineapple
+            "#ff6b6b", //pastel red
+            "#ffe66d"  //maize
         };
         public bool ValidDates { get; set; } //used for displaying popup when dates selected are invalid
     }

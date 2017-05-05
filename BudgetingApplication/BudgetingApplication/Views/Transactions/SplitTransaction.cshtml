@@ -33,7 +33,7 @@
     <h6>@Model.Transaction.Description</h6>
 }
 
-<h2 style="text-align:center;"><b>Split Transaction</b></h2>
+<h2 style="text-align:center"><b>Split Transaction</b></h2>
 
 @if (!String.IsNullOrEmpty(Model.InvalidSplit))
 {
@@ -47,9 +47,11 @@
 
 @using (Html.BeginForm("Split", "Transactions"))
 {
-    @Html.HiddenFor(account => Model.Transaction.Account.AccountNo)
-    @Html.HiddenFor(date => Model.Transaction.TransactionDate)
-    @Html.HiddenFor(transNo => Model.Transaction.TransactionNo)
+    @Html.Hidden("Account", Model.Transaction.Account.AccountNo)
+    @Html.Hidden("Month", Model.Transaction.TransactionDate.Month)
+    @Html.Hidden("Day", Model.Transaction.TransactionDate.Day)
+    @Html.Hidden("Year", Model.Transaction.TransactionDate.Year)
+    @Html.Hidden("TransNo", Model.Transaction.TransactionNo)
     <div class="form-group">
         @Html.Label("Account")
         @Html.TextBox(" ", null, new { @ReadOnly = "true", @class = "form-control", @placeholder = Model.Transaction.Account.AccountNo })
@@ -63,7 +65,7 @@
         @Html.DropDownList(
                 "Category",
                 new SelectList(Model.Categories, "CategoryType", "CategoryType"),
-                "-- Select --",
+                "--Select--",
                 new { @class = "form-control" }
         )
     </div>

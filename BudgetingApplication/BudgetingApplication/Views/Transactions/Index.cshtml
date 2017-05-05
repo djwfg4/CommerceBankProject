@@ -42,7 +42,7 @@
     .button {
         margin-top: 5px;
         color: white;
-        background-color: darkgreen;
+        background-color: #0d6e51
     }
 
     .month-header {
@@ -169,12 +169,19 @@
         .clickable-row:hover{
             cursor:pointer;
         }
+
+        #disabled-right-angle {
+            font-size: 50px;
+            color: lightgray;
+            vertical-align: bottom;
+            background-color: white;
+        }
     }
 </style>
 
 @section sidebar{
     <!-- SIDEBAR SECTION -->
-    <h3><b>Account Numbers</b></h3>
+    <h3>Accounts</h3>
     @{
         var checking = Model.Accounts.Where(account => account.AccountType.Equals("Checking"));
         var creditCard = Model.Accounts.Where(account => account.AccountType.Equals("CC"));
@@ -233,7 +240,7 @@
                 " ",
                 "SwitchMonth",
                 new { month = (Model.Month - 1 == 0) ? 12 : Model.Month - 1, year = (Model.Month - 1 == 0) ? Model.Year - 1 : Model.Year },
-                new { @class = "fa fa-angle-left month-header angle" }
+                new { @class = "fa fa-angle-left month-header angle", @style = "vertical-align:middle" }
             )
         </td>
         <!-- MONTH AND YEAR TEXT -->
@@ -245,7 +252,7 @@
             @if (Model.Month == System.DateTime.Now.Month && Model.Year == System.DateTime.Now.Year)
             {
                 //disable next-month button if the page contains the current month and year
-                <button id="disabled-right-angle" class="fa fa-angle-right month-header" disabled></button>
+                <button id="disabled-right-angle" class="fa fa-angle-right month-header" style="vertical-align:middle" disabled></button>
             }
             else
             {

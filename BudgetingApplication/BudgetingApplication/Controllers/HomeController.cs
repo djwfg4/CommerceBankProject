@@ -127,22 +127,28 @@ namespace BudgetingApplication.Controllers
                         from account in dbContext.Accounts
                         where trans.TransactionAccountNo == account.AccountNo && account.ClientID == CLIENT_ID
                         && trans.TransactionDate.Month == System.DateTime.Now.Month && trans.TransactionDate.Year == System.DateTime.Now.Year
-                        group new { trans, account } by trans.TransactionAccountNo into f
-                        select new
-                        {
-                            accountDescr = f.Select(x => x.account.AccountType),
-                            accountNo = f.Select(x => x.account.AccountNo),
-                            totalMoney = f.Sum(x => x.trans.TransactionAmount),
-                            categoryID = f.Select(x => x.trans.CategoryID)
-                        };
+                        group new { trans, account } by trans.CategoryID;
 
             //sum up all different accounts into one 
             foreach (var item in query)
             {
-                if(item.categoryID.First() == 17) { continue; } //category 17 is transfers into a goal, not money spent
-                //categoryID == 1 is the income category
-                if (item.categoryID.First() == 1) { income += item.totalMoney; }
-                else{ spent += item.totalMoney; }
+                foreach(var grouping in item)
+                {
+                    switch (grouping.trans.CategoryID)
+                    {
+                        case (1):
+                            //deposit
+                            income += grouping.trans.TransactionAmount;
+                            break;
+                        case (17):
+                            //transfers into a goal, money was not actually spent
+                            break;
+                        default:
+                            spent += Math.Abs(grouping.trans.TransactionAmount);
+                            break;
+
+                    }
+                }
             }
             return new decimal[] { income, spent };
         }
@@ -265,13 +271,21 @@ namespace BudgetingApplication.Controllers
 
             //colors of the graph sections. 
             string[] colors = {
-                "rgb(7, 18, 40)",
-                "rgb(75, 192, 192)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 99, 132)",
-                "rgb(255, 205, 86)",
-                "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)" };
+                "#000000", //black
+                "#8b84b7", //lavendar purple
+                "#264653", //japanese indigo
+                "#2a9d8f", //jungle green
+                "#e9c46a", //hansa yellow
+                "#f4a261", //sandy brown
+                "#e76f51", //light red ochre
+                "#bce784", //medium spring bud
+                "#348aa7", //steel blue
+                "#5dd39e", //medium aquamarine
+                "#525174", //independence
+                "#513b56", //pineapple
+                "#ff6b6b", //pastel red
+                "#ffe66d"  //maize
+            };
 
             foreach (var trans in sumQuery)
             {
