@@ -91,7 +91,7 @@
     {
         var badge = Model.badges.Where(x => x.BadgeID == item.BadgeID).Single();
         <div class="col-sm-2 col-xs-3 visible-sm-block visible-xs-block">
-            <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="bottom" width="50" height="50" />
+            <img src="@Url.Content("~/images/" + badge.BadgeName)" class="badgeImage" data-toggle="tooltip" title="@badge.Description" data-placement="top" width="50" height="50" />
         </div>
     }
 }    <!--end of small screen visibility-->
