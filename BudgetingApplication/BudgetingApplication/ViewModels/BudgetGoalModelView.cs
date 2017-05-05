@@ -17,6 +17,7 @@ namespace BudgetingApplication.Models
         
         public int getPercentage()
         {
+            if(totalBudgeted == 0) { return 0; }
             double percentage = totalSpent / totalBudgeted;
             return Math.Abs((int)(percentage * 100));
         }
