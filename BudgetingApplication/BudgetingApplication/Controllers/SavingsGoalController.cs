@@ -130,11 +130,7 @@ namespace BudgetingApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddFunds(SavingsGoalsViewModel model)
         {
-            if(model.savingsGoal.CurrentGoalAmount >= model.savingsGoal.CurrentGoalAmount)
-            {
-                //trying to add to goal that is already met error
-                ModelState.AddModelError("addToGoal", "This goal has already been met.");
-            }
+           
             if(model.addToGoal + model.savingsGoal.CurrentGoalAmount > model.savingsGoal.SavingsGoalAmount)
             {
                 //Trying to add more than specified goal amount error
@@ -144,6 +140,12 @@ namespace BudgetingApplication.Controllers
             {
                 //less than 0 transaction error
                 ModelState.AddModelError("addToGoal", "The amount you want to enter cannot be less than 0.");
+            }
+           
+            if (model.addToGoal > dbContext.Transactions.Where(x => x.TransactionAccountNo == model.transaction.TransactionAccountNo).Sum(x => x.TransactionAmount))
+            {
+                //prevents user from overdrafting
+                ModelState.AddModelError("addToGoal", "The amount you want to enter cannot exceed account balance.");
             }
             SavingsGoal goal = dbContext.SavingsGoals.Where(x => x.SavingGoalID == model.savingsGoal.SavingGoalID).FirstOrDefault();
             if(goal == null)
