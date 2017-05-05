@@ -265,13 +265,21 @@ namespace BudgetingApplication.Controllers
 
             //colors of the graph sections. 
             string[] colors = {
-                "rgb(7, 18, 40)",
-                "rgb(75, 192, 192)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 99, 132)",
-                "rgb(255, 205, 86)",
-                "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)" };
+                "#000000", //black
+                "#8b84b7", //lavendar purple
+                "#264653", //japanese indigo
+                "#2a9d8f", //jungle green
+                "#e9c46a", //hansa yellow
+                "#f4a261", //sandy brown
+                "#e76f51", //light red ochre
+                "#bce784", //medium spring bud
+                "#348aa7", //steel blue
+                "#5dd39e", //medium aquamarine
+                "#525174", //independence
+                "#513b56", //pineapple
+                "#ff6b6b", //pastel red
+                "#ffe66d"  //maize
+            };
 
             foreach (var trans in sumQuery)
             {
