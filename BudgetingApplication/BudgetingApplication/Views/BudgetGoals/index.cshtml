@@ -128,7 +128,7 @@
         }
         <div id="updateIncome" class="col-sm-12">
             <div class="pull-right">
-                @Html.ActionLink("Edit", "InsertBudgetGoal", new { id = item.BudgetGoalID })
+                @Html.ActionLink("Edit", "InsertBudgetGoal", new { id = item != null ? item.BudgetGoalID : null })
             </div>
         </div>
     }
